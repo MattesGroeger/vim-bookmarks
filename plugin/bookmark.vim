@@ -23,6 +23,16 @@ function! s:jump_to_bookmark(line_nr)
   echo "Jumped to bookmark"
 endfunction
 
+function! s:compare_lines(line_str1, line_str2)
+  let line1 = str2nr(a:line_str1)
+  let line2 = str2nr(a:line_str2)
+  return line1 ==# line2 ? 0 : line1 > line2 ? 1 : -1
+endfunc
+
+function! s:get_bookmark_lines()
+  return sort(keys(b:bm_entries), "s:compare_lines")
+endfunction
+
 function! BookmarkToggle()
   let current_line = line('.')
   if has_key(b:bm_entries, current_line)
@@ -45,7 +55,7 @@ endfunction
 command! ClearAllBookmarks call ClearAllBookmarks()
 
 function! NextBookmark()
-  let line_nrs = sort(keys(b:bm_entries))
+  let line_nrs = s:get_bookmark_lines()
   if empty(line_nrs)
     echo "No bookmarks found"
     return
@@ -70,7 +80,7 @@ endfunction
 command! NextBookmark call NextBookmark()
 
 function! PrevBookmark()
-  let line_nrs = sort(keys(b:bm_entries))
+  let line_nrs = s:get_bookmark_lines()
   if empty(line_nrs)
     echo "No bookmarks found"
     return
