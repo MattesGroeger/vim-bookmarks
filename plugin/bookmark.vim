@@ -33,7 +33,7 @@ function! s:get_bookmark_lines()
   return sort(keys(b:bm_entries), "s:compare_lines")
 endfunction
 
-function! BookmarkToggle()
+function! ToggleBookmark()
   let current_line = line('.')
   if has_key(b:bm_entries, current_line)
     call s:bookmark_remove(get(b:bm_entries, current_line))
@@ -43,7 +43,7 @@ function! BookmarkToggle()
     echo "Bookmark added"
   endif
 endfunction
-command! BookmarkToggle call BookmarkToggle()
+command! ToggleBookmark call ToggleBookmark()
 
 function! ClearAllBookmarks()
   let bookmarks = values(b:bm_entries)
@@ -122,7 +122,7 @@ endfunction
 command! ShowBookmarks call ShowBookmarks()
 
 " Temporary keymapping
-nnoremap <silent> mm :call BookmarkToggle()<cr>
+nnoremap <silent> mm :call ToggleBookmark()<cr>
 nnoremap <silent> mn :call NextBookmark()<cr>
 nnoremap <silent> mp :call PrevBookmark()<cr>
 nnoremap <silent> mc :call ClearAllBookmarks()<cr>
