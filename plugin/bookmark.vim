@@ -105,8 +105,25 @@ function! PrevBookmark()
 endfunction
 command! PrevBookmark call PrevBookmark()
 
+function! ShowBookmarks()
+  let line_nrs = s:get_bookmark_lines()
+  let oldformat = &errorformat    " backup original format
+  let &errorformat = "%f:%l:%m"   " custom format for bookmarks
+  let locations = []
+  for line_nr in line_nrs
+    let content = getline(line_nr)
+    let content = content !=# "" ? content : "empty"
+    call add(locations, expand("%:p") .":". line_nr .":". content)
+  endfor
+  cexpr! locations
+  copen
+  let &errorformat = oldformat    " re-apply original format
+endfunction
+command! ShowBookmarks call ShowBookmarks()
+
 " Temporary keymapping
 nnoremap <silent> mm :call BookmarkToggle()<cr>
 nnoremap <silent> mn :call NextBookmark()<cr>
 nnoremap <silent> mp :call PrevBookmark()<cr>
 nnoremap <silent> mc :call ClearAllBookmarks()<cr>
+nnoremap <silent> ma :call ShowBookmarks()<cr>
