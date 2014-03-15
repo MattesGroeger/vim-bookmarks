@@ -1,15 +1,19 @@
 " Init vars
-if !exists("b:bm_entrie")
+if !exists("b:bm_entries")
   let b:bm_entries = {}
+  let b:bm_sign_index = 9500
+  highlight Bookmark ctermfg=33 ctermbg=NONE
+  sign define Bookmark text=⚑ texthl=Bookmark
 endif
 
 function! s:bookmark_add(line_nr)
-  " @todo add sign
-  let b:bm_entries[a:line_nr] = {'line_nr': a:line_nr, 'sign_id': 0}
+  let b:bm_entries[a:line_nr] = {'line_nr': a:line_nr, 'sign_idx': b:bm_sign_index}
+  execute "sign place ". b:bm_sign_index ." line=" . a:line_nr ." name=Bookmark file=". expand("%:p")
+  let b:bm_sign_index = b:bm_sign_index + 1
 endfunction
 
 function! s:bookmark_remove(bookmark)
-  " @todo remove sign
+  execute "sign unplace ". a:bookmark['sign_idx'] ." file=". expand("%:p")
   unlet b:bm_entries[a:bookmark['line_nr']]
 endfunction
 
