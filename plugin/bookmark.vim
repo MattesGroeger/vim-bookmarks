@@ -18,6 +18,11 @@ function! s:bookmark_remove(bookmark)
   unlet b:bm_entries[a:bookmark['line_nr']]
 endfunction
 
+function! s:jump_to_bookmark(line_nr)
+  call cursor(a:line_nr, 1)
+  echo "Jumped to bookmark"
+endfunction
+
 function! BookmarkToggle()
   let current_line = line('.')
   if has_key(b:bm_entries, current_line)
@@ -39,11 +44,6 @@ function! ClearAllBookmarks()
 endfunction
 command! ClearAllBookmarks call ClearAllBookmarks()
 
-function! s:jump_to_line(line_nr)
-  call cursor(a:line_nr, 1)
-  echo "Jumped to bookmark"
-endfunction
-
 function! NextBookmark()
   let line_nrs = sort(keys(b:bm_entries))
   if empty(line_nrs)
@@ -52,7 +52,7 @@ function! NextBookmark()
   endif
   let current_line = line('.')
   if current_line >=# line_nrs[-1] || current_line <# line_nrs[0]
-    call s:jump_to_line(line_nrs[0])
+    call s:jump_to_bookmark(line_nrs[0])
   else
     let idx = 0
     let lines_count = len(line_nrs)
@@ -60,7 +60,7 @@ function! NextBookmark()
       let cur_bookmark = line_nrs[idx]
       let next_bookmark = line_nrs[idx+1]
       if current_line >=# cur_bookmark && current_line <# next_bookmark
-        call s:jump_to_line(next_bookmark)
+        call s:jump_to_bookmark(next_bookmark)
         return
       endif
       let idx = idx+1
@@ -79,14 +79,14 @@ function! PrevBookmark()
   let lines_count = len(line_nrs)
   let idx = lines_count-1
   if current_line <=# line_nrs[0] || current_line ># line_nrs[-1]
-    call s:jump_to_line(line_nrs[idx])
+    call s:jump_to_bookmark(line_nrs[idx])
   else
     while idx >=# 0
       let cur_bookmark = line_nrs[idx]
       let next_bookmark = line_nrs[idx-1]
       " echo current_line .",". cur_bookmark .",". next_bookmark
       if current_line <=# cur_bookmark && current_line ># next_bookmark
-        call s:jump_to_line(next_bookmark)
+        call s:jump_to_bookmark(next_bookmark)
         return
       endif
       let idx = idx-1
