@@ -3,7 +3,8 @@ if !exists("b:bm_entries")
   let b:bm_entries = {}
   let b:bm_sign_index = 9500
   highlight Bookmark ctermfg=33 ctermbg=NONE
-  sign define Bookmark text=⚑ texthl=Bookmark
+  highlight BookmarkLine ctermfg=232 ctermbg=33
+  sign define Bookmark text=⚑ texthl=Bookmark linehl=BookmarkLine
 endif
 
 function! s:bookmark_add(line_nr)
