@@ -14,11 +14,10 @@ This plugin allows to add and remove line-based bookmarks with just one (!) keys
 
 ### Screenshot
 
-TBD
+![screenshot](https://raw.github.com/MattesGroeger/vim-bookmarks/master/screenshot.png)
 
-* Show multiple buffers
-* Show sign columns
-* Show quickfix window
+1. Bookmars are indicated in sign column
+2. Easily naviagate all bookmarks (`ma`)
 
 ## Installation
 
@@ -42,14 +41,13 @@ Use your favorite plugin manager:
 
 After installation you can directly start using it. You can do this by either using the default shortcuts or the commands:
 
-
-| Action                              | Shortcut    | Command                |
-|-------------------------------------|-------------|------------------------|
-| Add/remove bookmark at current line | `mm`        | `:ToggleBookmark`      |
-| Show all bookmarks                  | `ma`        | `:ShowBookmarks`       |
-| Jump to next bookmark in buffer     | `mn`        | `:NextBookmark`        |
-| Jump to previous bookmark in buffer | `mp`        | `:PrevBookmark`        |
-| Clear bookmarks in buffer           | `mc`        | `:ClearBookmarks`      |
+| Action                                          | Shortcut    | Command                |
+|-------------------------------------------------|-------------|------------------------|
+| Add/remove bookmark at current line             | `mm`        | `:ToggleBookmark`      |
+| Jump to next bookmark in buffer                 | `mn`        | `:NextBookmark`        |
+| Jump to previous bookmark in buffer             | `mp`        | `:PrevBookmark`        |
+| Show all bookmarks                              | `ma`        | `:ShowBookmarks`       |
+| Clear bookmarks in buffer                       | `mc`        | `:ClearBookmarks`      |
 
 You can change the shortcuts as you like, just read on...
 
