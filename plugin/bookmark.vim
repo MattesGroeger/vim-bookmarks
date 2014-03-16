@@ -3,9 +3,25 @@ if exists('g:loaded_bookmarks') || !has('signs') || &cp
 endif
 " let g:loaded_bookmarks = 1
 
+function! s:set(var, default)
+  if !exists(a:var)
+    if type(a:default)
+      execute 'let' a:var '=' string(a:default)
+    else
+      execute 'let' a:var '=' a:default
+    endif
+  endif
+endfunction
+
+call s:set('g:bookmark_signs',           1)
+call s:set('g:bookmark_highlight_lines', 0)
+call s:set('g:bookmark_sign',            '⚑')
+
 function! s:highlight()
-  highlight Bookmark ctermfg=33 ctermbg=NONE
-  highlight BookmarkLine ctermfg=232 ctermbg=33
+  highlight BookmarkSignDefault ctermfg=33 ctermbg=NONE
+  highlight BookmarkLineDefault ctermfg=232 ctermbg=33
+  highlight default link BookmarkSign BookmarkSignDefault
+  highlight default link BookmarkLine BookmarkLineDefault
 endfunction
 
 " Initialize
@@ -13,7 +29,17 @@ if !exists("g:bm_entries")
   let g:bm_entries = {}
   let g:bm_sign_index = 9500
   call s:highlight()
-  sign define Bookmark text=⚑ texthl=Bookmark linehl=BookmarkLine
+  if g:bookmark_signs
+    sign define Bookmark texthl=BookmarkSign
+    execute "sign define Bookmark text=". g:bookmark_sign
+  else
+    sign define Bookmark texthl=
+  end
+  if g:bookmark_highlight_lines
+    sign define Bookmark linehl=BookmarkLine
+  else
+    sign define Bookmark linehl=
+  endif
 endif
 
 function! s:compare_lines(line_str1, line_str2)

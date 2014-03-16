@@ -44,7 +44,32 @@ TBD
 
 ## Customization
 
-TBD
+### Custom options
+
+Put any of the following options into your `~/.vimrc` in order to overwrite the default behaviour.
+
+#### Different sign
+
+```
+let g:bookmark_sign = '>>'
+```
+
+#### Enable line highlighting
+
+Hightlight the whole line (default off).
+
+```
+let g:bookmark_highlight_lines = 1
+```
+
+### Custom colors
+
+Overwrite the default colors by adding this to your colorscheme or `.vimrc`:
+
+```
+highlight BookmarkSign ctermbg=whatever ctermfg=whatever
+highlight BookmarkLine ctermbg=whatever ctermfg=whatever
+```
 
 ## Credits & Contribution
 
