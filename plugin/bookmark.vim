@@ -1,3 +1,8 @@
+if exists('g:loaded_bookmarks') || !has('signs') || &cp
+  finish
+endif
+" let g:loaded_bookmarks = 1
+
 function! s:highlight()
   highlight Bookmark ctermfg=33 ctermbg=NONE
   highlight BookmarkLine ctermfg=232 ctermbg=33
