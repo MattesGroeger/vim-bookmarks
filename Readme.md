@@ -109,6 +109,16 @@ Here are some things you can check:
 * Your git config is compatible with the version of git which your Vim is calling (`:echo system('git --version')`).
 * Your Vim supports signs (`:echo has('signs')` should give `1`).
 
+## Changelog
+
+### 0.1.0 (2014/03/16)
+
+* [NEW] Toggle bookmarks per line
+* [NEW] Show indicator in vim sign column
+* [NEW] Optional line highlighting
+* [NEW] Navigate all bookmarks with vim quickfix window
+* [NEW] Jump between bookmarks in current buffer (previous/next)
+
 ## Credits & Contribution
 
 This plugin was developed by [Mattes Groeger][blog] under the [MIT License][license]. Pull requests are very welcome.
