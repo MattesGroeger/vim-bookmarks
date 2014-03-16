@@ -130,7 +130,7 @@ function! ToggleBookmark()
 endfunction
 command! ToggleBookmark call ToggleBookmark()
 
-function! ClearAllBookmarks()
+function! ClearBookmarks()
   let l:file = expand("%:p")
   let l:lines = keys(s:bookmarks(l:file))
   for line_nr in l:lines
@@ -138,7 +138,7 @@ function! ClearAllBookmarks()
   endfor
   echo "All Bookmarks removed"
 endfunction
-command! ClearAllBookmarks call ClearAllBookmarks()
+command! ClearBookmarks call ClearBookmarks()
 
 function! NextBookmark()
   let line_nrs = s:get_bookmark_lines()
@@ -211,14 +211,30 @@ function! ShowBookmarks()
 endfunction
 command! ShowBookmarks call ShowBookmarks()
 
-" Temporary keymapping
-nnoremap <silent> mm :call ToggleBookmark()<cr>
-nnoremap <silent> mn :call NextBookmark()<cr>
-nnoremap <silent> mp :call PrevBookmark()<cr>
-nnoremap <silent> mc :call ClearAllBookmarks()<cr>
-nnoremap <silent> ma :call ShowBookmarks()<cr>
+
+" Maps {{{
+
+function! s:register_mapping(command, shortcut)
+  execute "nnoremap <silent> <Plug>". a:command ." :". a:command ."<CR>"
+  if !hasmapto("<Plug>". a:command) && maparg(a:shortcut, 'n') ==# ''
+    execute "nmap ". a:shortcut ." <Plug>". a:command
+  endif
+endfunction
+
+call s:register_mapping('ShowBookmarks',  'ma')
+call s:register_mapping('ToggleBookmark', 'mm')
+call s:register_mapping('NextBookmark',   'mn')
+call s:register_mapping('PrevBookmark',   'mp')
+call s:register_mapping('ClearBookmarks', 'mc')
+
+" }}}
+
+
+" Autocommands {{{
 
 augroup bookmark
   autocmd!
   autocmd ColorScheme * call s:highlight()
 augroup END
+
+" }}}

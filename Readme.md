@@ -40,9 +40,32 @@ Use your favorite plugin manager:
 
 ## Usage
 
-TBD
+After installation you can directly start using it. You can do this by either using the default shortcuts or the commands:
+
+
+| Action                              | Shortcut    | Command                |
+|-------------------------------------|-------------|------------------------|
+| Add/remove bookmark at current line | `mm`        | `:ToggleBookmark`      |
+| Show all bookmarks                  | `ma`        | `:ShowBookmarks`       |
+| Jump to next bookmark in buffer     | `mn`        | `:NextBookmark`        |
+| Jump to previous bookmark in buffer | `mp`        | `:PrevBookmark`        |
+| Clear bookmarks in buffer           | `mc`        | `:ClearBookmarks`      |
+
+You can change the shortcuts as you like, just read on...
 
 ## Customization
+
+### Custom shortcuts
+
+You can overwrite any of the default mappings. Just put the following into your `~/.vimrc` and adjust as you like:
+
+```
+nmap <Leader><Leader> <Plug>ToggleBookmark
+nmap <Leader>a <Plug>ShowBookmarks
+nmap <Leader>j <Plug>NextBookmark
+nmap <Leader>k <Plug>PrevBookmark
+nmap <Leader>c <Plug>ClearBookmarks
+```
 
 ### Custom options
 
