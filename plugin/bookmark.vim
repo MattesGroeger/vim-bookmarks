@@ -190,7 +190,7 @@ function! PrevBookmark()
 endfunction
 command! PrevBookmark call PrevBookmark()
 
-function! ShowBookmarks()
+function! ShowAllBookmarks()
   let oldformat = &errorformat    " backup original format
   let &errorformat = "%f:%l:%m"   " custom format for bookmarks
   let locations = []
@@ -209,7 +209,7 @@ function! ShowBookmarks()
   copen
   let &errorformat = oldformat    " re-apply original format
 endfunction
-command! ShowBookmarks call ShowBookmarks()
+command! ShowAllBookmarks call ShowAllBookmarks()
 
 
 " Maps {{{
@@ -221,11 +221,11 @@ function! s:register_mapping(command, shortcut)
   endif
 endfunction
 
-call s:register_mapping('ShowBookmarks',  'ma')
-call s:register_mapping('ToggleBookmark', 'mm')
-call s:register_mapping('NextBookmark',   'mn')
-call s:register_mapping('PrevBookmark',   'mp')
-call s:register_mapping('ClearBookmarks', 'mc')
+call s:register_mapping('ShowAllBookmarks', 'ma')
+call s:register_mapping('ToggleBookmark',   'mm')
+call s:register_mapping('NextBookmark',     'mn')
+call s:register_mapping('PrevBookmark',     'mp')
+call s:register_mapping('ClearBookmarks',   'mc')
 
 " }}}
 

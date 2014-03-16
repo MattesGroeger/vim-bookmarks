@@ -66,7 +66,7 @@ Commands for using Bookmarks
   :PrevBookmark                                                 *:PrevBookmark*
       Jump to the next bookmark upwards
 
-  :ShowBookmarks                                               *:ShowBookmarks*
+  :ShowAllBookmarks                                         *:ShowAllBookmarks*
       Show bookmarks across all buffers in new window
 
   :ClearBookmarks                                             *:ClearBookmarks*
@@ -137,7 +137,7 @@ KEY MAPPINGS
 To change the default keys:
 >
   nmap <Leader><Leader> <Plug>ToggleBookmark
-  nmap <Leader>a <Plug>ShowBookmarks
+  nmap <Leader>a <Plug>ShowAllBookmarks
   nmap <Leader>j <Plug>NextBookmark
   nmap <Leader>k <Plug>PrevBookmark
   nmap <Leader>c <Plug>ClearBookmarks

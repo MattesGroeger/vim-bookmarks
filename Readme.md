@@ -46,7 +46,7 @@ After installation you can directly start using it. You can do this by either us
 | Add/remove bookmark at current line             | `mm`        | `:ToggleBookmark`      |
 | Jump to next bookmark in buffer                 | `mn`        | `:NextBookmark`        |
 | Jump to previous bookmark in buffer             | `mp`        | `:PrevBookmark`        |
-| Show all bookmarks                              | `ma`        | `:ShowBookmarks`       |
+| Show all bookmarks                              | `ma`        | `:ShowAllBookmarks`    |
 | Clear bookmarks in buffer                       | `mc`        | `:ClearBookmarks`      |
 
 You can change the shortcuts as you like, just read on...
@@ -59,7 +59,7 @@ You can overwrite any of the default mappings. Just put the following into your 
 
 ```
 nmap <Leader><Leader> <Plug>ToggleBookmark
-nmap <Leader>a <Plug>ShowBookmarks
+nmap <Leader>a <Plug>ShowAllBookmarks
 nmap <Leader>j <Plug>NextBookmark
 nmap <Leader>k <Plug>PrevBookmark
 nmap <Leader>c <Plug>ClearBookmarks
