@@ -102,6 +102,13 @@ Your colorscheme is configuring the |hl-SignColumn| highlight group weirdly. Ple
 
 Vim only allows one sign per line. Therefore bookmarks will override any existing sign. When removing the bookmark the original sign will show up again. In other words vim-bookmarks won't remove another plugin's signs.
 
+> Why aren't any signs showing at all?
+
+Here are some things you can check:
+
+* Your git config is compatible with the version of git which your Vim is calling (`:echo system('git --version')`).
+* Your Vim supports signs (`:echo has('signs')` should give `1`).
+
 ## Credits & Contribution
 
 This plugin was developed by [Mattes Groeger][blog] under the [MIT License][license]. Pull requests are very welcome.

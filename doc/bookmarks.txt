@@ -32,7 +32,7 @@ Use your favorite plugin manager:
 Pathogen:
 >
   git clone https://github.com/MattesGroeger/vim-bookmarks.git \
-  ~/.vim/bundle/vim-bookmarks
+            ~/.vim/bundle/vim-bookmarks
 <
 
 Vundle:
@@ -109,7 +109,6 @@ SIGNS' COLOURS AND SYMBOLS
 
 To customise the colours, set up the following highlight groups in your
 colorscheme or |vimrc|:
-
 >
   BookmarkSign       " the sign
 <
@@ -158,7 +157,6 @@ Add to your |vimrc|
   let g:bookmark_highlight_lines = 1
 <
 
-
 ===============================================================================
 6. FAQ                                                           *BookmarksFAQ*
 
@@ -178,10 +176,10 @@ c. Why aren't any signs showing at all?
   Here are some things you can check:
   * Your git config is compatible with the version of git which your Vim is
     calling
-    >
-      :echo system('git --version')
-    <
+>
+  :echo system('git --version')
+<
   * Your Vim supports signs. This should return "1":
-    >
-      :echo has('signs')
-    <
+>
+  :echo has('signs')
+<
