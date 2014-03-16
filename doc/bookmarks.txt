@@ -1,0 +1,187 @@
+*bookmarks.txt*                    A Vim plugin for using line-based bookmarks.
+
+
+                                Vim Bookmarks
+
+
+Author:            Mattes Groeger <http://blog.mattes-groeger.de/>
+Plugin Homepage:   <https://github.com/MattesGroeger/vim-bookmarks>
+
+===============================================================================
+CONTENTS                                                    *BookmarksContents*
+
+  1.  Introduction ................. |BookmarksIntroduction|
+  2.  Installation ................. |BookmarksInstallation|
+  3.  Usage ........................ |BookmarksUsage|
+  4.  Commands ..................... |BookmarksCommands|
+  5.  FAQ .......................... |BookmarksFAQ|
+
+===============================================================================
+1. INTRODUCTION                                         *BookmarksIntroduction*
+                                                                    *Bookmarks*
+
+This plugin allows to add and remove line-based bookmarks with just one
+keystroke. Bookmarks will be highlighted in the vim sign column (default).
+You can also list bookmarks across all buffers and navigate towards them.
+
+===============================================================================
+2. INSTALLATION                                         *BookmarksInstallation*
+
+Use your favorite plugin manager:
+
+Pathogen:
+>
+  git clone https://github.com/MattesGroeger/vim-bookmarks.git \
+  ~/.vim/bundle/vim-bookmarks
+<
+
+Vundle:
+  1. Add Bundle 'MattesGroeger/vim-bookmarks' to .vimrc
+  2. Run :BundleInstall
+
+NeoBundle:
+  1. Add NeoBundle 'MattesGroeger/vim-bookmarks' to .vimrc
+  2. Run :NeoBundleInstall
+
+vim-plug:
+  1. Add Plug 'MattesGroeger/vim-bookmarks' to .vimrc
+  2. Run :PlugInstall
+
+===============================================================================
+3. USAGE                                                       *BookmarksUsage*
+
+You don't have to do anything: it just works.
+
+===============================================================================
+4. COMMANDS                                                 *BookmarksCommands*
+
+Commands for using Bookmarks
+
+  :ToggleBookmark                                             *:ToggleBookmark*
+      Add or remove bookmark for the current line
+
+  :NextBookmark                                                 *:NextBookmark*
+      Jump to the next bookmark downwards
+
+  :PrevBookmark                                                 *:PrevBookmark*
+      Jump to the next bookmark upwards
+
+  :ShowBookmarks                                               *:ShowBookmarks*
+      Show bookmarks across all buffers in new window
+
+  :ClearBookmarks                                             *:ClearBookmarks*
+      Removes all bookmarks for current buffer
+
+===============================================================================
+5. CUSTOMISATION                                       *BookmarksCustomisation*
+
+You can customise:
+
+- The sign column's colours
+- The signs' colours and symbols
+- Line highlights
+- Key mappings
+- Whether or not signs are shown (defaults to yes)
+- Whether or not line highlighting is on initially (defaults to off)
+
+Please note that vim-bookmarks won't override any colours or highlights you've
+set in your colorscheme.
+
+SIGN COLUMN
+
+The background colour of the sign column is controlled by the |hlSignColumn|
+highlight group.  This will be either set in your colorscheme or Vim's default.
+
+To find out where it's set, and to what it's set, use:
+>
+  :verbose highlight SignColumn
+<
+
+To change your sign column's appearance, update your colorscheme or |vimrc|
+like this:
+
+  Desired appearance                  Command ~
+  Same as line number column          highlight clear SignColumn
+  User-defined (terminal Vim)         highlight SignColumn ctermbg={whatever}
+  User-defined (graphical Vim)        highlight SignColumn guibg={whatever}
+
+SIGNS' COLOURS AND SYMBOLS
+
+To customise the colours, set up the following highlight groups in your
+colorscheme or |vimrc|:
+
+>
+  BookmarkSign       " the sign
+<
+
+You can either set these with `highlight BookmarkSign {key}={arg}...` or link
+them to existing highlight groups with, say:
+>
+  highlight link BookmarkSign Todo
+<
+
+To customise the symbols, add the following to your |vimrc|:
+>
+  let g:bookmark_sign = '>>'
+<
+
+LINE HIGHLIGHTS
+
+Similarly to the signs' colours, set up the following highlight group in your
+colorscheme or |vimrc|:
+>
+  BookmarkLine       " the highlighted line
+<
+
+KEY MAPPINGS
+
+To change the default keys:
+>
+  nmap <Leader><Leader> <Plug>ToggleBookmark
+  nmap <Leader>a <Plug>ShowBookmarks
+  nmap <Leader>j <Plug>NextBookmark
+  nmap <Leader>k <Plug>PrevBookmark
+  nmap <Leader>c <Plug>ClearBookmarks
+<
+
+TO TURN OFF SIGNS BY DEFAULT
+
+Add to your |vimrc|
+>
+  let g:bookmark_signs = 0
+<
+
+TO TURN ON LINE HIGHLIGHTING BY DEFAULT
+
+Add to your |vimrc|
+>
+  let g:bookmark_highlight_lines = 1
+<
+
+
+===============================================================================
+6. FAQ                                                           *BookmarksFAQ*
+
+a. Why are the colours in the sign column weird?
+
+  Your colorscheme is configuring the |hl-SignColumn| highlight group weirdly.
+  Please see |BookmarksCustomisation| on customising the sign column.
+
+b. What happens if I also use another plugin which uses signs (e.g. Syntastic)?
+
+  Vim only allows one sign per line. Therefore bookmarks will override any
+  existing sign. When removing the bookmark the original sign will show up
+  again. In other words vim-bookmarks won't remove another plugin's signs.
+
+c. Why aren't any signs showing at all?
+
+  Here are some things you can check:
+  * Your git config is compatible with the version of git which your Vim is
+    calling
+    >
+      :echo system('git --version')
+    <
+  * Your Vim supports signs. This should return "1":
+    >
+      :echo has('signs')
+    <

@@ -92,6 +92,16 @@ highlight BookmarkSign ctermbg=whatever ctermfg=whatever
 highlight BookmarkLine ctermbg=whatever ctermfg=whatever
 ```
 
+## FAQ
+
+> Why are the colours in the sign column weird?
+
+Your colorscheme is configuring the |hl-SignColumn| highlight group weirdly. Please see |BookmarksCustomisation| on customising the sign column.
+
+> What happens if I also use another plugin which uses signs (e.g. Syntastic)?
+
+Vim only allows one sign per line. Therefore bookmarks will override any existing sign. When removing the bookmark the original sign will show up again. In other words vim-bookmarks won't remove another plugin's signs.
+
 ## Credits & Contribution
 
 This plugin was developed by [Mattes Groeger][blog] under the [MIT License][license]. Pull requests are very welcome.
