@@ -64,8 +64,8 @@ function! s:bookmark_lines(file)
 endfunction
 
 " Save bookmark for file
-function! s:save_bookmark(file, line_nr, sign_index)
-  let l:entry = {'line_nr': a:line_nr, 'sign_idx': a:sign_index}
+function! s:save_bookmark(file, line_nr, sign_index, content)
+  let l:entry = {'line_nr': a:line_nr, 'sign_idx': a:sign_index, 'content': a:content}
   if !has_key(g:bm_entries, a:file)
     let g:bm_entries[a:file] = {}
   endif
@@ -95,7 +95,7 @@ endfunction
 
 function! s:bookmark_add(line_nr)
   let l:file = expand("%:p")
-  call s:save_bookmark(l:file, a:line_nr, g:bm_sign_index)
+  call s:save_bookmark(l:file, a:line_nr, g:bm_sign_index, getline(a:line_nr))
   execute "sign place ". g:bm_sign_index ." line=" . a:line_nr ." name=Bookmark file=". l:file
   let g:bm_sign_index = g:bm_sign_index + 1
 endfunction
@@ -199,9 +199,13 @@ function! ShowAllBookmarks()
   for file in l:files
     let line_nrs = s:bookmark_lines(file)
     for line_nr in line_nrs
-      let content = getline(line_nr)
-      let content = content !=# "" ? content : "empty"
-      call add(locations, file .":". line_nr .":". content)
+      let content = getbufline(bufnr(file), line_nr)
+      if len(content) ># 0 && content[0] !=# ""
+        call add(locations, file .":". line_nr .":". content[0])
+      else
+        let bm = s:bookmark(file, line_nr)
+        call add(locations, file .":". line_nr .":[unloaded buffer] ". bm['content'])
+      endif
     endfor
   endfor
 
