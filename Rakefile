@@ -3,6 +3,7 @@ require 'octokit'
 
 GIT_REPO = "MattesGroeger/vim-bookmarks"
 VIM_SCRIPT_URL = "http://www.vim.org/scripts/add_script_version.php?script_id=4893"
+EXCLUDE_LABELS = ["duplicate", "invalid", "question", "task", "wontfix"]
 
 task :default => [:release]
 
@@ -42,12 +43,14 @@ def upload_release(version, asset_path)
   # get changes via issues
   issues = client.issues(GIT_REPO, :milestone => milestone.number, :state => :closed)
   changes = issues.map { |i|
-    labels = i.labels.map { |l| "[#{l.name}]" }.join(", ")
-    " * #{labels} #{i.title}\n"
-  }
+    labels = i.labels.select { |f|
+      !EXCLUDE_LABELS.include? f.name
+    }.map { |l| "[#{l.name}]" }.join(" ")
+    " * #{labels} #{i.title}\n" if labels != ""
+  }.select { |line| line != "" }
 
   # compile changelist of issues, get it confirmed by user (y/n)
-  puts "> Changelog:\n #{changes.join}\n"
+  puts "> Changelog:\n#{changes.join}\n"
   return puts "Aborted!" if request_user_input("Do you want to create release #{version} with the above changelog? (y/n)", "n").downcase != "y"
 
   # create release
@@ -56,7 +59,7 @@ def upload_release(version, asset_path)
 
   # upload asset
   asset = client.upload_asset(release.url, asset_path, :content_type => 'application/zip', :name => asset_name)
-  puts "> Asset #{asset.name} uploaded (id: #{asset.id})\n\n"
+  puts "> Uploaded asset #{asset.name} (id: #{asset.id})\n\n"
 
   # close milestone
   client.update_milestone(GIT_REPO, milestone.number, :state => :closed)
