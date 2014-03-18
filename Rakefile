@@ -2,6 +2,7 @@ require 'rake/packagetask'
 require 'octokit'
 
 GIT_REPO = "MattesGroeger/vim-bookmarks"
+VIM_SCRIPT_URL = "http://www.vim.org/scripts/add_script_version.php?script_id=4893"
 
 task :default => [:release]
 
@@ -60,6 +61,10 @@ def upload_release(version, asset_path)
   # close milestone
   client.update_milestone(GIT_REPO, milestone.number, :state => :closed)
   puts "> Closed milestone #{version}. Done!"
+
+  if request_user_input("Update script on vim.org now? (y/n)", "n").downcase == "y"
+    `open "#{VIM_SCRIPT_URL}"`
+  end
 end
 
 def request_user_input(message, fallback = "")
