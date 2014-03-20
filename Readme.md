@@ -111,13 +111,7 @@ Here are some things you can check:
 
 ## Changelog
 
-### 0.1.0 (2014/03/16)
-
-* [NEW] Toggle bookmarks per line
-* [NEW] Show indicator in vim sign column
-* [NEW] Optional line highlighting
-* [NEW] Navigate all bookmarks with vim quickfix window
-* [NEW] Jump between bookmarks in current buffer (previous/next)
+See the [release page](https://github.com/MattesGroeger/vim-bookmarks/releases) for all changes.
 
 ## Credits & Contribution
 
