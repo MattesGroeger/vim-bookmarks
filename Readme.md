@@ -2,6 +2,11 @@
 
 This plugin allows to add and remove line-based bookmarks with just one (!) keystroke. Bookmarks will be highlighted in the vim sign column (default).
 
+![screenshot](https://raw.github.com/MattesGroeger/vim-bookmarks/master/screenshot.png)
+
+1. Bookmars are indicated in sign column
+2. Naviagate all bookmarks via quickfix window
+
 ### Features
 
 * Toggle bookmarks per line
@@ -11,13 +16,6 @@ This plugin allows to add and remove line-based bookmarks with just one (!) keys
 * Jump between bookmarks in current buffer (previous/next)
 * Fully customisable (signs, sign column, line highlights, mappings)
 * Preserves signs from other plugins
-
-### Screenshot
-
-![screenshot](https://raw.github.com/MattesGroeger/vim-bookmarks/master/screenshot.png)
-
-1. Bookmars are indicated in sign column
-2. Easily naviagate all bookmarks (`ma`)
 
 ## Installation
 
