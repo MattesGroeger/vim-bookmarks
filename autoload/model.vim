@@ -5,6 +5,13 @@ endif
 
 " Model {{{
 
+function! model#has_bookmarks_in_file(file)
+  if !has_key(g:line_map, a:file)
+    return 0
+  endif
+  return len(keys(g:line_map[a:file])) > 0
+endfunction
+
 function! model#has_bookmark_at_line(file, line_nr)
   if !has_key(g:line_map, a:file)
     return 0

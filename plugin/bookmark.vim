@@ -58,7 +58,7 @@ function! s:refresh_line_numbers()
   let l:file = expand("%:p")
   let l:bufnr = bufnr(l:file)
 
-  if l:file ==# ""
+  if l:file ==# "" || !model#has_bookmarks_in_file(l:file)
     return
   endif
 
