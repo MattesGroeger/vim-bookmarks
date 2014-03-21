@@ -81,8 +81,7 @@ You can customise:
 - The signs' colours and symbols
 - Line highlights
 - Key mappings
-- Whether or not signs are shown (defaults to yes)
-- Whether or not line highlighting is on initially (defaults to off)
+- Whether or not line highlighting is on (defaults to off)
 
 Please note that vim-bookmarks won't override any colours or highlights you've
 set in your colorscheme.
@@ -141,13 +140,6 @@ To change the default keys:
   nmap <Leader>j <Plug>NextBookmark
   nmap <Leader>k <Plug>PrevBookmark
   nmap <Leader>c <Plug>ClearBookmarks
-<
-
-TO TURN OFF SIGNS BY DEFAULT
-
-Add to your |vimrc|
->
-  let g:bookmark_signs = 0
 <
 
 TO TURN ON LINE HIGHLIGHTING BY DEFAULT

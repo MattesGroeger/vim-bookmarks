@@ -16,6 +16,7 @@ This plugin allows to add and remove line-based bookmarks with just one (!) keys
 * Jump between bookmarks in current buffer (previous/next)
 * Fully customisable (signs, sign column, line highlights, mappings)
 * Preserves signs from other plugins
+* Keep bookmarks in place despite file changes
 
 ## Installation
 
