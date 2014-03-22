@@ -94,6 +94,7 @@ endfunction
 
 function! s:jump_to_bookmark(line_nr)
   call cursor(a:line_nr, 1)
+  normal ^
   echo "Jumped to bookmark ". a:line_nr
 endfunction
 
