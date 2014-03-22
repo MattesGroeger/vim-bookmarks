@@ -48,6 +48,10 @@ function! model#del_bookmark_at_line(file, line_nr)
   let l:bookmark = model#get_bookmark_by_line(a:file, a:line_nr)
   unlet g:line_map[a:file][a:line_nr]
   unlet g:sign_map[a:file][l:bookmark['sign_idx']]
+  if empty(g:line_map[a:file])
+    unlet g:line_map[a:file]
+    unlet g:sign_map[a:file]
+  endif
 endfunction
 
 function! model#all_bookmarks_by_line(file)
@@ -66,6 +70,14 @@ endfunction
 
 function! model#all_files()
   return keys(g:line_map)
+endfunction
+
+function! model#del_all()
+  for l:file in keys(g:line_map)
+    for l:line_nr in keys(g:line_map[l:file])
+      call model#del_bookmark_at_line(l:file, l:line_nr)
+    endfor
+  endfor
 endfunction
 
 " }}}

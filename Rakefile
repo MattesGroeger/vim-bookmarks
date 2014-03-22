@@ -6,6 +6,17 @@ VIM_SCRIPT_URL = "http://www.vim.org/scripts/add_script_version.php?script_id=48
 EXCLUDE_LABELS = ["duplicate", "invalid", "question", "task", "wontfix"]
 
 task :default => [:release]
+task :ci => [:dump, :test]
+
+desc "Dump version numbers"
+task :dump do
+  sh 'vim --version'
+end
+
+desc "Run tests"
+task :test do
+  sh "bundle exec vim-flavor test"
+end
 
 desc "Create release archive"
 task :release do
