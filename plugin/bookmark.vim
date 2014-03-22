@@ -93,16 +93,16 @@ function! s:bookmark_remove(line_nr)
 endfunction
 
 function! s:jump_to_bookmark(line_nr)
-  let l:file = expand("%:p")
-  let l:bookmark = model#get_bookmark_by_line(l:file, a:line_nr)
-  echo "Jumped to bookmark ". a:line_nr ." (". l:bookmark['sign_idx'] .")"
-  execute ":sign jump ". l:bookmark['sign_idx'] ." file=". l:file
+  call cursor(a:line_nr, 1)
+  echo "Jumped to bookmark ". a:line_nr
 endfunction
 
 function! s:get_bookmark_lines()
   let l:file = expand("%:p")
   return s:bookmark_lines(l:file)
 endfunction
+
+" Commands {{{
 
 function! ToggleBookmark()
   call s:refresh_line_numbers()
@@ -125,7 +125,7 @@ function! ClearBookmarks()
   for line_nr in l:lines
     call s:bookmark_remove(line_nr)
   endfor
-  echo "All Bookmarks removed"
+  echo "All bookmarks removed"
 endfunction
 command! ClearBookmarks call ClearBookmarks()
 
@@ -201,6 +201,8 @@ function! ShowAllBookmarks()
   let &errorformat = oldformat    " re-apply original format
 endfunction
 command! ShowAllBookmarks call ShowAllBookmarks()
+
+" }}}
 
 
 " Maps {{{
