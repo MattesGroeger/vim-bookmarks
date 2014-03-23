@@ -62,18 +62,6 @@ describe "initialized signs"
     Expect len(split(signs, '\n')) ==# 1
   end
 
-  it 'should delete all signs'
-    call bm_sign#add(s:test_file, 2)
-    call bm_sign#add(s:test_file, 10)
-    call bm_sign#del_all(s:test_file)
-
-    let signs = util#redir_execute(":sign place file=". s:test_file)
-    let lines = bm_sign#lines_for_signs(s:test_file)
-
-    Expect lines ==# {}
-    Expect len(split(signs, '\n')) ==# 1
-  end
-
   after
     execute ":q!"
   end

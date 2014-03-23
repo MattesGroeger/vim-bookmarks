@@ -29,10 +29,6 @@ function! bm_sign#del(file, sign_idx)
   execute "sign unplace ". a:sign_idx ." file=". a:file
 endfunction
 
-function! bm_sign#del_all(file)
-  execute "sign unplace * file=". a:file
-endfunction
-
 " Returns dict with {'sign_idx': 'line_nr'}
 function! bm_sign#lines_for_signs(file)
   let l:bufnr = bufnr(a:file)
