@@ -24,39 +24,34 @@ if !exists("g:bm_sign_index")
 endif
 
 " Refresh line numbers for current buffer
-" Should happen when:
-"  * Leaving buffer (to have quickfix window up to date)
-"  * When adding bookmark (to keep next/prev in order)
-"  * When populating quickfix window
-"  * Before clearing all bookmarks
 function! s:refresh_line_numbers()
-  let l:file = expand("%:p")
+  let file = expand("%:p")
 
   " Bail out if special unnamed buffer
-  if l:file ==# "" || !bm#has_bookmarks_in_file(l:file)
+  if file ==# "" || !bm#has_bookmarks_in_file(file)
     return
   endif
 
-  let l:bufnr = bufnr(l:file)
-  let l:sign_line_map = bm_sign#lines_for_signs(l:file)
-  for l:sign_idx in keys(l:sign_line_map)
-    let l:line_nr = l:sign_line_map[l:sign_idx]
-    let l:content = getbufline(l:bufnr, l:line_nr)
-    call bm#update_bookmark_for_sign(l:file, l:sign_idx, l:line_nr, l:content[0])
+  let bufnr = bufnr(file)
+  let sign_line_map = bm_sign#lines_for_signs(file)
+  for sign_idx in keys(sign_line_map)
+    let line_nr = sign_line_map[sign_idx]
+    let content = getbufline(bufnr, line_nr)
+    call bm#update_bookmark_for_sign(file, sign_idx, line_nr, content[0])
   endfor
 endfunction
 
 function! s:bookmark_add(line_nr)
-  let l:file = expand("%:p")
-  let l:sign_idx = bm_sign#add(l:file, a:line_nr)
-  call bm#add_bookmark(l:file, l:sign_idx, a:line_nr, getline(a:line_nr))
+  let file = expand("%:p")
+  let sign_idx = bm_sign#add(file, a:line_nr)
+  call bm#add_bookmark(file, sign_idx, a:line_nr, getline(a:line_nr))
 endfunction
 
 function! s:bookmark_remove(line_nr)
-  let l:file = expand("%:p")
-  let l:bookmark = bm#get_bookmark_by_line(l:file, a:line_nr)
-  call bm_sign#del(l:file, l:bookmark['sign_idx'])
-  call bm#del_bookmark_at_line(l:file, a:line_nr)
+  let file = expand("%:p")
+  let bookmark = bm#get_bookmark_by_line(file, a:line_nr)
+  call bm_sign#del(file, bookmark['sign_idx'])
+  call bm#del_bookmark_at_line(file, a:line_nr)
 endfunction
 
 function! s:jump_to_bookmark(line_nr)
@@ -69,13 +64,13 @@ endfunction
 
 function! ToggleBookmark()
   call s:refresh_line_numbers()
-  let l:file = expand("%:p")
-  let l:current_line = line('.')
-  if bm#has_bookmark_at_line(l:file, l:current_line)
-    call s:bookmark_remove(l:current_line)
+  let file = expand("%:p")
+  let current_line = line('.')
+  if bm#has_bookmark_at_line(file, current_line)
+    call s:bookmark_remove(current_line)
     echo "Bookmark removed"
   else
-    call s:bookmark_add(l:current_line)
+    call s:bookmark_add(current_line)
     echo "Bookmark added"
   endif
 endfunction
@@ -83,9 +78,9 @@ command! ToggleBookmark call ToggleBookmark()
 
 function! ClearBookmarks()
   call s:refresh_line_numbers()
-  let l:file = expand("%:p")
-  let l:lines = bm#all_lines(l:file)
-  for line_nr in l:lines
+  let file = expand("%:p")
+  let lines = bm#all_lines(file)
+  for line_nr in lines
     call s:bookmark_remove(line_nr)
   endfor
   echo "All bookmarks removed"

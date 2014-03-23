@@ -19,10 +19,10 @@ function! bm_sign#define_highlights()
 endfunction
 
 function! bm_sign#add(file, line_nr)
-  let l:sign_idx = g:bm_sign_index
-  execute "sign place ". l:sign_idx ." line=" . a:line_nr ." name=Bookmark file=". a:file
+  let sign_idx = g:bm_sign_index
+  execute "sign place ". sign_idx ." line=" . a:line_nr ." name=Bookmark file=". a:file
   let g:bm_sign_index += 1
-  return l:sign_idx
+  return sign_idx
 endfunction
 
 function! bm_sign#del(file, sign_idx)
@@ -31,17 +31,17 @@ endfunction
 
 " Returns dict with {'sign_idx': 'line_nr'}
 function! bm_sign#lines_for_signs(file)
-  let l:bufnr = bufnr(a:file)
+  let bufnr = bufnr(a:file)
   let signs_raw = util#redir_execute(":sign place file=". a:file)
-  let l:lines = split(signs_raw, "\n")
-  let l:result = {}
-  for l:line in l:lines
-    let l:results = matchlist(l:line, 'line=\(\d\+\)\W\+id=\(\d\+\)\W\+name=bookmark\c')
-    if len(l:results) ># 0
-      let l:result[l:results[2]] = l:results[1]
+  let lines = split(signs_raw, "\n")
+  let result = {}
+  for line in lines
+    let results = matchlist(line, 'line=\(\d\+\)\W\+id=\(\d\+\)\W\+name=bookmark\c')
+    if len(results) ># 0
+      let result[results[2]] = results[1]
     endif
   endfor
-  return l:result
+  return result
 endfunction
 
 " }}}
