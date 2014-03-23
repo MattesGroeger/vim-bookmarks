@@ -71,7 +71,7 @@ describe 'model with multiple bookmarks in different files'
   before
     call bm#add_bookmark('file1', 1, 12, 'file1/line12')
     call bm#add_bookmark('file2', 2, 34, 'file2/line34')
-    call bm#add_bookmark('file1', 3, 2,  'file1/line10')
+    call bm#add_bookmark('file1', 3, 2,  'file1/line2')
     call bm#add_bookmark('file1', 4, 45, 'file1/line45')
   end
 
@@ -115,6 +115,15 @@ describe 'model with multiple bookmarks in different files'
     Expect bm#prev('file1', 12) ==#  2
     Expect bm#prev('file1', 13) ==# 12
     Expect bm#prev('file1', 59) ==# 45
+  end
+
+  it 'should return location list'
+    let locations = bm#location_list()
+    Expect len(locations) ==# 4
+    Expect locations[0] ==# 'file1:2:file1/line2'
+    Expect locations[1] ==# 'file1:12:file1/line12'
+    Expect locations[2] ==# 'file1:45:file1/line45'
+    Expect locations[3] ==# 'file2:34:file2/line34'
   end
 
   after

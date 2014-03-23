@@ -23,17 +23,6 @@ if !exists("g:bm_sign_index")
   call bm_sign#init()
 endif
 
-function! s:compare_lines(line_str1, line_str2)
-  let line1 = str2nr(a:line_str1)
-  let line2 = str2nr(a:line_str2)
-  return line1 ==# line2 ? 0 : line1 > line2 ? 1 : -1
-endfunc
-
-" Return all bookmark lines for file
-function! s:bookmark_lines(file)
-  return sort(bm#all_lines(a:file), "s:compare_lines")
-endfunction
-
 " Refresh line numbers for current buffer
 " Should happen when:
 "  * Leaving buffer (to have quickfix window up to date)
@@ -129,18 +118,7 @@ function! ShowAllBookmarks()
   call s:refresh_line_numbers()
   let oldformat = &errorformat    " backup original format
   let &errorformat = "%f:%l:%m"   " custom format for bookmarks
-  let locations = []
-  let l:files = bm#all_files()
-
-  for file in l:files
-    let line_nrs = s:bookmark_lines(file)
-    for line_nr in line_nrs
-      let bookmark = bm#get_bookmark_by_line(file, line_nr)
-      call add(locations, file .":". line_nr .":". bookmark['content'])
-    endfor
-  endfor
-
-  cexpr! locations
+  cexpr! bm#location_list()
   copen
   let &errorformat = oldformat    " re-apply original format
 endfunction

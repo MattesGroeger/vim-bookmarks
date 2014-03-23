@@ -112,6 +112,19 @@ function! bm#all_lines(file)
   return keys(g:line_map[a:file])
 endfunction
 
+function! bm#location_list()
+  let files = bm#all_files()
+  let locations = []
+  for file in files
+    let line_nrs = sort(bm#all_lines(file), "bm#compare_lines")
+    for line_nr in line_nrs
+      let bookmark = bm#get_bookmark_by_line(file, line_nr)
+      call add(locations, file .":". line_nr .":". bookmark['content'])
+    endfor
+  endfor
+  return locations
+endfunction
+
 function! bm#all_files()
   return keys(g:line_map)
 endfunction
