@@ -2,6 +2,8 @@ describe 'empty model'
 
   it 'should have no bookmarks'
     Expect bm#has_bookmarks_in_file('foo') to_be_false
+    Expect bm#next('foo',  1) ==# 0
+    Expect bm#prev('foo',  1) ==# 0
   end
 
   it 'should add bookmark'
@@ -95,6 +97,24 @@ describe 'model with multiple bookmarks in different files'
     let files = bm#all_files()
 
     Expect files ==# ['file1', 'file2']
+  end
+
+  it 'should return next bookmark'
+    Expect bm#next('file1',  1) ==#  2
+    Expect bm#next('file1',  3) ==# 12
+    Expect bm#next('file1', 11) ==# 12
+    Expect bm#next('file1', 12) ==# 45
+    Expect bm#next('file1', 13) ==# 45
+    Expect bm#next('file1', 59) ==#  2
+  end
+
+  it 'should return previous bookmark'
+    Expect bm#prev('file1',  1) ==# 45
+    Expect bm#prev('file1',  3) ==#  2
+    Expect bm#prev('file1', 11) ==#  2
+    Expect bm#prev('file1', 12) ==#  2
+    Expect bm#prev('file1', 13) ==# 12
+    Expect bm#prev('file1', 59) ==# 45
   end
 
   after

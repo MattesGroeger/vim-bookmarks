@@ -76,11 +76,6 @@ function! s:jump_to_bookmark(line_nr)
   echo "Jumped to bookmark ". a:line_nr
 endfunction
 
-function! s:get_bookmark_lines()
-  let l:file = expand("%:p")
-  return s:bookmark_lines(l:file)
-endfunction
-
 " Commands {{{
 
 function! ToggleBookmark()
@@ -110,52 +105,22 @@ command! ClearBookmarks call ClearBookmarks()
 
 function! NextBookmark()
   call s:refresh_line_numbers()
-  let line_nrs = s:get_bookmark_lines()
-  if empty(line_nrs)
+  let line_nr = bm#next(expand("%:p"), line("."))
+  if line_nr ==# 0
     echo "No bookmarks found"
-    return
-  endif
-  let current_line = line('.')
-  if current_line >=# line_nrs[-1] || current_line <# line_nrs[0]
-    call s:jump_to_bookmark(line_nrs[0])
   else
-    let idx = 0
-    let lines_count = len(line_nrs)
-    while idx <# lines_count-1
-      let cur_bookmark = line_nrs[idx]
-      let next_bookmark = line_nrs[idx+1]
-      if current_line >=# cur_bookmark && current_line <# next_bookmark
-        call s:jump_to_bookmark(next_bookmark)
-        return
-      endif
-      let idx = idx+1
-    endwhile
+    call s:jump_to_bookmark(line_nr)
   endif
 endfunction
 command! NextBookmark call NextBookmark()
 
 function! PrevBookmark()
   call s:refresh_line_numbers()
-  let line_nrs = s:get_bookmark_lines()
-  if empty(line_nrs)
+  let line_nr = bm#prev(expand("%:p"), line("."))
+  if line_nr ==# 0
     echo "No bookmarks found"
-    return
-  endif
-  let current_line = line('.')
-  let lines_count = len(line_nrs)
-  let idx = lines_count-1
-  if current_line <=# line_nrs[0] || current_line ># line_nrs[-1]
-    call s:jump_to_bookmark(line_nrs[idx])
   else
-    while idx >=# 0
-      let cur_bookmark = line_nrs[idx]
-      let next_bookmark = line_nrs[idx-1]
-      if current_line <=# cur_bookmark && current_line ># next_bookmark
-        call s:jump_to_bookmark(next_bookmark)
-        return
-      endif
-      let idx = idx-1
-    endwhile
+    call s:jump_to_bookmark(line_nr)
   endif
 endfunction
 command! PrevBookmark call PrevBookmark()
