@@ -1,4 +1,15 @@
+if !exists("g:bm_sign_init")
+  let g:bm_sign_init = 0
+endif
+
 " Sign {{{
+
+function! bm_sign#lazy_init()
+  if g:bm_sign_init ==# 0
+    call bm_sign#init()
+    let g:bm_sign_init = 1
+  endif
+endfunction
 
 function! bm_sign#init()
   call bm_sign#define_highlights()
@@ -19,6 +30,7 @@ function! bm_sign#define_highlights()
 endfunction
 
 function! bm_sign#add(file, line_nr)
+  call bm_sign#lazy_init()
   let sign_idx = g:bm_sign_index
   execute "sign place ". sign_idx ." line=" . a:line_nr ." name=Bookmark file=". a:file
   let g:bm_sign_index += 1
@@ -26,11 +38,13 @@ function! bm_sign#add(file, line_nr)
 endfunction
 
 function! bm_sign#del(file, sign_idx)
+  call bm_sign#lazy_init()
   execute "sign unplace ". a:sign_idx ." file=". a:file
 endfunction
 
 " Returns dict with {'sign_idx': 'line_nr'}
 function! bm_sign#lines_for_signs(file)
+  call bm_sign#lazy_init()
   let bufnr = bufnr(a:file)
   let signs_raw = util#redir_execute(":sign place file=". a:file)
   let lines = split(signs_raw, "\n")
