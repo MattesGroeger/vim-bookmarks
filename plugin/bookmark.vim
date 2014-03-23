@@ -23,15 +23,25 @@ if !exists("g:bm_sign_index")
   call bm_sign#init()
 endif
 
+" Add bookmark
+function! s:bookmark_add(file, line_nr)
+  let sign_idx = bm_sign#add(a:file, a:line_nr)
+  call bm#add_bookmark(a:file, sign_idx, a:line_nr, getline(a:line_nr))
+endfunction
+
+" Remove bookmark
+function! s:bookmark_remove(file, line_nr)
+  let bookmark = bm#get_bookmark_by_line(a:file, a:line_nr)
+  call bm_sign#del(a:file, bookmark['sign_idx'])
+  call bm#del_bookmark_at_line(a:file, a:line_nr)
+endfunction
+
 " Refresh line numbers for current buffer
 function! s:refresh_line_numbers()
   let file = expand("%:p")
-
-  " Bail out if special unnamed buffer
   if file ==# "" || !bm#has_bookmarks_in_file(file)
-    return
+    return " Bail out if special unnamed buffer
   endif
-
   let bufnr = bufnr(file)
   let sign_line_map = bm_sign#lines_for_signs(file)
   for sign_idx in keys(sign_line_map)
@@ -41,23 +51,17 @@ function! s:refresh_line_numbers()
   endfor
 endfunction
 
-function! s:bookmark_add(line_nr)
-  let file = expand("%:p")
-  let sign_idx = bm_sign#add(file, a:line_nr)
-  call bm#add_bookmark(file, sign_idx, a:line_nr, getline(a:line_nr))
-endfunction
-
-function! s:bookmark_remove(line_nr)
-  let file = expand("%:p")
-  let bookmark = bm#get_bookmark_by_line(file, a:line_nr)
-  call bm_sign#del(file, bookmark['sign_idx'])
-  call bm#del_bookmark_at_line(file, a:line_nr)
-endfunction
-
-function! s:jump_to_bookmark(line_nr)
-  call cursor(a:line_nr, 1)
-  normal ^
-  echo "Jumped to bookmark ". a:line_nr
+" Find and jump to next/prev bookmark
+function! s:jump_to_bookmark(type)
+  call s:refresh_line_numbers()
+  let line_nr = bm#{a:type}(expand("%:p"), line("."))
+  if line_nr ==# 0
+    echo "No bookmarks found"
+  else
+    call cursor(line_nr, 1)
+    normal ^
+    echo "Jumped to bookmark ". line_nr
+  endif
 endfunction
 
 " Commands {{{
@@ -67,10 +71,10 @@ function! ToggleBookmark()
   let file = expand("%:p")
   let current_line = line('.')
   if bm#has_bookmark_at_line(file, current_line)
-    call s:bookmark_remove(current_line)
+    call s:bookmark_remove(file, current_line)
     echo "Bookmark removed"
   else
-    call s:bookmark_add(current_line)
+    call s:bookmark_add(file, current_line)
     echo "Bookmark added"
   endif
 endfunction
@@ -81,31 +85,19 @@ function! ClearBookmarks()
   let file = expand("%:p")
   let lines = bm#all_lines(file)
   for line_nr in lines
-    call s:bookmark_remove(line_nr)
+    call s:bookmark_remove(file, line_nr)
   endfor
   echo "All bookmarks removed"
 endfunction
 command! ClearBookmarks call ClearBookmarks()
 
 function! NextBookmark()
-  call s:refresh_line_numbers()
-  let line_nr = bm#next(expand("%:p"), line("."))
-  if line_nr ==# 0
-    echo "No bookmarks found"
-  else
-    call s:jump_to_bookmark(line_nr)
-  endif
+  call s:jump_to_bookmark('next')
 endfunction
 command! NextBookmark call NextBookmark()
 
 function! PrevBookmark()
-  call s:refresh_line_numbers()
-  let line_nr = bm#prev(expand("%:p"), line("."))
-  if line_nr ==# 0
-    echo "No bookmarks found"
-  else
-    call s:jump_to_bookmark(line_nr)
-  endif
+  call s:jump_to_bookmark('prev')
 endfunction
 command! PrevBookmark call PrevBookmark()
 
