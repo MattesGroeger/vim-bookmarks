@@ -67,16 +67,3 @@ describe "initialized signs"
   end
 
 end
-
-describe "with added signs"
-
-  before
-    " create dummy file with multiple lines
-    " add signs
-  end
-
-  it 'should return line numbers for all signs'
-
-  end
-
-end
