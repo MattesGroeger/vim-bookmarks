@@ -87,7 +87,7 @@ function! ClearBookmarks()
   for line_nr in lines
     call s:bookmark_remove(file, line_nr)
   endfor
-  echo "All bookmarks removed"
+  echo "Bookmarks removed"
 endfunction
 command! ClearBookmarks call ClearBookmarks()
 
