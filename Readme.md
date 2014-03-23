@@ -127,7 +127,7 @@ See the [release page](https://github.com/MattesGroeger/vim-bookmarks/releases) 
 
 This plugin was developed by [Mattes Groeger][blog] under the [MIT License][license]. Pull requests are very welcome.
 
-The following plugins where a great inspiration to me:
+The following plugins were a great inspiration to me:
 * [vmark.vim][vmark] by Michael Zhou
 * [vim-gitgutter][gitgutter] by Andrew Stewart
 
