@@ -1,7 +1,7 @@
 if exists('g:loaded_bookmarks') || !has('signs') || &cp
   finish
 endif
-" let g:loaded_bookmarks = 1
+let g:loaded_bookmarks = 1
 
 function! s:set(var, default)
   if !exists(a:var)
@@ -16,25 +16,11 @@ endfunction
 call s:set('g:bookmark_highlight_lines', 0)
 call s:set('g:bookmark_sign',            '⚑')
 
-function! s:highlight()
-  highlight BookmarkSignDefault ctermfg=33 ctermbg=NONE
-  highlight BookmarkLineDefault ctermfg=232 ctermbg=33
-  highlight default link BookmarkSign BookmarkSignDefault
-  highlight default link BookmarkLine BookmarkLineDefault
-endfunction
-
 
 " Initialize
 if !exists("g:bm_sign_index")
   let g:bm_sign_index = 9500
-  call s:highlight()
-  sign define Bookmark texthl=BookmarkSign
-  execute "sign define Bookmark text=". g:bookmark_sign
-  if g:bookmark_highlight_lines
-    sign define Bookmark linehl=BookmarkLine
-  else
-    sign define Bookmark linehl=
-  endif
+  call bm_sign#init()
 endif
 
 function! s:compare_lines(line_str1, line_str2)
@@ -45,7 +31,7 @@ endfunc
 
 " Return all bookmark lines for file
 function! s:bookmark_lines(file)
-  return sort(model#all_lines(a:file), "s:compare_lines")
+  return sort(bm#all_lines(a:file), "s:compare_lines")
 endfunction
 
 " Refresh line numbers for current buffer
@@ -56,40 +42,32 @@ endfunction
 "  * Before clearing all bookmarks
 function! s:refresh_line_numbers()
   let l:file = expand("%:p")
-  let l:bufnr = bufnr(l:file)
 
-  if l:file ==# "" || !model#has_bookmarks_in_file(l:file)
+  " Bail out if special unnamed buffer
+  if l:file ==# "" || !bm#has_bookmarks_in_file(l:file)
     return
   endif
 
-  redir => signs_raw
-  silent execute ":sign place file=". l:file
-  redir END
-
-  let l:lines = split(signs_raw, "\n")
-  for l:line in l:lines
-    let l:results = matchlist(line, 'line=\(\d\+\)\W\+id=\(\d\+\)\W\+name=bookmark\c')
-    if len(l:results) ># 0
-      let l:line_nr = l:results[1]
-      let l:sign_index = l:results[2]
-      let l:content = getbufline(l:bufnr, l:line_nr)
-      call model#update_bookmark_for_sign(l:file, l:sign_index, l:line_nr, l:content[0])
-    endif
+  let l:bufnr = bufnr(l:file)
+  let l:sign_line_map = bm_sign#lines_for_signs(l:file)
+  for l:sign_idx in keys(l:sign_line_map)
+    let l:line_nr = l:sign_line_map[l:sign_idx]
+    let l:content = getbufline(l:bufnr, l:line_nr)
+    call bm#update_bookmark_for_sign(l:file, l:sign_idx, l:line_nr, l:content[0])
   endfor
 endfunction
 
 function! s:bookmark_add(line_nr)
   let l:file = expand("%:p")
-  call model#add_bookmark(l:file, g:bm_sign_index, a:line_nr, getline(a:line_nr))
-  execute "sign place ". g:bm_sign_index ." line=" . a:line_nr ." name=Bookmark file=". l:file
-  let g:bm_sign_index = g:bm_sign_index + 1
+  let l:sign_idx = bm_sign#add(l:file, a:line_nr)
+  call bm#add_bookmark(l:file, l:sign_idx, a:line_nr, getline(a:line_nr))
 endfunction
 
 function! s:bookmark_remove(line_nr)
   let l:file = expand("%:p")
-  let l:bookmark = model#get_bookmark_by_line(l:file, a:line_nr)
-  execute "sign unplace ". l:bookmark['sign_idx'] ." file=". l:file
-  call model#del_bookmark_at_line(l:file, a:line_nr)
+  let l:bookmark = bm#get_bookmark_by_line(l:file, a:line_nr)
+  call bm_sign#del(l:file, l:bookmark['sign_idx'])
+  call bm#del_bookmark_at_line(l:file, a:line_nr)
 endfunction
 
 function! s:jump_to_bookmark(line_nr)
@@ -109,7 +87,7 @@ function! ToggleBookmark()
   call s:refresh_line_numbers()
   let l:file = expand("%:p")
   let l:current_line = line('.')
-  if model#has_bookmark_at_line(l:file, l:current_line)
+  if bm#has_bookmark_at_line(l:file, l:current_line)
     call s:bookmark_remove(l:current_line)
     echo "Bookmark removed"
   else
@@ -122,7 +100,7 @@ command! ToggleBookmark call ToggleBookmark()
 function! ClearBookmarks()
   call s:refresh_line_numbers()
   let l:file = expand("%:p")
-  let l:lines = model#all_lines(l:file)
+  let l:lines = bm#all_lines(l:file)
   for line_nr in l:lines
     call s:bookmark_remove(line_nr)
   endfor
@@ -187,12 +165,12 @@ function! ShowAllBookmarks()
   let oldformat = &errorformat    " backup original format
   let &errorformat = "%f:%l:%m"   " custom format for bookmarks
   let locations = []
-  let l:files = model#all_files()
+  let l:files = bm#all_files()
 
   for file in l:files
     let line_nrs = s:bookmark_lines(file)
     for line_nr in line_nrs
-      let bookmark = model#get_bookmark_by_line(file, line_nr)
+      let bookmark = bm#get_bookmark_by_line(file, line_nr)
       call add(locations, file .":". line_nr .":". bookmark['content'])
     endfor
   endfor
@@ -228,7 +206,7 @@ call s:register_mapping('ClearBookmarks',   'mc')
 
 augroup bookmark
   autocmd!
-  autocmd ColorScheme * call s:highlight()
+  autocmd ColorScheme * call bm_sign#define_highlights()
   autocmd BufLeave * call s:refresh_line_numbers()
 augroup END
 
