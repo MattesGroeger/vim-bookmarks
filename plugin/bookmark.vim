@@ -3,6 +3,8 @@ if exists('g:loaded_bookmarks') || !has('signs') || &cp
 endif
 let g:loaded_bookmarks = 1
 
+" Configuration {{{
+
 function! s:set(var, default)
   if !exists(a:var)
     if type(a:default)
@@ -16,53 +18,18 @@ endfunction
 call s:set('g:bookmark_highlight_lines', 0)
 call s:set('g:bookmark_sign',            '⚑')
 
+" }}}
 
-" Initialize
+
+" Initialization {{{
+
 if !exists("g:bm_sign_index")
   let g:bm_sign_index = 9500
   call bm_sign#init()
 endif
 
-" Add bookmark
-function! s:bookmark_add(file, line_nr)
-  let sign_idx = bm_sign#add(a:file, a:line_nr)
-  call bm#add_bookmark(a:file, sign_idx, a:line_nr, getline(a:line_nr))
-endfunction
+" }}}
 
-" Remove bookmark
-function! s:bookmark_remove(file, line_nr)
-  let bookmark = bm#get_bookmark_by_line(a:file, a:line_nr)
-  call bm_sign#del(a:file, bookmark['sign_idx'])
-  call bm#del_bookmark_at_line(a:file, a:line_nr)
-endfunction
-
-" Refresh line numbers for current buffer
-function! s:refresh_line_numbers()
-  let file = expand("%:p")
-  if file ==# "" || !bm#has_bookmarks_in_file(file)
-    return " Bail out if special unnamed buffer
-  endif
-  let bufnr = bufnr(file)
-  let sign_line_map = bm_sign#lines_for_signs(file)
-  for sign_idx in keys(sign_line_map)
-    let line_nr = sign_line_map[sign_idx]
-    let content = getbufline(bufnr, line_nr)
-    call bm#update_bookmark_for_sign(file, sign_idx, line_nr, content[0])
-  endfor
-endfunction
-
-" Find and jump to next/prev bookmark
-function! s:jump_to_bookmark(type)
-  call s:refresh_line_numbers()
-  let line_nr = bm#{a:type}(expand("%:p"), line("."))
-  if line_nr ==# 0
-    echo "No bookmarks found"
-  else
-    call cursor(line_nr, 1)
-    normal ^
-    echo "Jumped to bookmark ". line_nr
-  endif
-endfunction
 
 " Commands {{{
 
@@ -139,5 +106,47 @@ augroup bookmark
   autocmd ColorScheme * call bm_sign#define_highlights()
   autocmd BufLeave * call s:refresh_line_numbers()
 augroup END
+
+" }}}
+
+
+" Private {{{
+
+function! s:bookmark_add(file, line_nr)
+  let sign_idx = bm_sign#add(a:file, a:line_nr)
+  call bm#add_bookmark(a:file, sign_idx, a:line_nr, getline(a:line_nr))
+endfunction
+
+function! s:bookmark_remove(file, line_nr)
+  let bookmark = bm#get_bookmark_by_line(a:file, a:line_nr)
+  call bm_sign#del(a:file, bookmark['sign_idx'])
+  call bm#del_bookmark_at_line(a:file, a:line_nr)
+endfunction
+
+function! s:refresh_line_numbers()
+  let file = expand("%:p")
+  if file ==# "" || !bm#has_bookmarks_in_file(file)
+    return
+  endif
+  let bufnr = bufnr(file)
+  let sign_line_map = bm_sign#lines_for_signs(file)
+  for sign_idx in keys(sign_line_map)
+    let line_nr = sign_line_map[sign_idx]
+    let content = getbufline(bufnr, line_nr)
+    call bm#update_bookmark_for_sign(file, sign_idx, line_nr, content[0])
+  endfor
+endfunction
+
+function! s:jump_to_bookmark(type)
+  call s:refresh_line_numbers()
+  let line_nr = bm#{a:type}(expand("%:p"), line("."))
+  if line_nr ==# 0
+    echo "No bookmarks found"
+  else
+    call cursor(line_nr, 1)
+    normal ^
+    echo "Jumped to bookmark ". line_nr
+  endif
+endfunction
 
 " }}}
