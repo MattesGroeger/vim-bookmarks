@@ -30,7 +30,7 @@ end
 def create_zip(version)
   file_path = "release/vim-bookmarks-#{version}.zip"
   `mkdir -p release`
-  `zip -r #{file_path} . -i "doc/*" -i "plugin/*" -i LICENSE.txt`
+  `zip -r #{file_path} . -i "doc/*" -i "plugin/*" -i "autoload/*" -i LICENSE.txt`
   file_path
 end
 
@@ -68,8 +68,13 @@ def upload_release(version, asset_path)
   release = client.create_release(GIT_REPO, version, :name => "vim-bookmarks-#{version}", :body => changes.join)
   puts "> Created release #{release.name} (id: #{release.id})\n\n"
 
+  # if release exists already:
+  # releases = client.releases(GIT_REPO)
+  # release = releases.first
+
   # upload asset
-  asset = client.upload_asset(release.url, asset_path, :content_type => 'application/zip', :name => asset_name)
+  release_url = "https://api.github.com/repos/#{GIT_REPO}/releases/#{release.id}"
+  asset = client.upload_asset(release_url, asset_path, :content_type => 'application/zip', :name => asset_name)
   puts "> Uploaded asset #{asset.name} (id: #{asset.id})\n\n"
 
   # close milestone
