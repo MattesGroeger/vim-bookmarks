@@ -2,10 +2,21 @@
 
 This plugin allows to add and remove line-based bookmarks with just one (!) keystroke. Bookmarks will be highlighted in the vim sign column (default).
 
-![screenshot](https://raw.github.com/MattesGroeger/vim-bookmarks/master/screenshot.png)
+![Screenshot](https://raw.github.com/MattesGroeger/vim-bookmarks/master/screenshot.png)
 
 1. Bookmars are indicated in sign column
 2. Naviagate all bookmarks via quickfix window
+
+#### Bright Colors Example
+
+[![Screenshot Bright Colors](https://raw.github.com/MattesGroeger/vim-bookmarks/master/screenshot-bright-small.png)](https://raw.github.com/MattesGroeger/vim-bookmarks/master/screenshot-bright.png)
+
+```vim
+highlight BookmarkSign ctermbg=NONE ctermfg=160
+highlight BookmarkLine ctermbg=194 ctermfg=NONE
+let g:bookmark_sign = '♥'
+let g:bookmark_highlight_lines = 1
+```
 
 ### Features
 
