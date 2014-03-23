@@ -120,7 +120,7 @@ function! s:jump_to_bookmark(type)
   else
     call cursor(line_nr, 1)
     normal ^
-    echo "Jumped to bookmark ". line_nr
+    echo "Jumped to bookmark"
   endif
 endfunction
 
