@@ -119,7 +119,8 @@ function! bm#location_list()
     let line_nrs = sort(bm#all_lines(file), "bm#compare_lines")
     for line_nr in line_nrs
       let bookmark = bm#get_bookmark_by_line(file, line_nr)
-      call add(locations, file .":". line_nr .":". bookmark['content'])
+      let content = bookmark['content'] !=# "" ? bookmark['content'] : "empty line"
+      call add(locations, file .":". line_nr .":". content)
     endfor
   endfor
   return locations

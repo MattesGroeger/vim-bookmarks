@@ -73,6 +73,7 @@ describe 'model with multiple bookmarks in different files'
     call bm#add_bookmark('file2', 2, 34, 'file2/line34')
     call bm#add_bookmark('file1', 3, 2,  'file1/line2')
     call bm#add_bookmark('file1', 4, 45, 'file1/line45')
+    call bm#add_bookmark('file2', 5, 45, '')
   end
 
   it 'should return all bookmarks of file per line'
@@ -80,11 +81,12 @@ describe 'model with multiple bookmarks in different files'
     let dict2 = bm#all_bookmarks_by_line('file2')
 
     Expect len(keys(dict1)) ==# 3
-    Expect len(keys(dict2)) ==# 1
+    Expect len(keys(dict2)) ==# 2
     Expect dict1[12]['sign_idx'] ==# 1
     Expect dict2[34]['sign_idx'] ==# 2
     Expect dict1[2]['sign_idx']  ==# 3
     Expect dict1[45]['sign_idx'] ==# 4
+    Expect dict2[45]['sign_idx'] ==# 5
   end
 
   it 'should return all lines'
@@ -119,11 +121,12 @@ describe 'model with multiple bookmarks in different files'
 
   it 'should return location list'
     let locations = bm#location_list()
-    Expect len(locations) ==# 4
+    Expect len(locations) ==# 5
     Expect locations[0] ==# 'file1:2:file1/line2'
     Expect locations[1] ==# 'file1:12:file1/line12'
     Expect locations[2] ==# 'file1:45:file1/line45'
     Expect locations[3] ==# 'file2:34:file2/line34'
+    Expect locations[4] ==# 'file2:45:empty line'
   end
 
   after
