@@ -113,7 +113,7 @@ function! bm#all_lines(file)
 endfunction
 
 function! bm#location_list()
-  let files = bm#all_files()
+  let files = sort(bm#all_files())
   let locations = []
   for file in files
     let line_nrs = sort(bm#all_lines(file), "bm#compare_lines")

@@ -69,6 +69,7 @@ end
 describe 'model with multiple bookmarks in different files'
 
   before
+    call bm#add_bookmark('file3', 1, 10, 'file3/line10')
     call bm#add_bookmark('file1', 1, 12, 'file1/line12')
     call bm#add_bookmark('file2', 2, 34, 'file2/line34')
     call bm#add_bookmark('file1', 3, 2,  'file1/line2')
@@ -98,7 +99,7 @@ describe 'model with multiple bookmarks in different files'
   it 'should return all files with bookmarks'
     let files = bm#all_files()
 
-    Expect files ==# ['file1', 'file2']
+    Expect files ==# ['file1', 'file2', 'file3']
   end
 
   it 'should return next bookmark'
@@ -121,12 +122,13 @@ describe 'model with multiple bookmarks in different files'
 
   it 'should return location list'
     let locations = bm#location_list()
-    Expect len(locations) ==# 5
+    Expect len(locations) ==# 6
     Expect locations[0] ==# 'file1:2:file1/line2'
     Expect locations[1] ==# 'file1:12:file1/line12'
     Expect locations[2] ==# 'file1:45:file1/line45'
     Expect locations[3] ==# 'file2:34:file2/line34'
     Expect locations[4] ==# 'file2:45:empty line'
+    Expect locations[5] ==# 'file3:10:file3/line10'
   end
 
   after
