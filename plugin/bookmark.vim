@@ -65,7 +65,7 @@ function! ShowAllBookmarks()
   call s:refresh_line_numbers()
   let oldformat = &errorformat    " backup original format
   let &errorformat = "%f:%l:%m"   " custom format for bookmarks
-  cexpr! bm#location_list()
+  cgetexpr bm#location_list()
   copen
   let &errorformat = oldformat    " re-apply original format
 endfunction
