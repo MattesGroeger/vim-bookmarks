@@ -70,7 +70,10 @@ Commands for using Bookmarks
       Show bookmarks across all buffers in new window
 
   :ClearBookmarks                                             *:ClearBookmarks*
-      Removes all bookmarks for current buffer
+      Removes bookmarks for current buffer
+
+  :ClearAllBookmarks                                       *:ClearAllBookmarks*
+      Removes bookmarks for all buffer
 
 ===============================================================================
 5. CUSTOMISATION                                       *BookmarksCustomisation*
@@ -140,13 +143,23 @@ To change the default keys:
   nmap <Leader>j <Plug>NextBookmark
   nmap <Leader>k <Plug>PrevBookmark
   nmap <Leader>c <Plug>ClearBookmarks
+  nmap <Leader>x <Plug>ClearAllBookmarks
 <
 
-TO TURN ON LINE HIGHLIGHTING BY DEFAULT
+MORE OPTIONS
 
-Add to your |vimrc|
+Change the following options in your |vimrc| to customize the plugin behaviour.
+
+Turn on line highlighting (default 0):
+
 >
   let g:bookmark_highlight_lines = 1
+<
+
+Turn off the warning when clearing all bookmarks (default 1):
+
+>
+  let g:bookmark_show_warning = 0
 <
 
 ===============================================================================

@@ -57,7 +57,8 @@ After installation you can directly start using it. You can do this by either us
 | Jump to next bookmark in buffer                 | `mn`        | `:NextBookmark`        |
 | Jump to previous bookmark in buffer             | `mp`        | `:PrevBookmark`        |
 | Show all bookmarks                              | `ma`        | `:ShowAllBookmarks`    |
-| Clear bookmarks in buffer                       | `mc`        | `:ClearBookmarks`      |
+| Clear bookmarks in current buffer only          | `mc`        | `:ClearBookmarks`      |
+| Clear bookmarks in all buffers                  | `mx`        | `:ClearAllBookmarks`   |
 
 You can change the shortcuts as you like, just read on...
 
@@ -73,24 +74,29 @@ nmap <Leader>a <Plug>ShowAllBookmarks
 nmap <Leader>j <Plug>NextBookmark
 nmap <Leader>k <Plug>PrevBookmark
 nmap <Leader>c <Plug>ClearBookmarks
+nmap <Leader>x <Plug>ClearAllBookmarks
 ```
 
 ### Custom options
 
 Put any of the following options into your `~/.vimrc` in order to overwrite the default behaviour.
 
-#### Different sign
+#### Different sign (default '⚑')
 
 ```
 let g:bookmark_sign = '>>'
 ```
 
-#### Enable line highlighting
-
-Hightlight the whole line (default off).
+#### Enable line highlighting (default 0)
 
 ```
 let g:bookmark_highlight_lines = 1
+```
+
+#### Turn off warnings when clearing all bookmarks (default 1)
+
+```
+let g:bookmark_show_warning = 0
 ```
 
 ### Custom colors

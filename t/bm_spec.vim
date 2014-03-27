@@ -90,6 +90,10 @@ describe 'model with multiple bookmarks in different files'
     Expect dict2[45]['sign_idx'] ==# 5
   end
 
+  it 'should return total count of bookmarks'
+    Expect bm#total_count() ==# 6
+  end
+
   it 'should return all lines'
     let lines = bm#all_lines('file1')
 

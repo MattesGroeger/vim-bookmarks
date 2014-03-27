@@ -98,6 +98,10 @@ function! bm#del_bookmark_at_line(file, line_nr)
   endif
 endfunction
 
+function! bm#total_count()
+  return len(bm#location_list())
+endfunction
+
 function! bm#all_bookmarks_by_line(file)
   if !has_key(g:line_map, a:file)
     return {}

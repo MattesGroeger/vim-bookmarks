@@ -18,7 +18,7 @@ endfunction
 
 call s:set('g:bookmark_highlight_lines', 0)
 call s:set('g:bookmark_sign', '⚑')
-
+call s:set('g:bookmark_show_warning', 1)
 " }}}
 
 
@@ -48,6 +48,29 @@ function! ClearBookmarks()
   echo "Bookmarks removed"
 endfunction
 command! ClearBookmarks call ClearBookmarks()
+
+function! ClearAllBookmarks()
+  call s:refresh_line_numbers()
+  let files = bm#all_files()
+  let file_count = len(files)
+  let delete = 1
+  let in_multiple_files = file_count ># 1
+  let supports_confirm = has("dialog_con") || has("dialog_gui")
+  if (in_multiple_files && g:bookmark_show_warning ==# 1 && supports_confirm)
+    let delete = confirm("Delete ". bm#total_count() ." bookmarks in ". file_count . " buffers?", "&Yes\n&No")
+  endif
+  if (delete ==# 1)
+    for file in files
+      let lines = bm#all_lines(file)
+      for line_nr in lines
+        call s:bookmark_remove(file, line_nr)
+      endfor
+    endfor
+    execute ":redraw!"
+    echo "All bookmarks removed"
+  endif
+endfunction
+command! ClearAllBookmarks call ClearAllBookmarks()
 
 function! NextBookmark()
   call s:refresh_line_numbers()
@@ -136,10 +159,11 @@ function! s:register_mapping(command, shortcut)
   endif
 endfunction
 
-call s:register_mapping('ShowAllBookmarks', 'ma')
-call s:register_mapping('ToggleBookmark',   'mm')
-call s:register_mapping('NextBookmark',     'mn')
-call s:register_mapping('PrevBookmark',     'mp')
-call s:register_mapping('ClearBookmarks',   'mc')
+call s:register_mapping('ShowAllBookmarks',  'ma')
+call s:register_mapping('ToggleBookmark',    'mm')
+call s:register_mapping('NextBookmark',      'mn')
+call s:register_mapping('PrevBookmark',      'mp')
+call s:register_mapping('ClearBookmarks',    'mc')
+call s:register_mapping('ClearAllBookmarks', 'mx')
 
 " }}}
