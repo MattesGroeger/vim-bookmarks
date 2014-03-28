@@ -57,7 +57,7 @@ def upload_release(version, asset_path)
     labels = i.labels.select { |f|
       !EXCLUDE_LABELS.include? f.name
     }.map { |l| "[#{l.name}]" }.join(" ")
-    " * #{labels} #{i.title}\n" if labels != ""
+    " * #{labels} #{i.title} ##{i.number}\n" if labels != ""
   }.select { |line| line != "" }
 
   # compile changelist of issues, get it confirmed by user (y/n)
