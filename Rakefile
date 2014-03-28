@@ -3,7 +3,7 @@ require 'octokit'
 
 GIT_REPO = "MattesGroeger/vim-bookmarks"
 VIM_SCRIPT_URL = "http://www.vim.org/scripts/add_script_version.php?script_id=4893"
-EXCLUDE_LABELS = ["duplicate", "invalid", "question", "task", "wontfix"]
+LABELS = ["feature", "enhancement", "bug"]
 
 task :default => [:release]
 task :ci => [:dump, :test]
@@ -51,16 +51,21 @@ def upload_release(version, asset_path)
   # abort if there are still open issues
   return puts "Found #{milestone.open_issues} open issues for milestone #{version}. Close them first!" if milestone.open_issues > 0
 
-  # get changes via issues
+  # get change log via issues
   issues = client.issues(GIT_REPO, :milestone => milestone.number, :state => :closed)
   changes = issues.map { |i|
-    labels = i.labels.select { |f|
-      !EXCLUDE_LABELS.include? f.name
-    }.map { |l| "[#{l.name}]" }.join(" ")
-    " * #{labels} #{i.title} ##{i.number}\n" if labels != ""
-  }.select { |line| line != "" }
+    label = (LABELS & i.labels.map { |l| l.name }).first
+    line = " * [#{label}] #{i.title} ##{i.number}\n" if label
+    {label: label, issue: i.number, line: line}
+  }.select { |f|
+    f[:label] != nil
+  }.sort { |a, b|
+    [LABELS.find_index(a[:label]),b[:issue]] <=> [LABELS.find_index(b[:label]),a[:issue]]
+  }.map { |e|
+    e[:line]
+  }
 
-  # compile changelist of issues, get it confirmed by user (y/n)
+  # show change log, get it confirmed by user (y/n)
   puts "> Changelog:\n#{changes.join}\n"
   return puts "Aborted!" if request_user_input("Do you want to create release #{version} with the above changelog? (y/n)", "n").downcase != "y"
 
