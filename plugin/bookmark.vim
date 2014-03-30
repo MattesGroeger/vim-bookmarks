@@ -60,12 +60,7 @@ function! ClearAllBookmarks()
     let delete = confirm("Delete ". bm#total_count() ." bookmarks in ". file_count . " buffers?", "&Yes\n&No")
   endif
   if (delete ==# 1)
-    for file in files
-      let lines = bm#all_lines(file)
-      for line_nr in lines
-        call s:bookmark_remove(file, line_nr)
-      endfor
-    endfor
+    call s:remove_all_bookmarks()
     execute ":redraw!"
     echo "All bookmarks removed"
   endif
@@ -93,6 +88,37 @@ function! ShowAllBookmarks()
   let &errorformat = oldformat    " re-apply original format
 endfunction
 command! ShowAllBookmarks call ShowAllBookmarks()
+
+function! SaveBookmarks(target_file)
+  call s:refresh_line_numbers()
+  let serialized_bookmarks = bm#serialize()
+  call writefile(serialized_bookmarks, a:target_file)
+  echo "All bookmarks saved"
+endfunction
+command! -nargs=1 SaveBookmarks call SaveBookmarks(<f-args>)
+
+function! LoadBookmarks(target_file)
+  let supports_confirm = has("dialog_con") || has("dialog_gui")
+  let has_bookmarks = bm#total_count() ># 0
+  let confirmed = 1
+  if (supports_confirm && has_bookmarks)
+    let confirmed = confirm("Do you want to override your ". bm#total_count() ." bookmarks?", "&Yes\n&No")
+  endif
+  if (confirmed ==# 1)
+    call s:remove_all_bookmarks()
+    try
+      let data = readfile(a:target_file)
+      let new_entries = bm#deserialize(data)
+      for entry in new_entries
+        call bm_sign#add_at(entry['file'], entry['sign_idx'], entry['line_nr'])
+      endfor
+      echo "Bookmarks loaded"
+    catch
+      echo "Failed to load/parse file"
+    endtry
+  endif
+endfunction
+command! -nargs=1 LoadBookmarks call LoadBookmarks(<f-args>)
 
 " }}}
 
@@ -145,6 +171,16 @@ function! s:jump_to_bookmark(type)
     normal ^
     echo "Jumped to bookmark"
   endif
+endfunction
+
+function! s:remove_all_bookmarks()
+  let files = bm#all_files()
+  for file in files
+    let lines = bm#all_lines(file)
+    for line_nr in lines
+      call s:bookmark_remove(file, line_nr)
+    endfor
+  endfor
 endfunction
 
 " }}}

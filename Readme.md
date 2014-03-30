@@ -21,13 +21,14 @@ let g:bookmark_highlight_lines = 1
 ### Features
 
 * Toggle bookmarks per line
-* Shows indicator in vim sign column
+* Indicator in vim sign column
 * Optional line highlighting
-* Navigate all bookmarks with vim quickfix window
+* Navigate all bookmarks with quickfix window
+* Persist bookmarks
 * Jump between bookmarks in current buffer (previous/next)
 * Fully customisable (signs, sign column, line highlights, mappings)
 * Preserves signs from other plugins
-* Keep bookmarks in place despite file changes
+* Works independently from [vim marks](http://vim.wikia.com/wiki/Using_marks)
 
 ## Installation
 
@@ -51,14 +52,16 @@ Use your favorite plugin manager:
 
 After installation you can directly start using it. You can do this by either using the default shortcuts or the commands:
 
-| Action                                          | Shortcut    | Command                |
-|-------------------------------------------------|-------------|------------------------|
-| Add/remove bookmark at current line             | `mm`        | `:ToggleBookmark`      |
-| Jump to next bookmark in buffer                 | `mn`        | `:NextBookmark`        |
-| Jump to previous bookmark in buffer             | `mp`        | `:PrevBookmark`        |
-| Show all bookmarks                              | `ma`        | `:ShowAllBookmarks`    |
-| Clear bookmarks in current buffer only          | `mc`        | `:ClearBookmarks`      |
-| Clear bookmarks in all buffers                  | `mx`        | `:ClearAllBookmarks`   |
+| Action                                          | Shortcut    | Command                      |
+|-------------------------------------------------|-------------|------------------------------|
+| Add/remove bookmark at current line             | `mm`        | `:ToggleBookmark`            |
+| Jump to next bookmark in buffer                 | `mn`        | `:NextBookmark`              |
+| Jump to previous bookmark in buffer             | `mp`        | `:PrevBookmark`              |
+| Show all bookmarks                              | `ma`        | `:ShowAllBookmarks`          |
+| Clear bookmarks in current buffer only          | `mc`        | `:ClearBookmarks`            |
+| Clear bookmarks in all buffers                  | `mx`        | `:ClearAllBookmarks`         |
+| Saves all bookmarks to a file                   |             | `:SaveBookmarks <FILE_PATH>` |
+| Load bookmarks from a file                      |             | `:LoadBookmarks <FILE_PATH>` |
 
 You can change the shortcuts as you like, just read on...
 

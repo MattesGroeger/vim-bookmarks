@@ -32,9 +32,17 @@ endfunction
 function! bm_sign#add(file, line_nr)
   call bm_sign#lazy_init()
   let sign_idx = g:bm_sign_index
-  execute "sign place ". sign_idx ." line=" . a:line_nr ." name=Bookmark file=". a:file
-  let g:bm_sign_index += 1
+  call bm_sign#add_at(a:file, sign_idx, a:line_nr)
   return sign_idx
+endfunction
+
+" add sign with certain index
+function! bm_sign#add_at(file, sign_idx, line_nr)
+  call bm_sign#lazy_init()
+  execute "sign place ". a:sign_idx ." line=" . a:line_nr ." name=Bookmark file=". a:file
+  if (a:sign_idx >=# g:bm_sign_index)
+    let g:bm_sign_index = a:sign_idx + 1
+  endif
 endfunction
 
 function! bm_sign#del(file, sign_idx)

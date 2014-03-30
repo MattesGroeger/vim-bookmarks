@@ -75,6 +75,12 @@ Commands for using Bookmarks
   :ClearAllBookmarks                                       *:ClearAllBookmarks*
       Removes bookmarks for all buffer
 
+  :SaveBookmarks <FILE_PATH>                                   *:SaveBookmarks*
+      Saves all bookmarks to a file so you can load them back in later
+
+  :LoadBookmarks <FILE_PATH>                                   *:LoadBookmarks*
+      Loads bookmarks from a file (see :SaveBookmarks)
+
 ===============================================================================
 5. CUSTOMISATION                                       *BookmarksCustomisation*
 

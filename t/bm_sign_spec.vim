@@ -2,7 +2,7 @@ let g:bm_sign_index = 1
 let g:bookmark_sign = 'xy'
 let g:bookmark_highlight_lines = 0
 
-describe 'uninitialized signs'
+describe 'with uninitialized signs'
 
   it 'should initialize'
     call bm_sign#init()
@@ -27,22 +27,22 @@ describe 'uninitialized signs'
 
 end
 
-describe "initialized signs"
+describe "with initialized signs"
 
   before
     let g:bm_sign_index = 1
     call bm_sign#init()
     execute ":new"
     execute ":e LICENSE.txt"
-    let s:test_file = expand("%:p")
+    let g:test_file = expand("%:p")
   end
 
   it 'should add signs'
-    call bm_sign#add(s:test_file, 2)
-    call bm_sign#add(s:test_file, 10)
+    Expect bm_sign#add(g:test_file, 2) ==# 1
+    Expect bm_sign#add(g:test_file, 10) ==# 2
 
-    let signs = util#redir_execute(":sign place file=". s:test_file)
-    let lines = bm_sign#lines_for_signs(s:test_file)
+    let signs = util#redir_execute(":sign place file=". g:test_file)
+    let lines = bm_sign#lines_for_signs(g:test_file)
 
     Expect g:bm_sign_index ==# 3
     Expect len(split(signs, '\n')) ==# 4
@@ -50,16 +50,49 @@ describe "initialized signs"
   end
 
   it 'should delete signs'
-    let idx1 = bm_sign#add(s:test_file, 2)
-    let idx2 = bm_sign#add(s:test_file, 10)
-    call bm_sign#del(s:test_file, idx1)
-    call bm_sign#del(s:test_file, idx2)
+    let idx1 = bm_sign#add(g:test_file, 2)
+    let idx2 = bm_sign#add(g:test_file, 10)
+    Expect idx1 ==# 1
+    Expect idx2 ==# 2
+    call bm_sign#del(g:test_file, idx1)
+    call bm_sign#del(g:test_file, idx2)
 
-    let signs = util#redir_execute(":sign place file=". s:test_file)
-    let lines = bm_sign#lines_for_signs(s:test_file)
+    let signs = util#redir_execute(":sign place file=". g:test_file)
+    let lines = bm_sign#lines_for_signs(g:test_file)
 
     Expect lines ==# {}
     Expect len(split(signs, '\n')) ==# 1
+  end
+
+  after
+    execute ":q!"
+  end
+
+end
+
+describe "with added signs"
+
+  before
+    let g:bm_sign_index = 3
+    call bm_sign#init()
+    execute ":new"
+    execute ":e LICENSE.txt"
+    let g:test_file = expand("%:p")
+  end
+
+  it 'should add sign with lower index'
+    call bm_sign#add_at(g:test_file, 1, 5)
+    Expect g:bm_sign_index ==# 3
+  end
+
+  it 'should add sign with equal index'
+    call bm_sign#add_at(g:test_file, 3, 5)
+    Expect g:bm_sign_index ==# 4
+  end
+
+  it 'should add sign with higher index'
+    call bm_sign#add_at(g:test_file, 4, 5)
+    Expect g:bm_sign_index ==# 5
   end
 
   after

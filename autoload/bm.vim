@@ -36,6 +36,7 @@ function! bm#add_bookmark(file, sign_idx, line_nr, content)
   let entry = {'sign_idx': a:sign_idx, 'line_nr': a:line_nr, 'content': a:content}
   let g:line_map[a:file][a:line_nr]  = entry
   let g:sign_map[a:file][a:sign_idx] = a:line_nr
+  return entry
 endfunction
 
 function! bm#update_bookmark_for_sign(file, sign_idx, new_line_nr, new_content)
@@ -135,11 +136,45 @@ function! bm#all_files()
 endfunction
 
 function! bm#del_all()
-  for file in keys(g:line_map)
-    for line_nr in keys(g:line_map[file])
+  for file in bm#all_files()
+    for line_nr in bm#all_lines(file)
       call bm#del_bookmark_at_line(file, line_nr)
     endfor
   endfor
+endfunction
+
+function! bm#serialize()
+  let file_version = "let l:bm_file_version = 1"
+  let sessions  = "let l:bm_sessions = {'default': {"
+  for file in bm#all_files()
+    let sessions .= "'". file ."': ["
+    for bm in values(bm#all_bookmarks_by_line(file))
+      let escaped_content = substitute(bm['content'], "'", "''", "g")
+      let sessions .= "{'sign_idx': ". bm['sign_idx'] .", 'line_nr': ". bm['line_nr'] .", 'content': '". escaped_content ."'},"
+    endfor
+    let sessions .= "],"
+  endfor
+  let sessions .= "}}"
+  let current_session = "let l:bm_current_session = 'default'"
+  return [file_version, sessions, current_session]
+endfunction
+
+function! bm#deserialize(data)
+    exec join(a:data, " | ")
+    let ses = l:bm_sessions["default"]
+    let result = []
+    for file in keys(ses)
+      for bm in ses[file]
+         call add(result, 
+            \ extend(
+              \ copy(
+                \ bm#add_bookmark(file, bm['sign_idx'], bm['line_nr'], bm['content'])
+              \ ),
+              \ {'file': file}
+            \ ))
+      endfor
+    endfor
+    return result
 endfunction
 
 " }}}
