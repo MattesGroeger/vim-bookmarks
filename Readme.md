@@ -59,7 +59,7 @@ After installation you can directly start using it. You can do this by either us
 | Show all bookmarks                              | `ma`        | `:ShowAllBookmarks`          |
 | Clear bookmarks in current buffer only          | `mc`        | `:ClearBookmarks`            |
 | Clear bookmarks in all buffers                  | `mx`        | `:ClearAllBookmarks`         |
-| Saves all bookmarks to a file                   |             | `:SaveBookmarks <FILE_PATH>` |
+| Save all bookmarks to a file                    |             | `:SaveBookmarks <FILE_PATH>` |
 | Load bookmarks from a file                      |             | `:LoadBookmarks <FILE_PATH>` |
 
 You can change the shortcuts as you like, just read on...
