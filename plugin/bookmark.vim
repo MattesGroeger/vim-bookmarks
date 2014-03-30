@@ -39,6 +39,9 @@ endif
 function! ToggleBookmark()
   call s:refresh_line_numbers()
   let file = expand("%:p")
+  if file ==# ""
+    return
+  endif
   let current_line = line('.')
   if bm#has_bookmark_at_line(file, current_line)
     call s:bookmark_remove(file, current_line)
