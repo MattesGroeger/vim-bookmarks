@@ -16,9 +16,21 @@ function! s:set(var, default)
   endif
 endfunction
 
-call s:set('g:bookmark_highlight_lines', 0)
-call s:set('g:bookmark_sign', '⚑')
-call s:set('g:bookmark_show_warning', 1)
+call s:set('g:bookmark_highlight_lines',  0 )
+call s:set('g:bookmark_sign',            '⚑')
+call s:set('g:bookmark_show_warning',     1 )
+call s:set('g:bookmark_auto_save',        1 )
+call s:set('g:bookmark_auto_save_file',   $HOME .'/.vim-bookmarks')
+
+if g:bookmark_auto_save ==# 1
+  augroup bm_auto_save
+    autocmd!
+    autocmd VimEnter * call LoadBookmarks(g:bookmark_auto_save_file, 1)
+    autocmd VimLeave * call SaveBookmarks(g:bookmark_auto_save_file)
+    autocmd BufWinEnter * call s:add_missing_signs(expand("<afile>:p"))
+  augroup END
+endif
+
 " }}}
 
 
@@ -97,7 +109,7 @@ function! SaveBookmarks(target_file)
 endfunction
 command! -nargs=1 SaveBookmarks call SaveBookmarks(<f-args>)
 
-function! LoadBookmarks(target_file)
+function! LoadBookmarks(target_file, startup)
   let supports_confirm = has("dialog_con") || has("dialog_gui")
   let has_bookmarks = bm#total_count() ># 0
   let confirmed = 1
@@ -109,16 +121,20 @@ function! LoadBookmarks(target_file)
     try
       let data = readfile(a:target_file)
       let new_entries = bm#deserialize(data)
-      for entry in new_entries
-        call bm_sign#add_at(entry['file'], entry['sign_idx'], entry['line_nr'])
-      endfor
-      echo "Bookmarks loaded"
+      if !a:startup
+        for entry in new_entries
+          call bm_sign#add_at(entry['file'], entry['sign_idx'], entry['line_nr'])
+        endfor
+        echo "Bookmarks loaded"
+      endif
     catch
-      echo "Failed to load/parse file"
+      if !a:startup
+        echo "Failed to load/parse file"
+      endif
     endtry
   endif
 endfunction
-command! -nargs=1 LoadBookmarks call LoadBookmarks(<f-args>)
+command! -nargs=1 LoadBookmarks call LoadBookmarks(<f-args>, 0)
 
 " }}}
 
@@ -180,6 +196,14 @@ function! s:remove_all_bookmarks()
     for line_nr in lines
       call s:bookmark_remove(file, line_nr)
     endfor
+  endfor
+endfunction
+
+" should only be called from autocmd!
+function! s:add_missing_signs(file)
+  let bookmarks = values(bm#all_bookmarks_by_line(a:file))
+  for bookmark in bookmarks
+    call bm_sign#add_at(a:file, bookmark['sign_idx'], bookmark['line_nr'])
   endfor
 endfunction
 

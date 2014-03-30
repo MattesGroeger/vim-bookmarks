@@ -1,11 +1,11 @@
 ## vim-bookmarks [![Build Status](https://travis-ci.org/MattesGroeger/vim-bookmarks.svg)](https://travis-ci.org/MattesGroeger/vim-bookmarks) [![Release](http://img.shields.io/github/release/MattesGroeger/vim-bookmarks.svg)](https://github.com/MattesGroeger/vim-bookmarks/releases)
 
-This plugin allows to add and remove line-based bookmarks with just one (!) keystroke. Bookmarks will be highlighted in the vim sign column (default).
+This plugin allows to add and remove line-based bookmarks with just one (!) keystroke. Bookmarks will be highlighted in the vim sign column (default). Bookmarks will be restored on the next startup (by default).
 
 ![Screenshot](https://raw.github.com/MattesGroeger/vim-bookmarks/master/screenshot.png)
 
-1. Bookmars are indicated in sign column
-2. Naviagate all bookmarks via quickfix window
+1. Bookmarks are indicated in sign column
+2. Navigate all bookmarks via quickfix window
 
 #### Bright Colors Example
 
@@ -21,10 +21,9 @@ let g:bookmark_highlight_lines = 1
 ### Features
 
 * Toggle bookmarks per line
-* Indicator in vim sign column
-* Optional line highlighting
+* Indicator in vim sign column (optional line highlighting)
 * Navigate all bookmarks with quickfix window
-* Persist bookmarks
+* Bookmarks will be restored on next startup
 * Jump between bookmarks in current buffer (previous/next)
 * Fully customisable (signs, sign column, line highlights, mappings)
 * Preserves signs from other plugins
@@ -88,6 +87,18 @@ Put any of the following options into your `~/.vimrc` in order to overwrite the 
 
 ```
 let g:bookmark_sign = '>>'
+```
+
+#### Disable auto saving (default 1)
+
+```
+let g:bookmark_auto_save = 0
+```
+
+#### Change file for auto saving (default ~/.vim-bookmarks)
+
+```
+let g:bookmark_auto_save_file = '/tmp/my_bookmarks'
 ```
 
 #### Enable line highlighting (default 0)
