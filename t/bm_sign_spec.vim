@@ -33,7 +33,7 @@ describe "with initialized signs"
     let g:bm_sign_index = 1
     call bm_sign#init()
     execute ":new"
-    execute ":e LICENSE.txt"
+    execute ":e LICENSE"
     let g:test_file = expand("%:p")
   end
 
@@ -76,7 +76,7 @@ describe "with added signs"
     let g:bm_sign_index = 3
     call bm_sign#init()
     execute ":new"
-    execute ":e LICENSE.txt"
+    execute ":e LICENSE"
     let g:test_file = expand("%:p")
   end
 

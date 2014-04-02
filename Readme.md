@@ -157,7 +157,7 @@ The following plugins were a great inspiration to me:
   [neobundle]: https://github.com/Shougo/neobundle.vim
   [vimplug]: https://github.com/MattesGroeger/vim-plug
   [macvim]: http://code.google.com/p/macvim/
-  [license]: https://github.com/MattesGroeger/vim-bookmarks/blob/master/LICENSE.txt
+  [license]: https://github.com/MattesGroeger/vim-bookmarks/blob/master/LICENSE
   [blog]: http://blog.mattes-groeger.de
   [vmark]: http://www.vim.org/scripts/script.php?script_id=4076
   [gitgutter]: https://github.com/airblade/vim-gitgutter

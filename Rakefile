@@ -36,7 +36,7 @@ end
 def create_zip(version)
   file_path = "release/vim-bookmarks-#{version}.zip"
   `mkdir -p release`
-  `zip -r #{file_path} . -i "doc/*" -i "plugin/*" -i "autoload/*" -i LICENSE.txt`
+  `zip -r #{file_path} . -i "doc/*" -i "plugin/*" -i "autoload/*" -i LICENSE`
   file_path
 end
 
