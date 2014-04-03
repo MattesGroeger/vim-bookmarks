@@ -28,12 +28,13 @@ function! bm#get_bookmark_by_sign(file, sign_idx)
   return bm#get_bookmark_by_line(a:file, line_nr)
 endfunction
 
-function! bm#add_bookmark(file, sign_idx, line_nr, content)
+function! bm#add_bookmark(file, sign_idx, line_nr, content, ...)
   if !has_key(g:line_map, a:file)
     let g:line_map[a:file] = {}
     let g:sign_map[a:file] = {}
   endif
-  let entry = {'sign_idx': a:sign_idx, 'line_nr': a:line_nr, 'content': a:content}
+  let annotation = a:0 ==# 1 ? a:1 : ""
+  let entry = {'sign_idx': a:sign_idx, 'line_nr': a:line_nr, 'content': a:content, 'annotation': annotation}
   let g:line_map[a:file][a:line_nr]  = entry
   let g:sign_map[a:file][a:sign_idx] = a:line_nr
   return entry
@@ -43,6 +44,11 @@ function! bm#update_bookmark_for_sign(file, sign_idx, new_line_nr, new_content)
   let bookmark = bm#get_bookmark_by_sign(a:file, a:sign_idx)
   call bm#del_bookmark_at_line(a:file, bookmark['line_nr'])
   call bm#add_bookmark(a:file, a:sign_idx, a:new_line_nr, a:new_content)
+endfunction
+
+function! bm#update_annotation(file, sign_idx, annotation)
+  let bookmark = bm#get_bookmark_by_sign(a:file, a:sign_idx)
+  let bookmark['annotation'] = a:annotation
 endfunction
 
 function! bm#next(file, current_line_nr)
@@ -124,7 +130,11 @@ function! bm#location_list()
     let line_nrs = sort(bm#all_lines(file), "bm#compare_lines")
     for line_nr in line_nrs
       let bookmark = bm#get_bookmark_by_line(file, line_nr)
-      let content = bookmark['content'] !=# "" ? bookmark['content'] : "empty line"
+      let content = bookmark['annotation'] !=# ''
+            \ ? "[note] ". bookmark['annotation']
+            \ : (bookmark['content'] !=# ""
+            \   ? bookmark['content']
+            \   : "empty line")
       call add(locations, file .":". line_nr .":". content)
     endfor
   endfor
@@ -150,7 +160,8 @@ function! bm#serialize()
     let sessions .= "'". file ."': ["
     for bm in values(bm#all_bookmarks_by_line(file))
       let escaped_content = substitute(bm['content'], "'", "''", "g")
-      let sessions .= "{'sign_idx': ". bm['sign_idx'] .", 'line_nr': ". bm['line_nr'] .", 'content': '". escaped_content ."'},"
+      let annotation = bm['annotation'] !=# "" ? ", 'annotation': '". bm['annotation'] ."'" : ""
+      let sessions .= "{'sign_idx': ". bm['sign_idx'] .", 'line_nr': ". bm['line_nr'] .", 'content': '". escaped_content ."'". annotation ."},"
     endfor
     let sessions .= "],"
   endfor
@@ -165,10 +176,11 @@ function! bm#deserialize(data)
     let result = []
     for file in keys(ses)
       for bm in ses[file]
+        let annotation = has_key(bm, 'annotation') ? bm['annotation'] : ''
          call add(result, 
             \ extend(
               \ copy(
-                \ bm#add_bookmark(file, bm['sign_idx'], bm['line_nr'], bm['content'])
+                \ bm#add_bookmark(file, bm['sign_idx'], bm['line_nr'], bm['content'], annotation)
               \ ),
               \ {'file': file}
             \ ))
