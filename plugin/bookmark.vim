@@ -53,6 +53,48 @@ function! ToggleBookmark()
 endfunction
 command! ToggleBookmark call ToggleBookmark()
 
+function! Annotate(...)
+  call s:refresh_line_numbers()
+  let file = expand("%:p")
+  if file ==# ""
+    return
+  endif
+
+  let current_line = line('.')
+  let has_bm = bm#has_bookmark_at_line(file, current_line)
+  let bm = has_bm ? bm#get_bookmark_by_line(file, current_line) : 0
+  let old_annotation = has_bm ? bm['annotation'] : ""
+  let new_annotation = a:0 ># 0 ? a:1 : ""
+
+  " Get annotation from user input if not passed in
+  if new_annotation ==# ""
+    let input_msg = old_annotation !=# "" ? "Edit" : "Enter"
+    let new_annotation = input(input_msg ." annotation: ", old_annotation)
+    execute ":redraw!"
+  endif
+
+  " Nothing changed, bail out
+  if new_annotation ==# "" && old_annotation ==# new_annotation
+    return
+
+  " Update annotation
+  elseif has_bm
+    call bm#update_annotation(file, bm['sign_idx'], new_annotation)
+    let result_msg = (new_annotation ==# "") 
+          \ ? "removed"
+          \ : old_annotation !=# ""
+          \   ? "updated: ". new_annotation
+          \   : "added: ". new_annotation
+    echo "Annotation ". result_msg
+
+  " Create bookmark with annotation
+  elseif new_annotation !=# ""
+    call s:bookmark_add(file, current_line, new_annotation)
+    echo "Bookmark added with note: ". new_annotation
+  endif
+endfunction
+command! -nargs=* Annotate call Annotate(<q-args>, 0)
+
 function! ClearBookmarks()
   call s:refresh_line_numbers()
   let file = expand("%:p")
