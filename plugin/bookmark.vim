@@ -80,7 +80,7 @@ function! Annotate(...)
   " Update annotation
   elseif has_bm
     call bm#update_annotation(file, bm['sign_idx'], new_annotation)
-    let result_msg = (new_annotation ==# "") 
+    let result_msg = (new_annotation ==# "")
           \ ? "removed"
           \ : old_annotation !=# ""
           \   ? "updated: ". new_annotation
@@ -90,7 +90,7 @@ function! Annotate(...)
   " Create bookmark with annotation
   elseif new_annotation !=# ""
     call s:bookmark_add(file, current_line, new_annotation)
-    echo "Bookmark added with note: ". new_annotation
+    echo "Bookmark added with annotation: ". new_annotation
   endif
 endfunction
 command! -nargs=* Annotate call Annotate(<q-args>, 0)
@@ -267,6 +267,7 @@ endfunction
 
 call s:register_mapping('ShowAllBookmarks',  'ma')
 call s:register_mapping('ToggleBookmark',    'mm')
+call s:register_mapping('Annotate',          'mi')
 call s:register_mapping('NextBookmark',      'mn')
 call s:register_mapping('PrevBookmark',      'mp')
 call s:register_mapping('ClearBookmarks',    'mc')
