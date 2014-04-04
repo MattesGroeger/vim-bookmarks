@@ -32,7 +32,7 @@ describe 'empty model'
 
     Expect bm#has_bookmarks_in_file('file1') to_be_true
     Expect bm#has_bookmark_at_line('file1', 1) to_be_true
-    Expect bm#location_list() ==# ["file1:1:[note] a note", "file2:12:bar", "file2:15:'test'"]
+    Expect bm#location_list() ==# ["file1:1:Annotation: a note", "file2:12:bar", "file2:15:'test'"]
     Expect len(result) ==# 3
     Expect result ==# [{"file": "file1", "line_nr": 1, "sign_idx": 99, "content": "foo", "annotation": "a note"},
                       \{"file": "file2", "line_nr": 12, "sign_idx": 50, "content": "bar", "annotation": ""},
@@ -162,7 +162,7 @@ describe 'model with multiple bookmarks in different files'
     Expect locations[0] ==# 'file1:2:file1/line2'
     Expect locations[1] ==# 'file1:12:file1/line12'
     Expect locations[2] ==# 'file1:45:''test'''
-    Expect locations[3] ==# 'file2:34:[note] an annotation'
+    Expect locations[3] ==# 'file2:34:Annotation: an annotation'
     Expect locations[4] ==# 'file2:45:empty line'
     Expect locations[5] ==# 'file3:10:file3/line10'
   end
