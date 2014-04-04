@@ -170,9 +170,10 @@ function! s:refresh_line_numbers()
   endfor
 endfunction
 
-function! s:bookmark_add(file, line_nr)
+function! s:bookmark_add(file, line_nr, ...)
+  let annotation = (a:0 ==# 1) ? a:1 : ""
   let sign_idx = bm_sign#add(a:file, a:line_nr)
-  call bm#add_bookmark(a:file, sign_idx, a:line_nr, getline(a:line_nr))
+  call bm#add_bookmark(a:file, sign_idx, a:line_nr, getline(a:line_nr), annotation)
 endfunction
 
 function! s:bookmark_remove(file, line_nr)

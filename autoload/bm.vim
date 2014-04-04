@@ -43,7 +43,7 @@ endfunction
 function! bm#update_bookmark_for_sign(file, sign_idx, new_line_nr, new_content)
   let bookmark = bm#get_bookmark_by_sign(a:file, a:sign_idx)
   call bm#del_bookmark_at_line(a:file, bookmark['line_nr'])
-  call bm#add_bookmark(a:file, a:sign_idx, a:new_line_nr, a:new_content)
+  call bm#add_bookmark(a:file, a:sign_idx, a:new_line_nr, a:new_content, bookmark['annotation'])
 endfunction
 
 function! bm#update_annotation(file, sign_idx, annotation)

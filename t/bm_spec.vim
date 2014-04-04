@@ -48,15 +48,16 @@ end
 describe 'model with bookmark'
 
   before
-    call bm#add_bookmark('foo', 1, 3, 'bar')
+    call bm#add_bookmark('foo', 1, 3, 'bar', 'note')
   end
 
   it 'should get bookmark by line'
     let bookmark = bm#get_bookmark_by_line('foo', 3)
 
-    Expect bookmark['line_nr']  ==# 3
-    Expect bookmark['sign_idx'] ==# 1
-    Expect bookmark['content']  ==# 'bar'
+    Expect bookmark['line_nr']    ==# 3
+    Expect bookmark['sign_idx']   ==# 1
+    Expect bookmark['content']    ==# 'bar'
+    Expect bookmark['annotation'] ==# 'note'
   end
 
   it 'should get bookmark by sign'
@@ -74,7 +75,7 @@ describe 'model with bookmark'
     Expect bookmark['line_nr']    ==# 5
     Expect bookmark['sign_idx']   ==# 1
     Expect bookmark['content']    ==# 'baz'
-    Expect bookmark['annotation'] ==# ''
+    Expect bookmark['annotation'] ==# 'note'
     Expect bookmark ==# bm#get_bookmark_by_sign('foo', 1)
   end
 
