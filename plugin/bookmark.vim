@@ -225,13 +225,17 @@ function! s:bookmark_remove(file, line_nr)
 endfunction
 
 function! s:jump_to_bookmark(type)
-  let line_nr = bm#{a:type}(expand("%:p"), line("."))
+  let file = expand("%:p")
+  let line_nr = bm#{a:type}(file, line("."))
   if line_nr ==# 0
     echo "No bookmarks found"
   else
     call cursor(line_nr, 1)
     normal ^
-    echo "Jumped to bookmark"
+    let bm = bm#get_bookmark_by_line(file, line_nr)
+    let annotation = bm['annotation'] !=# "" ? " (". bm['annotation'] . ")" : ""
+    execute ":redraw!"
+    echo "Jumped to bookmark". annotation
   endif
 endfunction
 
