@@ -1,0 +1,280 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Vim Bookmarks by MattesGroeger</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Vim Bookmarks</h1>
+        <p>A plugin to annotate and bookmark lines</p>
+
+        <p class="view"><a href="https://github.com/MattesGroeger/vim-bookmarks">View the Project on GitHub <small>MattesGroeger/vim-bookmarks</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/MattesGroeger/vim-bookmarks/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/MattesGroeger/vim-bookmarks/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/MattesGroeger/vim-bookmarks">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h2>
+<a name="introduction" class="anchor" href="#introduction"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>This vim plugin allows toggling bookmarks per line. A quickfix window gives access to all bookmarks. Annotations can be added as well. These are special bookmarks with a comment attached. They are useful for preparing code reviews. All bookmarks will be restored on the next startup.</p>
+
+<p><img src="https://raw.github.com/MattesGroeger/vim-bookmarks/master/preview.gif" alt="Preview"></p>
+
+<h2>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>Toggle bookmarks per line ⚑</li>
+<li>Add annotations per line ☰</li>
+<li>Navigate all bookmarks with quickfix window</li>
+<li>Bookmarks will be restored on next startup</li>
+<li>Fully customisable (signs, sign column, highlights, mappings)</li>
+<li>Works independently from <a href="http://vim.wikia.com/wiki/Using_marks">vim marks</a>
+</li>
+</ul><h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Before installation, please check your Vim supports signs by running <code>:echo has('signs')</code>.  <code>1</code> means you're all set; <code>0</code> means you need to install a Vim with signs support. If you're compiling Vim yourself you need the 'big' or 'huge' feature set. <a href="http://code.google.com/p/macvim/">MacVim</a> supports signs.</p>
+
+<p>Use your favorite plugin manager:</p>
+
+<ul>
+<li>
+<a href="https://github.com/tpope/vim-pathogen">Pathogen</a>
+
+<ul>
+<li><code>git clone https://github.com/MattesGroeger/vim-bookmarks.git ~/.vim/bundle/vim-bookmarks</code></li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/gmarik/vundle">Vundle</a>
+
+<ol>
+<li>Add <code>Bundle 'MattesGroeger/vim-bookmarks'</code> to .vimrc</li>
+<li>Run <code>:BundleInstall</code>
+</li>
+</ol>
+</li>
+<li>
+<a href="https://github.com/Shougo/neobundle.vim">NeoBundle</a>
+
+<ol>
+<li>Add <code>NeoBundle 'MattesGroeger/vim-bookmarks'</code> to .vimrc</li>
+<li>Run <code>:NeoBundleInstall</code>
+</li>
+</ol>
+</li>
+<li>
+<a href="https://github.com/MattesGroeger/vim-plug">vim-plug</a>
+
+<ol>
+<li>Add <code>Plug 'MattesGroeger/vim-bookmarks'</code> to .vimrc</li>
+<li>Run <code>:PlugInstall</code>
+</li>
+</ol>
+</li>
+</ul><h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>After installation you can directly start using it. You can do this by either using the default shortcuts or the commands:</p>
+
+<table>
+<thead><tr>
+<th>Action</th>
+<th>Shortcut</th>
+<th>Command</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Add/remove bookmark at current line</td>
+<td><code>mm</code></td>
+<td><code>:ToggleBookmark</code></td>
+</tr>
+<tr>
+<td>Add/edit/remove annotation at current line</td>
+<td><code>mi</code></td>
+<td><code>:Annotate &lt;TEXT&gt;</code></td>
+</tr>
+<tr>
+<td>Jump to next bookmark in buffer</td>
+<td><code>mn</code></td>
+<td><code>:NextBookmark</code></td>
+</tr>
+<tr>
+<td>Jump to previous bookmark in buffer</td>
+<td><code>mp</code></td>
+<td><code>:PrevBookmark</code></td>
+</tr>
+<tr>
+<td>Show all bookmarks</td>
+<td><code>ma</code></td>
+<td><code>:ShowAllBookmarks</code></td>
+</tr>
+<tr>
+<td>Clear bookmarks in current buffer only</td>
+<td><code>mc</code></td>
+<td><code>:ClearBookmarks</code></td>
+</tr>
+<tr>
+<td>Clear bookmarks in all buffers</td>
+<td><code>mx</code></td>
+<td><code>:ClearAllBookmarks</code></td>
+</tr>
+<tr>
+<td>Save all bookmarks to a file</td>
+<td></td>
+<td><code>:SaveBookmarks &lt;FILE_PATH&gt;</code></td>
+</tr>
+<tr>
+<td>Load bookmarks from a file</td>
+<td></td>
+<td><code>:LoadBookmarks &lt;FILE_PATH&gt;</code></td>
+</tr>
+</tbody>
+</table><p>You can change the shortcuts as you like, just read on...</p>
+
+<h2>
+<a name="customization" class="anchor" href="#customization"><span class="octicon octicon-link"></span></a>Customization</h2>
+
+<h3>
+<a name="key-bindings" class="anchor" href="#key-bindings"><span class="octicon octicon-link"></span></a>Key Bindings</h3>
+
+<p>You can overwrite any of the default mappings. Just put the following into your <code>~/.vimrc</code> and adjust as you like:</p>
+
+<pre><code>nmap &lt;Leader&gt;&lt;Leader&gt; &lt;Plug&gt;ToggleBookmark
+nmap &lt;Leader&gt;i &lt;Plug&gt;Annotate
+nmap &lt;Leader&gt;a &lt;Plug&gt;ShowAllBookmarks
+nmap &lt;Leader&gt;j &lt;Plug&gt;NextBookmark
+nmap &lt;Leader&gt;k &lt;Plug&gt;PrevBookmark
+nmap &lt;Leader&gt;c &lt;Plug&gt;ClearBookmarks
+nmap &lt;Leader&gt;x &lt;Plug&gt;ClearAllBookmarks
+</code></pre>
+
+<h3>
+<a name="colors" class="anchor" href="#colors"><span class="octicon octicon-link"></span></a>Colors</h3>
+
+<p>Overwrite the default hightlight groups by adding this to your colorscheme or <code>.vimrc</code>:</p>
+
+<pre><code>highlight BookmarkSign ctermbg=whatever ctermfg=whatever
+highlight BookmarkAnnotationSign ctermbg=whatever ctermfg=whatever
+highlight BookmarkLine ctermbg=whatever ctermfg=whatever
+highlight BookmarkAnnotationLine ctermbg=whatever ctermfg=whatever
+</code></pre>
+
+<h3>
+<a name="options" class="anchor" href="#options"><span class="octicon octicon-link"></span></a>Options</h3>
+
+<p>Put any of the following options into your <code>~/.vimrc</code> in order to overwrite the default behaviour.</p>
+
+<table>
+<thead><tr>
+<th>Option</th>
+<th align="center">Default</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>let g:bookmark_sign = '&gt;&gt;'</code></td>
+<td align="center">⚑</td>
+<td>Sets bookmark icon for sign column</td>
+</tr>
+<tr>
+<td><code>let g:bookmark_annotation_sign = '##'</code></td>
+<td align="center">☰</td>
+<td>Sets bookmark annotation icon for sign column</td>
+</tr>
+<tr>
+<td><code>let g:bookmark_auto_save = 0</code></td>
+<td align="center">1</td>
+<td>Enables/disables automatic saving for bookmarks</td>
+</tr>
+<tr>
+<td><code>let g:bookmark_auto_save_file = '/bookmarks'</code></td>
+<td align="center">~/.vim-bookmarks</td>
+<td>Sets file for auto saving</td>
+</tr>
+<tr>
+<td><code>let g:bookmark_highlight_lines = 1</code></td>
+<td align="center">0</td>
+<td>Enables/disables line highlighting</td>
+</tr>
+<tr>
+<td><code>let g:bookmark_show_warning = 0</code></td>
+<td align="center">1</td>
+<td>Enables/disables warning when clearing all bookmarks</td>
+</tr>
+</tbody>
+</table><h2>
+<a name="faq" class="anchor" href="#faq"><span class="octicon octicon-link"></span></a>FAQ</h2>
+
+<blockquote>
+<p>Why are the colours in the sign column weird?</p>
+</blockquote>
+
+<p>Your colorscheme is configuring the <code>SignColumn</code> highlight group weirdly. To change that add this to your <code>.vimrc</code>: <code>highlight SignColumn ctermbg=whatever</code>.</p>
+
+<blockquote>
+<p>What happens if I also use another plugin which uses signs (e.g. Syntastic)?</p>
+</blockquote>
+
+<p>Vim only allows one sign per line. Therefore bookmarks will override any existing sign. When removing the bookmark the original sign will show up again. In other words vim-bookmarks won't remove another plugin's signs.</p>
+
+<blockquote>
+<p>Why aren't any signs showing at all?</p>
+</blockquote>
+
+<p>Make sure your vim supports signs: <code>:echo has('signs')</code> should give <code>1</code></p>
+
+<h2>
+<a name="changelog" class="anchor" href="#changelog"><span class="octicon octicon-link"></span></a>Changelog</h2>
+
+<p>See the <a href="https://github.com/MattesGroeger/vim-bookmarks/releases">release page</a> for all changes.</p>
+
+<h2>
+<a name="credits--contribution" class="anchor" href="#credits--contribution"><span class="octicon octicon-link"></span></a>Credits &amp; Contribution</h2>
+
+<p>This plugin was developed by <a href="http://blog.mattes-groeger.de">Mattes Groeger</a> under the <a href="https://github.com/MattesGroeger/vim-bookmarks/blob/master/LICENSE">MIT License</a>. Pull requests are very welcome.</p>
+
+<p>The following plugins were a great inspiration to me:</p>
+
+<ul>
+<li>
+<a href="http://www.vim.org/scripts/script.php?script_id=4076">vmark.vim</a> by Michael Zhou</li>
+<li>
+<a href="https://github.com/airblade/vim-gitgutter">vim-gitgutter</a> by Andrew Stewart</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/MattesGroeger">MattesGroeger</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-12394086-4");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
