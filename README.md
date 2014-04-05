@@ -1,6 +1,6 @@
 ## vim-bookmarks [![Build Status](https://travis-ci.org/MattesGroeger/vim-bookmarks.svg)](https://travis-ci.org/MattesGroeger/vim-bookmarks) [![Release](http://img.shields.io/github/release/MattesGroeger/vim-bookmarks.svg)](https://github.com/MattesGroeger/vim-bookmarks/releases)
 
-This plugin allows to add and remove line-based bookmarks with just one (!) keystroke. Bookmarks will be highlighted in the vim sign column (default). Bookmarks will be restored on the next startup (by default).
+This vim plugin allows toggling bookmarks per line. A quickfix window gives access to all bookmarks. Annotations can be added as well. These are special bookmarks with a comment attached. They are useful for preparing code reviews. All bookmarks will be restored on the next startup.
 
 ![Screenshot](https://raw.github.com/MattesGroeger/vim-bookmarks/master/screenshot.png)
 
@@ -20,13 +20,11 @@ let g:bookmark_highlight_lines = 1
 
 ### Features
 
-* Toggle bookmarks per line
-* Indicator in vim sign column (optional line highlighting)
+* Toggle bookmarks per line ⚑
+* Add annotations per line ☰
 * Navigate all bookmarks with quickfix window
 * Bookmarks will be restored on next startup
-* Jump between bookmarks in current buffer (previous/next)
-* Fully customisable (signs, sign column, line highlights, mappings)
-* Preserves signs from other plugins
+* Fully customisable (signs, sign column, highlights, mappings)
 * Works independently from [vim marks](http://vim.wikia.com/wiki/Using_marks)
 
 ## Installation
@@ -54,6 +52,7 @@ After installation you can directly start using it. You can do this by either us
 | Action                                          | Shortcut    | Command                      |
 |-------------------------------------------------|-------------|------------------------------|
 | Add/remove bookmark at current line             | `mm`        | `:ToggleBookmark`            |
+| Add/edit/remove annotation at current line      | `mi`        | `:Annotate <COMMENT>`        |
 | Jump to next bookmark in buffer                 | `mn`        | `:NextBookmark`              |
 | Jump to previous bookmark in buffer             | `mp`        | `:PrevBookmark`              |
 | Show all bookmarks                              | `ma`        | `:ShowAllBookmarks`          |
@@ -72,6 +71,7 @@ You can overwrite any of the default mappings. Just put the following into your 
 
 ```
 nmap <Leader><Leader> <Plug>ToggleBookmark
+nmap <Leader>i <Plug>Annotate
 nmap <Leader>a <Plug>ShowAllBookmarks
 nmap <Leader>j <Plug>NextBookmark
 nmap <Leader>k <Plug>PrevBookmark
@@ -87,6 +87,12 @@ Put any of the following options into your `~/.vimrc` in order to overwrite the 
 
 ```
 let g:bookmark_sign = '>>'
+```
+
+#### Different annotation sign (default '☰')
+
+```
+let g:bookmark_annotation_sign = '##'
 ```
 
 #### Disable auto saving (default 1)
@@ -119,14 +125,16 @@ Overwrite the default colors by adding this to your colorscheme or `.vimrc`:
 
 ```
 highlight BookmarkSign ctermbg=whatever ctermfg=whatever
+highlight BookmarkAnnotationSign ctermbg=whatever ctermfg=whatever
 highlight BookmarkLine ctermbg=whatever ctermfg=whatever
+highlight BookmarkAnnotationLine ctermbg=whatever ctermfg=whatever
 ```
 
 ## FAQ
 
 > Why are the colours in the sign column weird?
 
-Your colorscheme is configuring the |hl-SignColumn| highlight group weirdly. Please see |BookmarksCustomisation| on customising the sign column.
+Your colorscheme is configuring the `SignColumn` highlight group weirdly. To change that add this to your `.vimrc`: `highlight SignColumn ctermbg=whatever`.
 
 > What happens if I also use another plugin which uses signs (e.g. Syntastic)?
 
