@@ -109,7 +109,8 @@ end
 def build_changelog(issues)
   issues.map { |i|
     label = (LABELS & i.labels.map { |l| l.name }).first
-    line = " * [#{label}] #{i.title} ##{i.number}\n" if label
+    label_txt = label == "bug" ? "bugfix" : label
+    line = " * [#{label_txt}] #{i.title} ##{i.number}\n" if label
     {label: label, issue: i.number, line: line}
   }.select { |f|
     f[:label] != nil
