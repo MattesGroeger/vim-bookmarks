@@ -18,6 +18,7 @@ endfunction
 
 call s:set('g:bookmark_highlight_lines',  0 )
 call s:set('g:bookmark_sign',            '⚑')
+call s:set('g:bookmark_annotation_sign', '☰')
 call s:set('g:bookmark_show_warning',     1 )
 call s:set('g:bookmark_auto_save',        1 )
 call s:set('g:bookmark_auto_save_file',   $HOME .'/.vim-bookmarks')
@@ -85,6 +86,7 @@ function! Annotate(...)
           \ : old_annotation !=# ""
           \   ? "updated: ". new_annotation
           \   : "added: ". new_annotation
+    call bm_sign#update_at(file, bm['sign_idx'], bm['line_nr'], bm['annotation'] !=# "")
     echo "Annotation ". result_msg
 
   " Create bookmark with annotation
@@ -168,7 +170,7 @@ function! LoadBookmarks(target_file, startup)
       let new_entries = bm#deserialize(data)
       if !a:startup
         for entry in new_entries
-          call bm_sign#add_at(entry['file'], entry['sign_idx'], entry['line_nr'])
+          call bm_sign#add_at(entry['file'], entry['sign_idx'], entry['line_nr'], entry['annotation'] !=# "")
         endfor
         echo "Bookmarks loaded"
       endif
@@ -214,7 +216,7 @@ endfunction
 
 function! s:bookmark_add(file, line_nr, ...)
   let annotation = (a:0 ==# 1) ? a:1 : ""
-  let sign_idx = bm_sign#add(a:file, a:line_nr)
+  let sign_idx = bm_sign#add(a:file, a:line_nr, annotation !=# "")
   call bm#add_bookmark(a:file, sign_idx, a:line_nr, getline(a:line_nr), annotation)
 endfunction
 
@@ -253,7 +255,7 @@ endfunction
 function! s:add_missing_signs(file)
   let bookmarks = values(bm#all_bookmarks_by_line(a:file))
   for bookmark in bookmarks
-    call bm_sign#add_at(a:file, bookmark['sign_idx'], bookmark['line_nr'])
+    call bm_sign#add_at(a:file, bookmark['sign_idx'], bookmark['line_nr'], bookmark['annotation'] !=# "")
   endfor
 endfunction
 
