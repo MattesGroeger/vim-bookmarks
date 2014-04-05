@@ -65,7 +65,7 @@ You can change the shortcuts as you like, just read on...
 
 ## Customization
 
-### Custom shortcuts
+### Key Bindings
 
 You can overwrite any of the default mappings. Just put the following into your `~/.vimrc` and adjust as you like:
 
@@ -79,49 +79,9 @@ nmap <Leader>c <Plug>ClearBookmarks
 nmap <Leader>x <Plug>ClearAllBookmarks
 ```
 
-### Custom options
+### Colors
 
-Put any of the following options into your `~/.vimrc` in order to overwrite the default behaviour.
-
-#### Different sign (default '⚑')
-
-```
-let g:bookmark_sign = '>>'
-```
-
-#### Different annotation sign (default '☰')
-
-```
-let g:bookmark_annotation_sign = '##'
-```
-
-#### Disable auto saving (default 1)
-
-```
-let g:bookmark_auto_save = 0
-```
-
-#### Change file for auto saving (default ~/.vim-bookmarks)
-
-```
-let g:bookmark_auto_save_file = '/tmp/my_bookmarks'
-```
-
-#### Enable line highlighting (default 0)
-
-```
-let g:bookmark_highlight_lines = 1
-```
-
-#### Turn off warnings when clearing all bookmarks (default 1)
-
-```
-let g:bookmark_show_warning = 0
-```
-
-### Custom colors
-
-Overwrite the default colors by adding this to your colorscheme or `.vimrc`:
+Overwrite the default hightlight groups by adding this to your colorscheme or `.vimrc`:
 
 ```
 highlight BookmarkSign ctermbg=whatever ctermfg=whatever
@@ -129,6 +89,19 @@ highlight BookmarkAnnotationSign ctermbg=whatever ctermfg=whatever
 highlight BookmarkLine ctermbg=whatever ctermfg=whatever
 highlight BookmarkAnnotationLine ctermbg=whatever ctermfg=whatever
 ```
+
+### Options
+
+Put any of the following options into your `~/.vimrc` in order to overwrite the default behaviour.
+
+| Option                                         | Default          | Description                                         |
+|------------------------------------------------|------------------|-----------------------------------------------------|
+| `let g:bookmark_sign = '>>'`                   | ⚑                | Sets bookmark icon for sign column                  |
+| `let g:bookmark_annotation_sign = '##'`        | ☰                | Sets bookmark annotation icon for sign column       |
+| `let g:bookmark_auto_save = 0`                 | 1                | Enables/disables automatic saving for bookmarks     |
+| `let g:bookmark_auto_save_file = '/bookmarks'` | ~/.vim-bookmarks | Sets file for auto saving                           |
+| `let g:bookmark_highlight_lines = 1`           | 0                | Enables/disables line highlighting                  |
+| `let g:bookmark_show_warning = 0`              | 1                | Enables/disables warning when clearing all bookmarks|
 
 ## FAQ
 

@@ -20,10 +20,10 @@ CONTENTS                                                    *BookmarksContents*
 1. INTRODUCTION                                         *BookmarksIntroduction*
                                                                     *Bookmarks*
 
-This plugin allows to add and remove line-based bookmarks with just one
-keystroke. Bookmarks will be highlighted in the vim sign column (default).
-You can also list bookmarks across all buffers and navigate towards them.
-Bookmarks will be restored on the next startup by default (auto save).
+This vim plugin allows toggling bookmarks per line. A quickfix window gives
+access to all bookmarks. Annotations can be added as well. These are special
+bookmarks with a comment attached. They are useful for preparing code reviews.
+All bookmarks will be restored on the next startup.
 
 ===============================================================================
 2. INSTALLATION                                         *BookmarksInstallation*
@@ -59,7 +59,10 @@ You don't have to do anything: it just works.
 Commands for using Bookmarks
 
   :ToggleBookmark                                             *:ToggleBookmark*
-      Add or remove bookmark for the current line
+      Add or remove bookmark at current line
+
+  :Annotate <TEXT>                                                  *:Annotate*
+      Add/edit/remove annotation at current line
 
   :NextBookmark                                                 *:NextBookmark*
       Jump to the next bookmark downwards
@@ -119,7 +122,8 @@ SIGNS' COLOURS AND SYMBOLS
 To customise the colours, set up the following highlight groups in your
 colorscheme or |vimrc|:
 >
-  BookmarkSign       " the sign
+  BookmarkSign            " the sign
+  BookmarkAnnotationSign  " the annotation sign
 <
 
 You can either set these with `highlight BookmarkSign {key}={arg}...` or link
@@ -131,6 +135,7 @@ them to existing highlight groups with, say:
 To customise the symbols, add the following to your |vimrc|:
 >
   let g:bookmark_sign = '>>'
+  let g:bookmark_annotation_sign = '##'
 <
 
 LINE HIGHLIGHTS
@@ -138,7 +143,8 @@ LINE HIGHLIGHTS
 Similarly to the signs' colours, set up the following highlight group in your
 colorscheme or |vimrc|:
 >
-  BookmarkLine       " the highlighted line
+  BookmarkLine            " the highlighted line
+  BookmarkAnnotationLine  " the highlighted annotation line
 <
 
 KEY MAPPINGS
@@ -146,6 +152,7 @@ KEY MAPPINGS
 To change the default keys:
 >
   nmap <Leader><Leader> <Plug>ToggleBookmark
+  nmap <Leader>i <Plug>Annotate
   nmap <Leader>a <Plug>ShowAllBookmarks
   nmap <Leader>j <Plug>NextBookmark
   nmap <Leader>k <Plug>PrevBookmark
@@ -197,13 +204,7 @@ b. What happens if I also use another plugin which uses signs (e.g. Syntastic)?
 
 c. Why aren't any signs showing at all?
 
-  Here are some things you can check:
-  * Your git config is compatible with the version of git which your Vim is
-    calling
->
-  :echo system('git --version')
-<
-  * Your Vim supports signs. This should return "1":
+  Make sure your vim supports signs. This should return "1":
 >
   :echo has('signs')
 <
