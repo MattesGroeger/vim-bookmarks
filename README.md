@@ -52,7 +52,7 @@ After installation you can directly start using it. You can do this by either us
 | Action                                          | Shortcut    | Command                      |
 |-------------------------------------------------|-------------|------------------------------|
 | Add/remove bookmark at current line             | `mm`        | `:ToggleBookmark`            |
-| Add/edit/remove annotation at current line      | `mi`        | `:Annotate <COMMENT>`        |
+| Add/edit/remove annotation at current line      | `mi`        | `:Annotate <TEXT>`           |
 | Jump to next bookmark in buffer                 | `mn`        | `:NextBookmark`              |
 | Jump to previous bookmark in buffer             | `mp`        | `:PrevBookmark`              |
 | Show all bookmarks                              | `ma`        | `:ShowAllBookmarks`          |
@@ -115,10 +115,7 @@ Vim only allows one sign per line. Therefore bookmarks will override any existin
 
 > Why aren't any signs showing at all?
 
-Here are some things you can check:
-
-* Your git config is compatible with the version of git which your Vim is calling (`:echo system('git --version')`).
-* Your Vim supports signs (`:echo has('signs')` should give `1`).
+Make sure your vim supports signs: `:echo has('signs')` should give `1`
 
 ## Changelog
 
