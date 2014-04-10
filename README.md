@@ -33,8 +33,8 @@ Use your favorite plugin manager:
 * [Pathogen][]
   * `git clone https://github.com/MattesGroeger/vim-bookmarks.git ~/.vim/bundle/vim-bookmarks`
 * [Vundle][]
-  1. Add `Bundle 'MattesGroeger/vim-bookmarks'` to .vimrc
-  2. Run `:BundleInstall`
+  1. Add `Plugin 'MattesGroeger/vim-bookmarks'` to .vimrc
+  2. Run `:PluginInstall`
 * [NeoBundle][]
   1. Add `NeoBundle 'MattesGroeger/vim-bookmarks'` to .vimrc
   2. Run `:NeoBundleInstall`
