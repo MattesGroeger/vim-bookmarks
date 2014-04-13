@@ -18,6 +18,60 @@ task :test do
   sh "bundle exec vim-flavor test"
 end
 
+desc "List contributors"
+task :contributors do
+
+  # Login to github
+  client = Octokit::Client.new(netrc: true)
+  client.login
+
+  # Get latest release
+  releases = client.releases(GIT_REPO)
+  last_release_date = releases.size > 0 ? releases.first.created_at : Time.new(1).utc.iso8601
+
+  # Get all commits since last release
+  puts "Get all commits since #{last_release_date}..."
+  commits = client.commits(GIT_REPO, sha: :master, since: last_release_date)
+
+  # Get all collaborators
+  collaborators = client.collaborators(GIT_REPO).map { |c|
+    c.login
+  }
+
+  # Find all authors that are not site_admin
+  contributor_map = commits.inject({}) { |hash, commit|
+    user = commit.author.login
+    if collaborators.index(user).nil?
+      change_count = client.commit(GIT_REPO, commit.sha).stats.total
+      hash[user] = hash[user].nil? ? change_count : hash[user] + change_count
+    end
+    hash
+  }
+
+  # Bail out if no contributors
+  if contributor_map.size == 0
+    return
+  end
+
+  # Sort them by number of changes (importance)
+  contributors = contributor_map.keys.sort { |a, b|
+    contributor_map[b] <=> contributor_map[a]
+  }.map { |c|
+    "@#{c}"
+  }
+
+  # Formulate sentence for 1 or many persons
+  if contributors.size == 1
+    authors = "#{contributors.first} for the contribution"
+  else
+    last = contributors.pop
+    authors = "#{contributors.join(', ')} and #{last} who contributed"
+  end
+
+  p "Thanks #{authors} to this release :heart:!"
+
+end
+
 desc "Create release archive"
 task :release do
   version = request_user_input("Which version do you want to release (0.1.0)?")
