@@ -188,6 +188,12 @@ Turn off the warning when clearing all bookmarks (default 1):
   let g:bookmark_show_warning = 0
 <
 
+Turn on vertical line centering when jumping to bookmark (default 0):
+
+>
+  let g:bookmark_center = 1
+<
+
 ===============================================================================
 6. FAQ                                                           *BookmarksFAQ*
 

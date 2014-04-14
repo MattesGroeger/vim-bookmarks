@@ -21,6 +21,7 @@ call s:set('g:bookmark_sign',            '⚑')
 call s:set('g:bookmark_annotation_sign', '☰')
 call s:set('g:bookmark_show_warning',     1 )
 call s:set('g:bookmark_auto_save',        1 )
+call s:set('g:bookmark_center',           0 )
 call s:set('g:bookmark_auto_save_file',   $HOME .'/.vim-bookmarks')
 
 if g:bookmark_auto_save ==# 1
@@ -233,7 +234,10 @@ function! s:jump_to_bookmark(type)
     echo "No bookmarks found"
   else
     call cursor(line_nr, 1)
-    normal ^
+    normal! ^
+    if g:bookmark_center ==# 1
+      normal! zz
+    endif
     let bm = bm#get_bookmark_by_line(file, line_nr)
     let annotation = bm['annotation'] !=# "" ? " (". bm['annotation'] . ")" : ""
     execute ":redraw!"
