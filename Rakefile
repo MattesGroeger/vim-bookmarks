@@ -66,7 +66,7 @@ def upload_release(version, asset_path)
 
   # show change log, get it confirmed by user (y/n)
   changelog = changes.join
-  changelog << "\n\n#{thanks}" unless thanks.nil?
+  changelog << "\n#{thanks}" unless thanks.nil?
   puts "> Changelog:\n#{changelog}\n\n"
   return puts "Aborted!" if request_user_input("Do you want to create release #{version} with the above changelog? (y/n)", "n").downcase != "y"
 
