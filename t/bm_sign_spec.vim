@@ -19,8 +19,11 @@ describe 'with uninitialized signs'
           \ "BookmarkAnnotationSignDefault xxx ctermfg=28"
     Expect split(util#redir_execute(":highlight BookmarkLineDefault"), '\n')[0] ==#
           \ "BookmarkLineDefault xxx ctermfg=232 ctermbg=33"
-    Expect split(util#redir_execute(":highlight BookmarkAnnotationLineDefault"), '\n')[0] ==#
-          \ "BookmarkAnnotationLineDefault xxx ctermfg=232 ctermbg=28"
+    let alines = split(util#redir_execute(":highlight BookmarkAnnotationLineDefault"), '\n')
+    Expect alines[0] ==#
+          \ "BookmarkAnnotationLineDefault xxx ctermfg=232"
+    Expect alines[1] ==#
+          \ "                   ctermbg=28"
   end
 
   it 'should initialize with line highlight'
@@ -69,6 +72,10 @@ describe "with initialized signs"
 
     Expect lines ==# {}
     Expect len(split(signs, '\n')) ==# 1
+  end
+
+  it 'should not fail to delete signs from invalid buffer'
+    call bm_sign#del("invalid", 1)
   end
 
   after

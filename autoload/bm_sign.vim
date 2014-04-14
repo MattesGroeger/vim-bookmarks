@@ -61,7 +61,10 @@ endfunction
 
 function! bm_sign#del(file, sign_idx)
   call bm_sign#lazy_init()
-  execute "sign unplace ". a:sign_idx ." file=". a:file
+  try
+    execute "sign unplace ". a:sign_idx ." file=". a:file
+  catch
+  endtry
 endfunction
 
 " Returns dict with {'sign_idx': 'line_nr'}
