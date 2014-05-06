@@ -144,7 +144,7 @@ function! ShowAllBookmarks()
   let oldformat = &errorformat    " backup original format
   let &errorformat = "%f:%l:%m"   " custom format for bookmarks
   cgetexpr bm#location_list()
-  copen
+  belowright copen
   let &errorformat = oldformat    " re-apply original format
 endfunction
 command! ShowAllBookmarks call ShowAllBookmarks()
