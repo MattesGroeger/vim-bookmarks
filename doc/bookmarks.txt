@@ -170,7 +170,7 @@ Disable auto saving (default 1):
   let g:bookmark_auto_save = 0
 <
 
-Change file for auto saving (default ~/.vim-bookmarks):
+Change file for auto saving (default $HOME .'/.vim-bookmarks'):
 
 >
   let g:bookmark_auto_save_file = '/tmp/my_bookmarks'

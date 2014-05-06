@@ -91,15 +91,15 @@ highlight BookmarkAnnotationLine ctermbg=whatever ctermfg=whatever
 
 Put any of the following options into your `~/.vimrc` in order to overwrite the default behaviour.
 
-| Option                                         | Default          | Description                                             |
-|------------------------------------------------|------------------|---------------------------------------------------------|
-| `let g:bookmark_sign = '>>'`                   | ⚑                | Sets bookmark icon for sign column                      |
-| `let g:bookmark_annotation_sign = '##'`        | ☰                | Sets bookmark annotation icon for sign column           |
-| `let g:bookmark_auto_save = 0`                 | 1                | Enables/disables automatic saving for bookmarks         |
-| `let g:bookmark_auto_save_file = '/bookmarks'` | ~/.vim-bookmarks | Sets file for auto saving                               |
-| `let g:bookmark_highlight_lines = 1`           | 0                | Enables/disables line highlighting                      |
-| `let g:bookmark_show_warning = 0`              | 1                | Enables/disables warning when clearing all bookmarks    |
-| `let g:bookmark_center = 1`                    | 0                | Enables/disables line centering when jumping to bookmark|
+| Option                                         | Default                  | Description                                             |
+|------------------------------------------------|--------------------------|---------------------------------------------------------|
+| `let g:bookmark_sign = '>>'`                   | ⚑                        | Sets bookmark icon for sign column                      |
+| `let g:bookmark_annotation_sign = '##'`        | ☰                        | Sets bookmark annotation icon for sign column           |
+| `let g:bookmark_auto_save = 0`                 | 1                        | Enables/disables automatic saving for bookmarks         |
+| `let g:bookmark_auto_save_file = '/bookmarks'` | $HOME .'/.vim-bookmarks' | Sets file for auto saving                               |
+| `let g:bookmark_highlight_lines = 1`           | 0                        | Enables/disables line highlighting                      |
+| `let g:bookmark_show_warning = 0`              | 1                        | Enables/disables warning when clearing all bookmarks    |
+| `let g:bookmark_center = 1`                    | 0                        | Enables/disables line centering when jumping to bookmark|
 
 ## FAQ
 
