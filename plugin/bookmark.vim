@@ -27,7 +27,7 @@ call s:set('g:bookmark_auto_save_file',   $HOME .'/.vim-bookmarks')
 if g:bookmark_auto_save ==# 1
   augroup bm_auto_save
     autocmd!
-    autocmd VimEnter * call LoadBookmarks(g:bookmark_auto_save_file, 1)
+    autocmd VimEnter * call s:startup_load_bookmarks(expand("<afile>:p"))
     autocmd VimLeave * call SaveBookmarks(g:bookmark_auto_save_file)
     autocmd BufWinEnter * call s:add_missing_signs(expand("<afile>:p"))
   augroup END
@@ -253,6 +253,11 @@ function! s:remove_all_bookmarks()
       call s:bookmark_remove(file, line_nr)
     endfor
   endfor
+endfunction
+
+function! s:startup_load_bookmarks(file)
+	call LoadBookmarks(g:bookmark_auto_save_file, 1)
+	call s:add_missing_signs(a:file)
 endfunction
 
 " should only be called from autocmd!
