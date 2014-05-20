@@ -23,6 +23,7 @@ call s:set('g:bookmark_show_warning',     1 )
 call s:set('g:bookmark_auto_save',        1 )
 call s:set('g:bookmark_center',           0 )
 call s:set('g:bookmark_auto_save_file',   $HOME .'/.vim-bookmarks')
+call s:set('g:bookmark_auto_close',       0 )
 
 if g:bookmark_auto_save ==# 1
   augroup bm_auto_save
@@ -145,6 +146,10 @@ function! ShowAllBookmarks()
   let &errorformat = "%f:%l:%m"   " custom format for bookmarks
   cgetexpr bm#location_list()
   belowright copen
+  augroup BM_AutoCloseCommand
+    autocmd!
+    autocmd WinLeave * call s:auto_close()
+  augroup END
   let &errorformat = oldformat    " re-apply original format
 endfunction
 command! ShowAllBookmarks call ShowAllBookmarks()
@@ -266,6 +271,21 @@ function! s:add_missing_signs(file)
   for bookmark in bookmarks
     call bm_sign#add_at(a:file, bookmark['sign_idx'], bookmark['line_nr'], bookmark['annotation'] !=# "")
   endfor
+endfunction
+
+function! s:auto_close()
+  if (getbufvar(winbufnr('.'), '&buftype') == 'quickfix')
+    if (g:bookmark_auto_close)
+      q
+    endif
+    call s:remove_auto_close()
+  endif
+endfunction
+
+function! s:remove_auto_close()
+   augroup BM_AutoCloseCommand
+      autocmd!
+   augroup END
 endfunction
 
 " }}}
