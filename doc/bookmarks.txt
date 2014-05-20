@@ -95,6 +95,7 @@ You can customise:
 - Line highlights
 - Key mappings
 - Whether or not line highlighting is on (defaults to off)
+- Whether to close bookmarks split when jumping to a bookmark or not.
 
 Please note that vim-bookmarks won't override any colours or highlights you've
 set in your colorscheme.
@@ -192,6 +193,12 @@ Turn on vertical line centering when jumping to bookmark (default 0):
 
 >
   let g:bookmark_center = 1
+<
+
+Automatically close bookmarks split when jumping to a bookmark (default 0):
+
+>
+  let g:bookmark_auto_close = 1
 <
 
 ===============================================================================
