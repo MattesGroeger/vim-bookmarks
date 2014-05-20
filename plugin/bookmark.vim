@@ -154,19 +154,21 @@ function! ShowAllBookmarks()
 endfunction
 command! ShowAllBookmarks call ShowAllBookmarks()
 
-function! SaveBookmarks(target_file)
+function! SaveBookmarks(target_file, silent)
   call s:refresh_line_numbers()
   let serialized_bookmarks = bm#serialize()
   call writefile(serialized_bookmarks, a:target_file)
-  echo "All bookmarks saved"
+  if (!a:silent)
+    echo "All bookmarks saved"
+  endif
 endfunction
-command! -nargs=1 SaveBookmarks call SaveBookmarks(<f-args>)
+command! -nargs=1 SaveBookmarks call SaveBookmarks(<f-args>, 0)
 
-function! LoadBookmarks(target_file, startup)
+function! LoadBookmarks(target_file, startup, silent)
   let supports_confirm = has("dialog_con") || has("dialog_gui")
   let has_bookmarks = bm#total_count() ># 0
   let confirmed = 1
-  if (supports_confirm && has_bookmarks)
+  if (supports_confirm && has_bookmarks && !a:silent)
     let confirmed = confirm("Do you want to override your ". bm#total_count() ." bookmarks?", "&Yes\n&No")
   endif
   if (confirmed ==# 1)
@@ -178,16 +180,20 @@ function! LoadBookmarks(target_file, startup)
         for entry in new_entries
           call bm_sign#add_at(entry['file'], entry['sign_idx'], entry['line_nr'], entry['annotation'] !=# "")
         endfor
-        echo "Bookmarks loaded"
+        if (!a:silent)
+          echo "Bookmarks loaded"
+        endif
+        return 1
       endif
     catch
-      if !a:startup
+      if (!a:startup && !a:silent)
         echo "Failed to load/parse file"
       endif
+      return 0
     endtry
   endif
 endfunction
-command! -nargs=1 LoadBookmarks call LoadBookmarks(<f-args>, 0)
+command! -nargs=1 LoadBookmarks call LoadBookmarks(<f-args>, 0, 0)
 
 " }}}
 
@@ -261,7 +267,7 @@ function! s:remove_all_bookmarks()
 endfunction
 
 function! s:startup_load_bookmarks(file)
-	call LoadBookmarks(g:bookmark_auto_save_file, 1)
+	call LoadBookmarks(g:bookmark_auto_save_file, 1, 0)
 	call s:add_missing_signs(a:file)
 endfunction
 
