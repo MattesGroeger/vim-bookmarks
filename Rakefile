@@ -149,10 +149,16 @@ def contributors(from = nil, to = nil)
 
   # Find all authors that are not site_admin
   contributor_map = commits.inject({}) { |hash, commit|
-    user = commit.author.login
-    if collaborators.index(user).nil?
-      change_count = @client.commit(GIT_REPO, commit.sha).stats.total
-      hash[user] = hash[user].nil? ? change_count : hash[user] + change_count
+    if commit.author.nil?
+      user = "[#{commit.commit.author.name}](mailto:#{commit.commit.author.email})"
+      hash[user] = 1
+    else
+      login = commit.author.login
+      user = "@#{login}"
+      if collaborators.index(login).nil? # exclude repo maintainer
+        change_count = @client.commit(GIT_REPO, commit.sha).stats.total
+        hash[user] = hash[user].nil? ? change_count : hash[user] + change_count
+      end
     end
     hash
   }
@@ -161,7 +167,7 @@ def contributors(from = nil, to = nil)
   contributor_map.keys.sort { |a, b|
     contributor_map[b] <=> contributor_map[a]
   }.map { |c|
-    "@#{c}"
+    "#{c}"
   }
 end
 
