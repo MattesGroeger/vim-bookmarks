@@ -297,7 +297,7 @@ function! s:set_up_auto_save(file)
      call s:startup_load_bookmarks(a:file)
      augroup bm_auto_save
        autocmd!
-       autocmd VimLeave * call SaveBookmarks(g:bookmark_auto_save_file)
+       autocmd VimLeave * call SaveBookmarks(g:bookmark_auto_save_file, 0)
        autocmd BufWinEnter * call s:add_missing_signs(expand('<afile>:p'))
      augroup END
    endif
