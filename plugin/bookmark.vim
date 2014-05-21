@@ -110,23 +110,25 @@ function! ClearBookmarks()
 endfunction
 command! ClearBookmarks call ClearBookmarks()
 
-function! ClearAllBookmarks()
+function! ClearAllBookmarks(silent)
   call s:refresh_line_numbers()
   let files = bm#all_files()
   let file_count = len(files)
   let delete = 1
   let in_multiple_files = file_count ># 1
   let supports_confirm = has("dialog_con") || has("dialog_gui")
-  if (in_multiple_files && g:bookmark_show_warning ==# 1 && supports_confirm)
+  if (in_multiple_files && g:bookmark_show_warning ==# 1 && supports_confirm && !a:silent)
     let delete = confirm("Delete ". bm#total_count() ." bookmarks in ". file_count . " buffers?", "&Yes\n&No")
   endif
   if (delete ==# 1)
     call s:remove_all_bookmarks()
-    execute ":redraw!"
-    echo "All bookmarks removed"
+    if (!a:silent)
+      execute ":redraw!"
+      echo "All bookmarks removed"
+    endif
   endif
 endfunction
-command! ClearAllBookmarks call ClearAllBookmarks()
+command! ClearAllBookmarks call ClearAllBookmarks(0)
 
 function! NextBookmark()
   call s:refresh_line_numbers()
