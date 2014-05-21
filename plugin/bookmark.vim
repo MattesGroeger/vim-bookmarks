@@ -25,14 +25,10 @@ call s:set('g:bookmark_center',           0 )
 call s:set('g:bookmark_auto_save_file',   $HOME .'/.vim-bookmarks')
 call s:set('g:bookmark_auto_close',       0 )
 
-if g:bookmark_auto_save ==# 1
-  augroup bm_auto_save
-    autocmd!
-    autocmd VimEnter * call s:startup_load_bookmarks(expand("<afile>:p"))
-    autocmd VimLeave * call SaveBookmarks(g:bookmark_auto_save_file)
-    autocmd BufWinEnter * call s:add_missing_signs(expand("<afile>:p"))
-  augroup END
-endif
+augroup bm_vim_enter
+   autocmd!
+   autocmd VimEnter * call s:set_up_auto_save(expand('<afile>:p'))
+augroup END
 
 " }}}
 
@@ -269,8 +265,8 @@ function! s:remove_all_bookmarks()
 endfunction
 
 function! s:startup_load_bookmarks(file)
-	call LoadBookmarks(g:bookmark_auto_save_file, 1, 0)
-	call s:add_missing_signs(a:file)
+  call LoadBookmarks(g:bookmark_auto_save_file, 1, 0)
+  call s:add_missing_signs(a:file)
 endfunction
 
 " should only be called from autocmd!
@@ -294,6 +290,17 @@ function! s:remove_auto_close()
    augroup BM_AutoCloseCommand
       autocmd!
    augroup END
+endfunction
+
+function! s:set_up_auto_save(file)
+   if g:bookmark_auto_save ==# 1
+     call s:startup_load_bookmarks(a:file)
+     augroup bm_auto_save
+       autocmd!
+       autocmd VimLeave * call SaveBookmarks(g:bookmark_auto_save_file)
+       autocmd BufWinEnter * call s:add_missing_signs(expand('<afile>:p'))
+     augroup END
+   endif
 endfunction
 
 " }}}
