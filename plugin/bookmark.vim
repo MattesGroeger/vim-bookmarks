@@ -25,14 +25,10 @@ call s:set('g:bookmark_center',           0 )
 call s:set('g:bookmark_auto_save_file',   $HOME .'/.vim-bookmarks')
 call s:set('g:bookmark_auto_close',       0 )
 
-if g:bookmark_auto_save ==# 1
-  augroup bm_auto_save
-    autocmd!
-    autocmd VimEnter * call s:startup_load_bookmarks(expand("<afile>:p"))
-    autocmd VimLeave * call SaveBookmarks(g:bookmark_auto_save_file)
-    autocmd BufWinEnter * call s:add_missing_signs(expand("<afile>:p"))
-  augroup END
-endif
+augroup bm_vim_enter
+   autocmd!
+   autocmd VimEnter * call s:set_up_auto_save(expand('<afile>:p'))
+augroup END
 
 " }}}
 
@@ -110,23 +106,25 @@ function! ClearBookmarks()
 endfunction
 command! ClearBookmarks call ClearBookmarks()
 
-function! ClearAllBookmarks()
+function! ClearAllBookmarks(silent)
   call s:refresh_line_numbers()
   let files = bm#all_files()
   let file_count = len(files)
   let delete = 1
   let in_multiple_files = file_count ># 1
   let supports_confirm = has("dialog_con") || has("dialog_gui")
-  if (in_multiple_files && g:bookmark_show_warning ==# 1 && supports_confirm)
+  if (in_multiple_files && g:bookmark_show_warning ==# 1 && supports_confirm && !a:silent)
     let delete = confirm("Delete ". bm#total_count() ." bookmarks in ". file_count . " buffers?", "&Yes\n&No")
   endif
   if (delete ==# 1)
     call s:remove_all_bookmarks()
-    execute ":redraw!"
-    echo "All bookmarks removed"
+    if (!a:silent)
+      execute ":redraw!"
+      echo "All bookmarks removed"
+    endif
   endif
 endfunction
-command! ClearAllBookmarks call ClearAllBookmarks()
+command! ClearAllBookmarks call ClearAllBookmarks(0)
 
 function! NextBookmark()
   call s:refresh_line_numbers()
@@ -154,19 +152,21 @@ function! ShowAllBookmarks()
 endfunction
 command! ShowAllBookmarks call ShowAllBookmarks()
 
-function! SaveBookmarks(target_file)
+function! SaveBookmarks(target_file, silent)
   call s:refresh_line_numbers()
   let serialized_bookmarks = bm#serialize()
   call writefile(serialized_bookmarks, a:target_file)
-  echo "All bookmarks saved"
+  if (!a:silent)
+    echo "All bookmarks saved"
+  endif
 endfunction
-command! -nargs=1 SaveBookmarks call SaveBookmarks(<f-args>)
+command! -nargs=1 SaveBookmarks call SaveBookmarks(<f-args>, 0)
 
-function! LoadBookmarks(target_file, startup)
+function! LoadBookmarks(target_file, startup, silent)
   let supports_confirm = has("dialog_con") || has("dialog_gui")
   let has_bookmarks = bm#total_count() ># 0
   let confirmed = 1
-  if (supports_confirm && has_bookmarks)
+  if (supports_confirm && has_bookmarks && !a:silent)
     let confirmed = confirm("Do you want to override your ". bm#total_count() ." bookmarks?", "&Yes\n&No")
   endif
   if (confirmed ==# 1)
@@ -178,16 +178,20 @@ function! LoadBookmarks(target_file, startup)
         for entry in new_entries
           call bm_sign#add_at(entry['file'], entry['sign_idx'], entry['line_nr'], entry['annotation'] !=# "")
         endfor
-        echo "Bookmarks loaded"
+        if (!a:silent)
+          echo "Bookmarks loaded"
+        endif
+        return 1
       endif
     catch
-      if !a:startup
+      if (!a:startup && !a:silent)
         echo "Failed to load/parse file"
       endif
+      return 0
     endtry
   endif
 endfunction
-command! -nargs=1 LoadBookmarks call LoadBookmarks(<f-args>, 0)
+command! -nargs=1 LoadBookmarks call LoadBookmarks(<f-args>, 0, 0)
 
 " }}}
 
@@ -261,8 +265,8 @@ function! s:remove_all_bookmarks()
 endfunction
 
 function! s:startup_load_bookmarks(file)
-	call LoadBookmarks(g:bookmark_auto_save_file, 1)
-	call s:add_missing_signs(a:file)
+  call LoadBookmarks(g:bookmark_auto_save_file, 1, 0)
+  call s:add_missing_signs(a:file)
 endfunction
 
 " should only be called from autocmd!
@@ -286,6 +290,17 @@ function! s:remove_auto_close()
    augroup BM_AutoCloseCommand
       autocmd!
    augroup END
+endfunction
+
+function! s:set_up_auto_save(file)
+   if g:bookmark_auto_save ==# 1
+     call s:startup_load_bookmarks(a:file)
+     augroup bm_auto_save
+       autocmd!
+       autocmd VimLeave * call SaveBookmarks(g:bookmark_auto_save_file, 0)
+       autocmd BufWinEnter * call s:add_missing_signs(expand('<afile>:p'))
+     augroup END
+   endif
 endfunction
 
 " }}}

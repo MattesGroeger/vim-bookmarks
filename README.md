@@ -102,6 +102,10 @@ Put any of the following options into your `~/.vimrc` in order to overwrite the 
 | `let g:bookmark_show_warning = 0`              | 1                        | Enables/disables warning when clearing all bookmarks    |
 | `let g:bookmark_center = 1`                    | 0                        | Enables/disables line centering when jumping to bookmark|
 
+### Silent saving and loading
+
+Call functions SaveBookmarks, LoadBookmarks and ClearAllBookmarks with the last argument set to 0 to perform these operations silently. You may use this to manage your bookmark list transparently from within your custom script.
+
 ## FAQ
 
 > Why are the colours in the sign column weird?

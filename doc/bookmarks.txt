@@ -14,7 +14,9 @@ CONTENTS                                                    *BookmarksContents*
   2.  Installation ................. |BookmarksInstallation|
   3.  Usage ........................ |BookmarksUsage|
   4.  Commands ..................... |BookmarksCommands|
-  5.  FAQ .......................... |BookmarksFAQ|
+  5.  Customisation ................ |BookmarksCustomisation|
+  6.  Extending .................... |BookmarksExtening|
+  7.  FAQ .......................... |BookmarksFAQ|
 
 ===============================================================================
 1. INTRODUCTION                                         *BookmarksIntroduction*
@@ -200,9 +202,18 @@ Automatically close bookmarks split when jumping to a bookmark (default 0):
 >
   let g:bookmark_auto_close = 1
 <
+===============================================================================
+6. EXTENDING                                               *BookmarksExtending*
+
+You can implement automatic switching of bookmarks file on your desired event.
+To do so, use functions SaveBookmarks, LoadBookmarks and ClearAllBookmarks with
+the last argument set to 1. This will suppress any messages and prompts these
+functions normally issue. The LoadBookmarks function will return 1 to indicate
+that file loading was successful, and 0 for failure. An example script using
+this feature is located in the 'examples/bm-autoload-example.vim' file.
 
 ===============================================================================
-6. FAQ                                                           *BookmarksFAQ*
+7. FAQ                                                           *BookmarksFAQ*
 
 a. Why are the colours in the sign column weird?
 
