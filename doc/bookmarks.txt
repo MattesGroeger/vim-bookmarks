@@ -73,7 +73,7 @@ Commands for using Bookmarks
       Jump to the next bookmark upwards
 
   :BookmarkShowAll                                           *:BookmarkShowAll*
-      Show bookmarks across all buffers in new window
+      Show bookmarks across all buffers in new window (toggle)
 
   :BookmarkClear                                               *:BookmarkClear*
       Removes bookmarks for current buffer

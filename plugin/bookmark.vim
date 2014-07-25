@@ -144,16 +144,20 @@ command! PrevBookmark call CallDeprecatedCommand('BookmarkPrev')
 command! BookmarkPrev call BookmarkPrev()
 
 function! BookmarkShowAll()
-  call s:refresh_line_numbers()
-  let oldformat = &errorformat    " backup original format
-  let &errorformat = "%f:%l:%m"   " custom format for bookmarks
-  cgetexpr bm#location_list()
-  belowright copen
-  augroup BM_AutoCloseCommand
-    autocmd!
-    autocmd WinLeave * call s:auto_close()
-  augroup END
-  let &errorformat = oldformat    " re-apply original format
+  if s:is_quickfix_win()
+    q
+  else
+    call s:refresh_line_numbers()
+    let oldformat = &errorformat    " backup original format
+    let &errorformat = "%f:%l:%m"   " custom format for bookmarks
+    cgetexpr bm#location_list()
+    belowright copen
+    augroup BM_AutoCloseCommand
+      autocmd!
+      autocmd WinLeave * call s:auto_close()
+    augroup END
+    let &errorformat = oldformat    " re-apply original format
+  endif
 endfunction
 command! ShowAllBookmarks call CallDeprecatedCommand('BookmarkShowAll')
 command! BookmarkShowAll call BookmarkShowAll()
@@ -292,8 +296,12 @@ function! s:add_missing_signs(file)
   endfor
 endfunction
 
+function! s:is_quickfix_win()
+  return getbufvar(winbufnr('.'), '&buftype') == 'quickfix'
+endfunction
+
 function! s:auto_close()
-  if (getbufvar(winbufnr('.'), '&buftype') == 'quickfix')
+  if s:is_quickfix_win()
     if (g:bookmark_auto_close)
       q
     endif
