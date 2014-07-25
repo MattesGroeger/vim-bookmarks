@@ -233,8 +233,9 @@ function! s:refresh_line_numbers()
   let sign_line_map = bm_sign#lines_for_signs(file)
   for sign_idx in keys(sign_line_map)
     let line_nr = sign_line_map[sign_idx]
-    let content = getbufline(bufnr, line_nr)
-    call bm#update_bookmark_for_sign(file, sign_idx, line_nr, content[0])
+    let line_content = getbufline(bufnr, line_nr)
+    let content = len(line_content) > 0 ? line_content[0] : ' '
+    call bm#update_bookmark_for_sign(file, sign_idx, line_nr, content)
   endfor
 endfunction
 
