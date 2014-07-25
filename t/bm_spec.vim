@@ -25,7 +25,7 @@ describe 'empty model'
   it 'should deserialize bookmarks'
     let data = []
     call add(data, "let l:bm_file_version = 1")
-    call add(data, "let l:bm_sessions = {'default': {'file1': [{'sign_idx': 99, 'line_nr': 1, 'content': 'foo', 'annotation': 'a note'},],'file2': [{'sign_idx': 50, 'line_nr': 12, 'content': 'bar'},{'sign_idx': 51, 'line_nr': 15, 'content': '''test'''},],}}")
+    call add(data, "let l:bm_sessions = {'default': {'file1': [{'sign_idx': 99, 'line_nr': 1, 'content': 'foo ''test''', 'annotation': 'a note'},],'file2': [{'sign_idx': 50, 'line_nr': 12, 'content': 'bar'},{'sign_idx': 51, 'line_nr': 15, 'content': '''test'''},],}}")
     call add(data, "let l:bm_current_session = 'default'")
 
     let result = bm#deserialize(data)
@@ -34,7 +34,7 @@ describe 'empty model'
     Expect bm#has_bookmark_at_line('file1', 1) to_be_true
     Expect bm#location_list() ==# ["file1:1:Annotation: a note", "file2:12:bar", "file2:15:'test'"]
     Expect len(result) ==# 3
-    Expect result ==# [{"file": "file1", "line_nr": 1, "sign_idx": 99, "content": "foo", "annotation": "a note"},
+    Expect result ==# [{"file": "file1", "line_nr": 1, "sign_idx": 99, "content": "foo 'test'", "annotation": "a note"},
                       \{"file": "file2", "line_nr": 12, "sign_idx": 50, "content": "bar", "annotation": ""},
                       \{"file": "file2", "line_nr": 15, "sign_idx": 51, "content": "'test'", "annotation": ""}]
   end

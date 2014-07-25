@@ -160,7 +160,8 @@ function! bm#serialize()
     let sessions .= "'". file ."': ["
     for bm in values(bm#all_bookmarks_by_line(file))
       let escaped_content = substitute(bm['content'], "'", "''", "g")
-      let annotation = bm['annotation'] !=# "" ? ", 'annotation': '". bm['annotation'] ."'" : ""
+      let escaped_annotation = substitute(bm['annotation'], "'", "''", "g")
+      let annotation = bm['annotation'] !=# "" ? ", 'annotation': '". escaped_annotation ."'" : ""
       let sessions .= "{'sign_idx': ". bm['sign_idx'] .", 'line_nr': ". bm['line_nr'] .", 'content': '". escaped_content ."'". annotation ."},"
     endfor
     let sessions .= "],"
