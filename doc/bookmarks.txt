@@ -60,32 +60,32 @@ You don't have to do anything: it just works.
 
 Commands for using Bookmarks
 
-  :ToggleBookmark                                             *:ToggleBookmark*
+  :BookmarkToggle                                             *:BookmarkToggle*
       Add or remove bookmark at current line
 
-  :Annotate <TEXT>                                                  *:Annotate*
+  :BookmarkAnnotate <TEXT>                                  *:BookmarkAnnotate*
       Add/edit/remove annotation at current line
 
-  :NextBookmark                                                 *:NextBookmark*
+  :BookmarkNext                                                 *:BookmarkNext*
       Jump to the next bookmark downwards
 
-  :PrevBookmark                                                 *:PrevBookmark*
+  :BookmarkPrev                                                 *:BookmarkPrev*
       Jump to the next bookmark upwards
 
-  :ShowAllBookmarks                                         *:ShowAllBookmarks*
+  :BookmarkShowAll                                           *:BookmarkShowAll*
       Show bookmarks across all buffers in new window
 
-  :ClearBookmarks                                             *:ClearBookmarks*
+  :BookmarkClear                                               *:BookmarkClear*
       Removes bookmarks for current buffer
 
-  :ClearAllBookmarks                                       *:ClearAllBookmarks*
+  :BookmarkClearAll                                         *:BookmarkClearAll*
       Removes bookmarks for all buffer
 
-  :SaveBookmarks <FILE_PATH>                                   *:SaveBookmarks*
+  :BookmarkSave <FILE_PATH>                                     *:BookmarkSave*
       Saves all bookmarks to a file so you can load them back in later
 
-  :LoadBookmarks <FILE_PATH>                                   *:LoadBookmarks*
-      Loads bookmarks from a file (see :SaveBookmarks)
+  :BookmarkLoad <FILE_PATH>                                     *:BookmarkLoad*
+      Loads bookmarks from a file (see :BookmarkSave)
 
 ===============================================================================
 5. CUSTOMISATION                                       *BookmarksCustomisation*
@@ -154,13 +154,13 @@ KEY MAPPINGS
 
 To change the default keys:
 >
-  nmap <Leader><Leader> <Plug>ToggleBookmark
-  nmap <Leader>i <Plug>Annotate
-  nmap <Leader>a <Plug>ShowAllBookmarks
-  nmap <Leader>j <Plug>NextBookmark
-  nmap <Leader>k <Plug>PrevBookmark
-  nmap <Leader>c <Plug>ClearBookmarks
-  nmap <Leader>x <Plug>ClearAllBookmarks
+  nmap <Leader><Leader> <Plug>BookmarkToggle
+  nmap <Leader>i <Plug>BookmarkAnnotate
+  nmap <Leader>a <Plug>BookmarkShowAll
+  nmap <Leader>j <Plug>BookmarkNext
+  nmap <Leader>k <Plug>BookmarkPrev
+  nmap <Leader>c <Plug>BookmarkClear
+  nmap <Leader>x <Plug>BookmarkClearAll
 <
 
 MORE OPTIONS
@@ -206,9 +206,9 @@ Automatically close bookmarks split when jumping to a bookmark (default 0):
 6. EXTENDING                                               *BookmarksExtending*
 
 You can implement automatic switching of bookmarks file on your desired event.
-To do so, use functions SaveBookmarks, LoadBookmarks and ClearAllBookmarks with
+To do so, use functions BookmarkSave, BookmarkLoad and BookmarkClearAll with
 the last argument set to 1. This will suppress any messages and prompts these
-functions normally issue. The LoadBookmarks function will return 1 to indicate
+functions normally issue. The BookmarkLoad function will return 1 to indicate
 that file loading was successful, and 0 for failure. An example script using
 this feature is located in the 'examples/bm-autoload-example.vim' file.
 

@@ -48,15 +48,15 @@ After installation you can directly start using it. You can do this by either us
 
 | Action                                          | Shortcut    | Command                      |
 |-------------------------------------------------|-------------|------------------------------|
-| Add/remove bookmark at current line             | `mm`        | `:ToggleBookmark`            |
-| Add/edit/remove annotation at current line      | `mi`        | `:Annotate <TEXT>`           |
-| Jump to next bookmark in buffer                 | `mn`        | `:NextBookmark`              |
-| Jump to previous bookmark in buffer             | `mp`        | `:PrevBookmark`              |
-| Show all bookmarks                              | `ma`        | `:ShowAllBookmarks`          |
-| Clear bookmarks in current buffer only          | `mc`        | `:ClearBookmarks`            |
-| Clear bookmarks in all buffers                  | `mx`        | `:ClearAllBookmarks`         |
-| Save all bookmarks to a file                    |             | `:SaveBookmarks <FILE_PATH>` |
-| Load bookmarks from a file                      |             | `:LoadBookmarks <FILE_PATH>` |
+| Add/remove bookmark at current line             | `mm`        | `:BookmarkToggle`            |
+| Add/edit/remove annotation at current line      | `mi`        | `:BookmarkAnnotate <TEXT>`   |
+| Jump to next bookmark in buffer                 | `mn`        | `:BookmarkNext`              |
+| Jump to previous bookmark in buffer             | `mp`        | `:BookmarkPrev`              |
+| Show all bookmarks                              | `ma`        | `:BookmarkShowAll`           |
+| Clear bookmarks in current buffer only          | `mc`        | `:BookmarkClear`             |
+| Clear bookmarks in all buffers                  | `mx`        | `:BookmarkClearAll`          |
+| Save all bookmarks to a file                    |             | `:BookmarkSave <FILE_PATH>`  |
+| Load bookmarks from a file                      |             | `:BookmarkLoad <FILE_PATH>`  |
 
 You can change the shortcuts as you like, just read on...
 
@@ -67,13 +67,13 @@ You can change the shortcuts as you like, just read on...
 You can overwrite any of the default mappings. Just put the following into your `~/.vimrc` and adjust as you like:
 
 ```
-nmap <Leader><Leader> <Plug>ToggleBookmark
-nmap <Leader>i <Plug>Annotate
-nmap <Leader>a <Plug>ShowAllBookmarks
-nmap <Leader>j <Plug>NextBookmark
-nmap <Leader>k <Plug>PrevBookmark
-nmap <Leader>c <Plug>ClearBookmarks
-nmap <Leader>x <Plug>ClearAllBookmarks
+nmap <Leader><Leader> <Plug>BookmarkToggle
+nmap <Leader>i <Plug>BookmarkAnnotate
+nmap <Leader>a <Plug>BookmarkShowAll
+nmap <Leader>j <Plug>BookmarkNext
+nmap <Leader>k <Plug>BookmarkPrev
+nmap <Leader>c <Plug>BookmarkClear
+nmap <Leader>x <Plug>BookmarkClearAll
 ```
 
 ### Colors
@@ -104,7 +104,7 @@ Put any of the following options into your `~/.vimrc` in order to overwrite the 
 
 ### Silent saving and loading
 
-Call functions SaveBookmarks, LoadBookmarks and ClearAllBookmarks with the last argument set to 0 to perform these operations silently. You may use this to manage your bookmark list transparently from within your custom script.
+Call functions BookmarkSave, BookmarkLoad and BookmarkClearAll with the last argument set to 0 to perform these operations silently. You may use this to manage your bookmark list transparently from within your custom script.
 
 ## FAQ
 

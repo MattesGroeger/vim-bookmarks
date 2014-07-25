@@ -35,7 +35,7 @@ augroup END
 
 " Commands {{{
 
-function! ToggleBookmark()
+function! BookmarkToggle()
   call s:refresh_line_numbers()
   let file = expand("%:p")
   if file ==# ""
@@ -50,9 +50,9 @@ function! ToggleBookmark()
     echo "Bookmark added"
   endif
 endfunction
-command! ToggleBookmark call ToggleBookmark()
-
-function! Annotate(...)
+command! ToggleBookmark call CallDeprecatedCommand('BookmarkToggle', [])
+command! BookmarkToggle call BookmarkToggle()
+function! BookmarkAnnotate(...)
   call s:refresh_line_numbers()
   let file = expand("%:p")
   if file ==# ""
@@ -93,9 +93,10 @@ function! Annotate(...)
     echo "Bookmark added with annotation: ". new_annotation
   endif
 endfunction
-command! -nargs=* Annotate call Annotate(<q-args>, 0)
+command! -nargs=* Annotate call CallDeprecatedCommand('BookmarkAnnotate', [<q-args>, 0])
+command! -nargs=* BookmarkAnnotate call BookmarkAnnotate(<q-args>, 0)
 
-function! ClearBookmarks()
+function! BookmarkClear()
   call s:refresh_line_numbers()
   let file = expand("%:p")
   let lines = bm#all_lines(file)
@@ -104,9 +105,10 @@ function! ClearBookmarks()
   endfor
   echo "Bookmarks removed"
 endfunction
-command! ClearBookmarks call ClearBookmarks()
+command! ClearBookmarks call CallDeprecatedCommand('BookmarkClear', [])
+command! BookmarkClear call BookmarkClear()
 
-function! ClearAllBookmarks(silent)
+function! BookmarkClearAll(silent)
   call s:refresh_line_numbers()
   let files = bm#all_files()
   let file_count = len(files)
@@ -124,21 +126,24 @@ function! ClearAllBookmarks(silent)
     endif
   endif
 endfunction
-command! ClearAllBookmarks call ClearAllBookmarks(0)
+command! ClearAllBookmarks call CallDeprecatedCommand('BookmarkClearAll', [0])
+command! BookmarkClearAll call BookmarkClearAll(0)
 
-function! NextBookmark()
+function! BookmarkNext()
   call s:refresh_line_numbers()
   call s:jump_to_bookmark('next')
 endfunction
-command! NextBookmark call NextBookmark()
+command! NextBookmark call CallDeprecatedCommand('BookmarkNext')
+command! BookmarkNext call BookmarkNext()
 
-function! PrevBookmark()
+function! BookmarkPrev()
   call s:refresh_line_numbers()
   call s:jump_to_bookmark('prev')
 endfunction
-command! PrevBookmark call PrevBookmark()
+command! PrevBookmark call CallDeprecatedCommand('BookmarkPrev')
+command! BookmarkPrev call BookmarkPrev()
 
-function! ShowAllBookmarks()
+function! BookmarkShowAll()
   call s:refresh_line_numbers()
   let oldformat = &errorformat    " backup original format
   let &errorformat = "%f:%l:%m"   " custom format for bookmarks
@@ -150,9 +155,10 @@ function! ShowAllBookmarks()
   augroup END
   let &errorformat = oldformat    " re-apply original format
 endfunction
-command! ShowAllBookmarks call ShowAllBookmarks()
+command! ShowAllBookmarks call CallDeprecatedCommand('BookmarkShowAll')
+command! BookmarkShowAll call BookmarkShowAll()
 
-function! SaveBookmarks(target_file, silent)
+function! BookmarkSave(target_file, silent)
   call s:refresh_line_numbers()
   let serialized_bookmarks = bm#serialize()
   call writefile(serialized_bookmarks, a:target_file)
@@ -160,9 +166,10 @@ function! SaveBookmarks(target_file, silent)
     echo "All bookmarks saved"
   endif
 endfunction
-command! -nargs=1 SaveBookmarks call SaveBookmarks(<f-args>, 0)
+command! -nargs=1 SaveBookmarks call CallDeprecatedCommand('BookmarkSave', [<f-args>, 0])
+command! -nargs=1 BookmarkSave call BookmarkSave(<f-args>, 0)
 
-function! LoadBookmarks(target_file, startup, silent)
+function! BookmarkLoad(target_file, startup, silent)
   let supports_confirm = has("dialog_con") || has("dialog_gui")
   let has_bookmarks = bm#total_count() ># 0
   let confirmed = 1
@@ -191,7 +198,14 @@ function! LoadBookmarks(target_file, startup, silent)
     endtry
   endif
 endfunction
-command! -nargs=1 LoadBookmarks call LoadBookmarks(<f-args>, 0, 0)
+command! -nargs=1 LoadBookmarks call CallDeprecatedCommand('BookmarkLoad', [<f-args>, 0, 0])
+command! -nargs=1 BookmarkLoad call BookmarkLoad(<f-args>, 0, 0)
+
+function! CallDeprecatedCommand(fun, args)
+  echo "Warning: Deprecated command, please use ':". a:fun ."' instead"
+  let Fn = function(a:fun)
+  return call(Fn, a:args)
+endfunction
 
 " }}}
 
@@ -265,7 +279,7 @@ function! s:remove_all_bookmarks()
 endfunction
 
 function! s:startup_load_bookmarks(file)
-  call LoadBookmarks(g:bookmark_auto_save_file, 1, 0)
+  call BookmarkLoad(g:bookmark_auto_save_file, 1, 0)
   call s:add_missing_signs(a:file)
 endfunction
 
@@ -297,7 +311,7 @@ function! s:set_up_auto_save(file)
      call s:startup_load_bookmarks(a:file)
      augroup bm_auto_save
        autocmd!
-       autocmd VimLeave * call SaveBookmarks(g:bookmark_auto_save_file, 0)
+       autocmd VimLeave * call BookmarkSave(g:bookmark_auto_save_file, 0)
        autocmd BufWinEnter * call s:add_missing_signs(expand('<afile>:p'))
      augroup END
    endif
@@ -315,12 +329,12 @@ function! s:register_mapping(command, shortcut)
   endif
 endfunction
 
-call s:register_mapping('ShowAllBookmarks',  'ma')
-call s:register_mapping('ToggleBookmark',    'mm')
-call s:register_mapping('Annotate',          'mi')
-call s:register_mapping('NextBookmark',      'mn')
-call s:register_mapping('PrevBookmark',      'mp')
-call s:register_mapping('ClearBookmarks',    'mc')
-call s:register_mapping('ClearAllBookmarks', 'mx')
+call s:register_mapping('BookmarkShowAll',  'ma')
+call s:register_mapping('BookmarkToggle',   'mm')
+call s:register_mapping('BookmarkAnnotate', 'mi')
+call s:register_mapping('BookmarkNext',     'mn')
+call s:register_mapping('BookmarkPrev',     'mp')
+call s:register_mapping('BookmarkClear',    'mc')
+call s:register_mapping('BookmarkClearAll', 'mx')
 
 " }}}

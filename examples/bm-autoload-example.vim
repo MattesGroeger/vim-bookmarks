@@ -23,7 +23,7 @@ function! AutoloadBookmarks(file_name)
   if (root_is_found && found_root != s:last_root)
     let s:last_file = found_root . '/.bookmarks'
     let s:last_root = found_root
-    call LoadBookmarks(s:last_file, 0, 1)
+    call BookmarkLoad(s:last_file, 0, 1)
 
     augroup AutoSaveBookmarks
       autocmd!
@@ -40,7 +40,7 @@ augroup AutoLoadBookmarks
 augroup END
 
 function! s:remove_group()
-  call SaveBookmarks(s:last_file, 1)
+  call BookmarkSave(s:last_file, 1)
   augroup AutoSaveBookmarks
     autocmd!
   augroup END
