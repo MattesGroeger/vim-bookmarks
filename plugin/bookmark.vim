@@ -151,11 +151,15 @@ function! BookmarkShowAll()
     let oldformat = &errorformat    " backup original format
     let &errorformat = "%f:%l:%m"   " custom format for bookmarks
     cgetexpr bm#location_list()
-    belowright copen
-    augroup BM_AutoCloseCommand
-      autocmd!
-      autocmd WinLeave * call s:auto_close()
-    augroup END
+    if exists(':Unite') && !empty(unite#get_all_sources('quickfix'))
+      exec ":Unite quickfix"
+    else
+      belowright copen
+      augroup BM_AutoCloseCommand
+        autocmd!
+        autocmd WinLeave * call s:auto_close()
+      augroup END
+    endif
     let &errorformat = oldformat    " re-apply original format
   endif
 endfunction
