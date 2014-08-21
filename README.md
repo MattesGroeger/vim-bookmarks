@@ -22,6 +22,7 @@ let g:bookmark_highlight_lines = 1
 * Navigate all bookmarks with quickfix window
 * Bookmarks will be restored on next startup
 * Fully customisable (signs, sign column, highlights, mappings)
+* Integrates with [Unite's](https://github.com/Shougo/unite.vim) quickfix source if installed
 * Works independently from [vim marks](http://vim.wikia.com/wiki/Using_marks)
 
 ## Installation
@@ -105,6 +106,29 @@ Put any of the following options into your `~/.vimrc` in order to overwrite the 
 ### Silent saving and loading
 
 Call functions BookmarkSave, BookmarkLoad and BookmarkClearAll with the last argument set to 0 to perform these operations silently. You may use this to manage your bookmark list transparently from within your custom script.
+
+## Unite Integration
+
+[Unite](https://github.com/Shougo/unite.vim) is a multi-purpose user-interface
+plugin platform. If it's part of your workflow, make sure you have a 'quickfix'
+source, a good one can be found [here](https://github.com/Shougo/unite-outline).
+When showing all your bookmarks, Unite is detected and the plugin will open
+`:Unite quickfix` instead of Vim's quickfix window.
+Note that `g:bookmark_auto_close` is no longer applied, once opened, the window
+is managed by Unite.
+
+To set a global per-source context setting, that will apply to Unite's quickfix
+source everytime it's opened, you can add this to your `vimrc`:
+```viml
+call unite#custom#profile('source/quickfix,source/location_list', 'context', {
+	\   'winheight': 13,
+	\   'direction': 'botright',
+	\   'start_insert': 0,
+	\   'keep_focus': 1,
+	\   'no_quit': 1,
+	\ })
+```
+For more information about Unite, start reading `:help Unite`.
 
 ## FAQ
 
