@@ -16,7 +16,8 @@ CONTENTS                                                    *BookmarksContents*
   4.  Commands ..................... |BookmarksCommands|
   5.  Customisation ................ |BookmarksCustomisation|
   6.  Extending .................... |BookmarksExtening|
-  7.  FAQ .......................... |BookmarksFAQ|
+  7.  Unite Integration ............ |BookmarksUniteIntegration|
+  8.  FAQ .......................... |BookmarksFAQ|
 
 ===============================================================================
 1. INTRODUCTION                                         *BookmarksIntroduction*
@@ -213,7 +214,32 @@ that file loading was successful, and 0 for failure. An example script using
 this feature is located in the 'examples/bm-autoload-example.vim' file.
 
 ===============================================================================
-7. FAQ                                                           *BookmarksFAQ*
+7. Unite Integration                                *BookmarksUniteIntegration*
+
+Unite is a multi-purpose user-interface plugin platform. If it's part of your
+workflow, make sure you have a "quickfix" source. When showing all your
+bookmarks, Unite is detected and the plugin will open ':Unite quickfix'
+instead of Vim's quickfix window. Note that |g:bookmark_auto_close| is no
+longer applied, once opened, the window is managed by Unite.
+
+To set a global per-source context setting, that will apply to Unite's quickfix
+source everytime it's opened, you can add this to your |vimrc|:
+>
+  call unite#custom#profile('source/quickfix,source/location_list', 'context', {
+    \   'winheight': 13,
+    \   'direction': 'botright',
+    \   'start_insert': 0,
+    \   'keep_focus': 1,
+    \   'no_quit': 1,
+    \ })
+<
+For more information about Unite, start reading |:Unite|.
+
+https://github.com/Shougo/unite.vim
+https://github.com/Shougo/unite-outline
+
+===============================================================================
+8. FAQ                                                           *BookmarksFAQ*
 
 a. Why are the colours in the sign column weird?
 
