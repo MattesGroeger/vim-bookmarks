@@ -168,11 +168,16 @@ MORE OPTIONS
 
 Change the following options in your |vimrc| to customize the plugin behaviour.
 
-Save bookmarks per project – the folder you opened vim from (default 0):
+Save/show bookmarks per working directory/project (default 0):
 
 >
-  let g:bookmark_save_per_project = 1
+  let g:bookmark_save_per_working_dir = 1
 <
+
+When this option is enabled, a file called `.vim-bookmarks` will be stored in
+the current working directory whenever you create bookmarks. You should add this
+file name to your (global) `.gitignore` file so it doesn't get checked into
+version control.
 
 Disable auto saving (default 1):
 

@@ -16,15 +16,15 @@ function! s:set(var, default)
   endif
 endfunction
 
-call s:set('g:bookmark_highlight_lines',  0 )
-call s:set('g:bookmark_sign',            '⚑')
-call s:set('g:bookmark_annotation_sign', '☰')
-call s:set('g:bookmark_show_warning',     1 )
-call s:set('g:bookmark_save_per_project', 0 )
-call s:set('g:bookmark_auto_save',        1 )
-call s:set('g:bookmark_auto_save_file',   $HOME .'/.vim-bookmarks')
-call s:set('g:bookmark_auto_close',       0 )
-call s:set('g:bookmark_center',           0 )
+call s:set('g:bookmark_highlight_lines',      0 )
+call s:set('g:bookmark_sign',                '⚑')
+call s:set('g:bookmark_annotation_sign',     '☰')
+call s:set('g:bookmark_show_warning',         1 )
+call s:set('g:bookmark_save_per_working_dir', 0 )
+call s:set('g:bookmark_auto_save',            1 )
+call s:set('g:bookmark_auto_save_file',       $HOME .'/.vim-bookmarks')
+call s:set('g:bookmark_auto_close',           0 )
+call s:set('g:bookmark_center',               0 )
 
 augroup bm_vim_enter
    autocmd!
@@ -169,13 +169,13 @@ command! BookmarkShowAll call BookmarkShowAll()
 
 function! BookmarkSave(target_file, silent)
   call s:refresh_line_numbers()
-  if (bm#total_count() > 0 || !g:bookmark_save_per_project)
+  if (bm#total_count() > 0 || !g:bookmark_save_per_working_dir)
     let serialized_bookmarks = bm#serialize()
     call writefile(serialized_bookmarks, a:target_file)
     if (!a:silent)
       echo "All bookmarks saved"
     endif
-  elseif (g:bookmark_save_per_project)
+  elseif (g:bookmark_save_per_working_dir)
     call delete(a:target_file) " remove file, if no bookmarks
   endif
 endfunction
@@ -298,7 +298,7 @@ function! s:startup_load_bookmarks(file)
 endfunction
 
 function! s:bookmark_save_file()
-  return (g:bookmark_save_per_project) ? getcwd(). '/.vim-bookmarks' : g:bookmark_auto_save_file
+  return (g:bookmark_save_per_working_dir) ? getcwd(). '/.vim-bookmarks' : g:bookmark_auto_save_file
 endfunction
 
 " should only be called from autocmd!

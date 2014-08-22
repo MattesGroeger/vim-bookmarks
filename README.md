@@ -8,7 +8,7 @@ This vim plugin allows toggling bookmarks per line. A quickfix window gives acce
 
 [![Screenshot Bright Colors](https://raw.github.com/MattesGroeger/vim-bookmarks/master/screenshot-bright-small.png)](https://raw.github.com/MattesGroeger/vim-bookmarks/master/screenshot-bright.png)
 
-```vim
+```viml
 highlight BookmarkSign ctermbg=NONE ctermfg=160
 highlight BookmarkLine ctermbg=194 ctermfg=NONE
 let g:bookmark_sign = '♥'
@@ -21,6 +21,7 @@ let g:bookmark_highlight_lines = 1
 * Add annotations per line ☰
 * Navigate all bookmarks with quickfix window
 * Bookmarks will be restored on next startup
+* [Bookmarks per working directory](https://github.com/MattesGroeger/vim-bookmarks#bookmarks-per-working-directory) (optional)
 * Fully customisable (signs, sign column, highlights, mappings)
 * Integrates with [Unite's](https://github.com/Shougo/unite.vim) quickfix source if installed
 * Works independently from [vim marks](http://vim.wikia.com/wiki/Using_marks)
@@ -67,7 +68,7 @@ You can change the shortcuts as you like, just read on...
 
 You can overwrite any of the default mappings. Just put the following into your `~/.vimrc` and adjust as you like:
 
-```
+```viml
 nmap <Leader><Leader> <Plug>BookmarkToggle
 nmap <Leader>i <Plug>BookmarkAnnotate
 nmap <Leader>a <Plug>BookmarkShowAll
@@ -81,7 +82,7 @@ nmap <Leader>x <Plug>BookmarkClearAll
 
 Overwrite the default hightlight groups by adding this to your colorscheme or `.vimrc`:
 
-```
+```viml
 highlight BookmarkSign ctermbg=whatever ctermfg=whatever
 highlight BookmarkAnnotationSign ctermbg=whatever ctermfg=whatever
 highlight BookmarkLine ctermbg=whatever ctermfg=whatever
@@ -96,13 +97,28 @@ Put any of the following options into your `~/.vimrc` in order to overwrite the 
 |------------------------------------------------|--------------------------|---------------------------------------------------------|
 | `let g:bookmark_sign = '>>'`                   | ⚑                        | Sets bookmark icon for sign column                      |
 | `let g:bookmark_annotation_sign = '##'`        | ☰                        | Sets bookmark annotation icon for sign column           |
-| `let g:bookmark_save_per_project = 1`          | 0                        | Save bookmarks per project, the folder you opened vim from |
+| `let g:bookmark_save_per_working_dir = 1`      | 0                        | Save bookmarks per project, the folder you opened vim from |
 | `let g:bookmark_auto_save = 0`                 | 1                        | Enables/disables automatic saving for bookmarks         |
-| `let g:bookmark_auto_save_file = '/bookmarks'` | $HOME .'/.vim-bookmarks' | Sets file for auto saving                               |
+| `let g:bookmark_auto_save_file = '/bookmarks'` | $HOME .'/.vim-bookmarks' | Sets file for auto saving (ignored when `bookmark_save_per_working_dir` is enabled) |
 | `let g:bookmark_auto_close = 1`                | 0                        | Automatically close bookmarks split when jumping to a bookmark |
 | `let g:bookmark_highlight_lines = 1`           | 0                        | Enables/disables line highlighting                      |
 | `let g:bookmark_show_warning = 0`              | 1                        | Enables/disables warning when clearing all bookmarks    |
 | `let g:bookmark_center = 1`                    | 0                        | Enables/disables line centering when jumping to bookmark|
+
+### Bookmarks per working directory
+
+This feature allows the grouping of bookmarks per root directory. This way bookmarks from other projects are not interfering. This is done by saving a file called `.vim-bookmarks` into the current working directory (the folder you opened vim from).
+
+Whenever a vim instance is opened from the same root folder the bookmarks from that folder will be loaded. Note, that you can place your bookmarks in any file underneath the working directory, though.
+
+In order to use this feature, put this into your `.vimrc`:
+
+```viml
+let g:bookmark_save_per_working_dir = 1
+let g:bookmark_auto_save = 1
+```
+
+You should add the filename `.vim-bookmarks` to your (global) `.gitignore` file so it doesn't get checked into version control.
 
 ### Silent saving and loading
 
@@ -110,16 +126,12 @@ Call functions BookmarkSave, BookmarkLoad and BookmarkClearAll with the last arg
 
 ## Unite Integration
 
-[Unite](https://github.com/Shougo/unite.vim) is a multi-purpose user-interface
-plugin platform. If it's part of your workflow, make sure you have a 'quickfix'
-source, a good one can be found [here](https://github.com/Shougo/unite-outline).
-When showing all your bookmarks, Unite is detected and the plugin will open
-`:Unite quickfix` instead of Vim's quickfix window.
-Note that `g:bookmark_auto_close` is no longer applied, once opened, the window
-is managed by Unite.
+[Unite](https://github.com/Shougo/unite.vim) is a multi-purpose user-interface plugin platform. If it's part of your workflow, make sure you have a 'quickfix' source, a good one can be found [here](https://github.com/Shougo/unite-outline).
+When showing all your bookmarks, Unite is detected and the plugin will open `:Unite quickfix` instead of Vim's quickfix window.
+Note that `g:bookmark_auto_close` is no longer applied, once opened, the window is managed by Unite.
 
-To set a global per-source context setting, that will apply to Unite's quickfix
-source everytime it's opened, you can add this to your `vimrc`:
+To set a global per-source context setting, that will apply to Unite's quickfix source everytime it's opened, you can add this to your `vimrc`:
+
 ```viml
 call unite#custom#profile('source/quickfix,source/location_list', 'context', {
 	\   'winheight': 13,
@@ -129,6 +141,7 @@ call unite#custom#profile('source/quickfix,source/location_list', 'context', {
 	\   'no_quit': 1,
 	\ })
 ```
+
 For more information about Unite, start reading `:help Unite`.
 
 ## FAQ
