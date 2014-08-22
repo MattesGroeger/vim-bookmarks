@@ -168,6 +168,12 @@ MORE OPTIONS
 
 Change the following options in your |vimrc| to customize the plugin behaviour.
 
+Save bookmarks per project – the folder you opened vim from (default 0):
+
+>
+  let g:bookmark_save_per_project = 1
+<
+
 Disable auto saving (default 1):
 
 >

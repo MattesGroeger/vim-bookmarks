@@ -20,10 +20,11 @@ call s:set('g:bookmark_highlight_lines',  0 )
 call s:set('g:bookmark_sign',            '⚑')
 call s:set('g:bookmark_annotation_sign', '☰')
 call s:set('g:bookmark_show_warning',     1 )
+call s:set('g:bookmark_save_per_project', 0 )
 call s:set('g:bookmark_auto_save',        1 )
-call s:set('g:bookmark_center',           0 )
 call s:set('g:bookmark_auto_save_file',   $HOME .'/.vim-bookmarks')
 call s:set('g:bookmark_auto_close',       0 )
+call s:set('g:bookmark_center',           0 )
 
 augroup bm_vim_enter
    autocmd!
@@ -169,6 +170,7 @@ command! BookmarkShowAll call BookmarkShowAll()
 function! BookmarkSave(target_file, silent)
   call s:refresh_line_numbers()
   let serialized_bookmarks = bm#serialize()
+  " TODO only write file when there are bookmarks
   call writefile(serialized_bookmarks, a:target_file)
   if (!a:silent)
     echo "All bookmarks saved"
@@ -288,8 +290,12 @@ function! s:remove_all_bookmarks()
 endfunction
 
 function! s:startup_load_bookmarks(file)
-  call BookmarkLoad(g:bookmark_auto_save_file, 1, 0)
+  call BookmarkLoad(s:bookmark_save_file(), 1, 1)
   call s:add_missing_signs(a:file)
+endfunction
+
+function! s:bookmark_save_file()
+  return (g:bookmark_save_per_project) ? getcwd(). '/.vim-bookmarks' : g:bookmark_auto_save_file
 endfunction
 
 " should only be called from autocmd!
@@ -324,7 +330,7 @@ function! s:set_up_auto_save(file)
      call s:startup_load_bookmarks(a:file)
      augroup bm_auto_save
        autocmd!
-       autocmd VimLeave * call BookmarkSave(g:bookmark_auto_save_file, 0)
+       autocmd VimLeave * call BookmarkSave(s:bookmark_save_file(), 1)
        autocmd BufWinEnter * call s:add_missing_signs(expand('<afile>:p'))
      augroup END
    endif
