@@ -176,8 +176,8 @@ Save/show bookmarks per working directory/project (default 0):
 
 When this option is enabled, a file called `.vim-bookmarks` will be stored in
 the current working directory whenever you create bookmarks. You should add this
-file name to your (global) `.gitignore` file so it doesn't get checked into
-version control.
+file to your (global) `.gitignore` file so it doesn't get checked into version
+control.
 
 Disable auto saving (default 1):
 
