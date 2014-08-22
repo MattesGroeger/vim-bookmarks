@@ -169,11 +169,14 @@ command! BookmarkShowAll call BookmarkShowAll()
 
 function! BookmarkSave(target_file, silent)
   call s:refresh_line_numbers()
-  let serialized_bookmarks = bm#serialize()
-  " TODO only write file when there are bookmarks
-  call writefile(serialized_bookmarks, a:target_file)
-  if (!a:silent)
-    echo "All bookmarks saved"
+  if (bm#total_count() > 0 || !g:bookmark_save_per_project)
+    let serialized_bookmarks = bm#serialize()
+    call writefile(serialized_bookmarks, a:target_file)
+    if (!a:silent)
+      echo "All bookmarks saved"
+    endif
+  elseif (g:bookmark_save_per_project)
+    call delete(a:target_file) " remove file, if no bookmarks
   endif
 endfunction
 command! -nargs=1 SaveBookmarks call CallDeprecatedCommand('BookmarkSave', [<f-args>, 0])
