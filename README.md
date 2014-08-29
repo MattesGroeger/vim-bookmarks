@@ -120,6 +120,30 @@ let g:bookmark_auto_save = 1
 
 You should add the filename `.vim-bookmarks` to your (global) `.gitignore` file so it doesn't get checked into version control.
 
+If you want to customize the location or filename you can define the following function in your `.vimrc`. The return value will be used to retrieve and save the bookmark positions. This way you can implement you custom strategy for determining the work dir location (e.g. inside the `.git` directory):
+
+```viml
+" Finds the Git super-project or submodule directory.
+function! g:bm_work_dir_file_location()
+  " If no .git folder in cwd = it's not a git repo.
+  " If no .git file in cwd = it's not a git submodule.
+  if !isdirectory('.git') && !filereadable('.git')
+    " Look upwards (at parents) for a file or dir named '.git':
+    " First lookup for a .git file, symbolizing a git submodule
+    let parent = substitute(findfile('.git', '.;'), '/.git', '', '')
+    if parent == ''
+      " Secondly, lookup for a .git folder, symbolizing a git repo
+      let parent = substitute(finddir('.git', '.;'), '/.git', '', '')
+    endif
+    " If found, use it instead of cwd
+    if parent != ''
+      let cwd = parent
+    endif
+  endif
+  return cwd . '/.vim-bookmarks'
+endfunction
+```
+
 ### Silent saving and loading
 
 Call functions BookmarkSave, BookmarkLoad and BookmarkClearAll with the last argument set to 0 to perform these operations silently. You may use this to manage your bookmark list transparently from within your custom script.

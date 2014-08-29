@@ -298,7 +298,15 @@ function! s:startup_load_bookmarks(file)
 endfunction
 
 function! s:bookmark_save_file()
-  return (g:bookmark_save_per_working_dir) ? getcwd(). '/.vim-bookmarks' : g:bookmark_auto_save_file
+  if (g:bookmark_save_per_working_dir)
+    return exists("*g:bm_work_dir_file_location") ? g:bm_work_dir_file_location() : s:default_file_location()
+  else
+    return g:bookmark_auto_save_file
+  endif
+endfunction
+
+function! s:default_file_location()
+    return getcwd(). '/.vim-bookmarks'
 endfunction
 
 " should only be called from autocmd!
