@@ -124,7 +124,7 @@ If you want to customize the location or filename you can define the following f
 
 ```viml
 " Finds the Git super-project or submodule directory.
-function! g:bm_work_dir_file_location()
+function! g:BMWorkDirFileLocation()
   " If no .git folder in cwd = it's not a git repo.
   " If no .git file in cwd = it's not a git submodule.
   if !isdirectory('.git') && !filereadable('.git')
