@@ -125,15 +125,20 @@ If you want to customize the location or filename you can define the following f
 ```viml
 " Finds the Git super-project directory.
 function! g:BMWorkDirFileLocation()
-	let filename = 'vim-bookmarks'
-	if !isdirectory('.git')
-		" Look upwards (at parents) for a directory named '.git'
-		let parent = finddir('.git', '.;')
-		if parent != ''
-			return parent.'/'.filename
-		endif
-	endif
-	return getcwd().'/.'.filename
+    let filename = 'bookmarks'
+    let location = ''
+    if isdirectory('.git')
+        " Current work dir is git's work tree
+        let location = getcwd().'/.git'
+    else
+        " Look upwards (at parents) for a directory named '.git'
+        let location = finddir('.git', '.;')
+    endif
+    if len(location) > 0
+        return location.'/'.filename
+    else
+        return getcwd().'/.'.filename
+    endif
 endfunction
 ```
 
