@@ -299,7 +299,7 @@ endfunction
 
 function! s:bookmark_save_file()
   if (g:bookmark_save_per_working_dir)
-    return exists("*g:bm_work_dir_file_location") ? g:bm_work_dir_file_location() : s:default_file_location()
+    return exists("*g:BMWorkDirFileLocation") ? g:BMWorkDirFileLocation() : s:default_file_location()
   else
     return g:bookmark_auto_save_file
   endif
