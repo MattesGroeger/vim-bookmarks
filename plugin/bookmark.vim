@@ -324,7 +324,13 @@ endfunction
 function! s:auto_close()
   if s:is_quickfix_win()
     if (g:bookmark_auto_close)
+      " Setting 'splitbelow' before closing the quickfix window will ensure
+      " that its space is given back to the window above rather than to the
+      " window below.
+      let l:sb = &sb
+      set splitbelow
       q
+      let &sb = l:sb
     endif
     call s:remove_auto_close()
   endif
