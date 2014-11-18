@@ -247,7 +247,7 @@ source everytime it's opened, you can add this to your |vimrc|:
 For more information about Unite, start reading |:Unite|.
 
 https://github.com/Shougo/unite.vim
-https://github.com/Shougo/unite-outline
+https://github.com/osyo-manga/unite-quickfix
 
 ===============================================================================
 8. FAQ                                                           *BookmarksFAQ*
