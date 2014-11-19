@@ -190,6 +190,11 @@ function! bm#deserialize(data)
     return result
 endfunction
 
+function! bm#define_highlights() abort " {{{
+  highlight default link VimBookmarksPath     Comment
+  highlight default link VimBookmarksContent  Normal
+endfunction " }}}
+
 " }}}
 
 

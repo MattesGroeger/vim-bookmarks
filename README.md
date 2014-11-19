@@ -148,14 +148,14 @@ Call functions BookmarkSave, BookmarkLoad and BookmarkClearAll with the last arg
 
 ## Unite Integration
 
-[Unite](https://github.com/Shougo/unite.vim) is a multi-purpose user-interface plugin platform. If it's part of your workflow, make sure you have a 'quickfix' source, a good one can be found [here](https://github.com/osyo-manga/unite-quickfix).
-When showing all your bookmarks, Unite is detected and the plugin will open `:Unite quickfix` instead of Vim's quickfix window.
+[Unite](https://github.com/Shougo/unite.vim) is a multi-purpose user-interface plugin platform.
+When showing all your bookmarks, Unite is detected and the plugin will open `:Unite vim_bookmarks` instead of Vim's quickfix window.
 Note that `g:bookmark_auto_close` is no longer applied, once opened, the window is managed by Unite.
 
-To set a global per-source context setting, that will apply to Unite's quickfix source everytime it's opened, you can add this to your `vimrc`:
+To set a global per-source context setting, that will apply to Unite's vim_bookmarks source everytime it's opened, you can add this to your `vimrc`:
 
 ```viml
-call unite#custom#profile('source/quickfix,source/location_list', 'context', {
+call unite#custom#profile('source/vim_bookmarks', 'context', {
 	\   'winheight': 13,
 	\   'direction': 'botright',
 	\   'start_insert': 0,

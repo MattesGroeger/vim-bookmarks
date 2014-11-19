@@ -227,16 +227,15 @@ this feature is located in the 'examples/bm-autoload-example.vim' file.
 ===============================================================================
 7. Unite Integration                                *BookmarksUniteIntegration*
 
-Unite is a multi-purpose user-interface plugin platform. If it's part of your
-workflow, make sure you have a "quickfix" source. When showing all your
-bookmarks, Unite is detected and the plugin will open ':Unite quickfix'
+Unite is a multi-purpose user-interface plugin platform. When showing all your
+bookmarks, Unite is detected and the plugin will open ':Unite vim_bookmarks'
 instead of Vim's quickfix window. Note that |g:bookmark_auto_close| is no
 longer applied, once opened, the window is managed by Unite.
 
 To set a global per-source context setting, that will apply to Unite's quickfix
 source everytime it's opened, you can add this to your |vimrc|:
 >
-  call unite#custom#profile('source/quickfix,source/location_list', 'context', {
+  call unite#custom#profile('source/vim_bookmarks', 'context', {
     \   'winheight': 13,
     \   'direction': 'botright',
     \   'start_insert': 0,
@@ -247,7 +246,6 @@ source everytime it's opened, you can add this to your |vimrc|:
 For more information about Unite, start reading |:Unite|.
 
 https://github.com/Shougo/unite.vim
-https://github.com/osyo-manga/unite-quickfix
 
 ===============================================================================
 8. FAQ                                                           *BookmarksFAQ*
