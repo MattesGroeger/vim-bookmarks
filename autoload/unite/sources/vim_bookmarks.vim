@@ -8,6 +8,10 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+function! unite#sources#vim_bookmarks#define_highlights() abort " {{{
+  highlight default link BookmarkUnitePath     Comment
+  highlight default link BookmarkUniteContent  Normal
+endfunction " }}}
 
 let s:source = {
       \ 'name': 'vim_bookmarks',
@@ -38,9 +42,9 @@ function! s:source.gather_candidates(args, context) abort " {{{
   return copy(candidates)
 endfunction " }}}
 function! s:source.hooks.on_syntax(args, context) abort " {{{
-  call bm#define_highlights()
-  highlight default link uniteSource__VimBookmarks_path     VimBookmarksPath
-  highlight default link uniteSource__VimBookmarks_content  VimBookmarksContent
+  call unite#sources#vim_bookmarks#define_highlights()
+  highlight default link uniteSource__VimBookmarks_path    BookmarkUnitePath
+  highlight default link uniteSource__VimBookmarks_content BookmarkUniteContent
 
   execute 'syntax match uniteSource__VimBookmarks_path'
         \ '/[^|]\+/'
@@ -55,7 +59,7 @@ function! unite#sources#vim_bookmarks#define()
 endfunction
 call unite#define_source(s:source)  " Required for reloading
 
-" define this converter as a default converter
+" define default converter
 call unite#custom_source(
       \ 'vim_bookmarks',
       \ 'converters',

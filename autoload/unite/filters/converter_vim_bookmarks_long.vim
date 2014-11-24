@@ -13,7 +13,7 @@ function! s:format_bookmark(candidate) " {{{
   let file = a:candidate.action__path
   let line_nr = a:candidate.action__line
   let bookmark = a:candidate.action__bookmark
-  return printf("%s:%d | %s", pathshorten(file), line_nr,
+  return printf("%s:%d | %s", file, line_nr,
         \   bookmark.annotation !=# ''
         \     ? "Annotation: " . bookmark.annotation
         \     : (bookmark.content !=# "" ? bookmark.content
@@ -25,14 +25,13 @@ let s:converter = {
       \ 'description': 'vim-bookmarks converter which show short informations',
       \}
 function! s:converter.filter(candidates, context) " {{{
-  let candidates = copy(a:candidates)
-  for candidate in candidates
+  for candidate in a:candidates
     let candidate.abbr = s:format_bookmark(candidate)
   endfor
-  return candidates
+  return a:candidates
 endfunction " }}}
 
-function! unite#filters#converter_vim_bookmarks_short#define() " {{{
+function! unite#filters#converter_vim_bookmarks_long#define() " {{{
   return s:converter
 endfunction " }}}
 call unite#define_filter(s:converter)
