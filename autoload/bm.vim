@@ -163,7 +163,7 @@ function! bm#serialize()
       let escaped_annotation = substitute(bm['annotation'], "'", "''", "g")
       let annotation = bm['annotation'] !=# "" ? ", 'annotation': '". escaped_annotation ."'" : ""
       let sessions .= "{'sign_idx': ". bm['sign_idx'] .", 'line_nr': ". bm['line_nr'] .", 'content': '". escaped_content ."'". annotation ."},"
-    endfor
+    endfor                                    
     let sessions .= "],"
   endfor
   let sessions .= "}}"

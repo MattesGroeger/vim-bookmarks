@@ -147,15 +147,17 @@ endfunction
 Call functions BookmarkSave, BookmarkLoad and BookmarkClearAll with the last argument set to 0 to perform these operations silently. You may use this to manage your bookmark list transparently from within your custom script.
 
 ## Unite Integration
+![A screenshot of vim-bookmarks' Unite interface](./screenshot-unite-interface.png)
 
-[Unite](https://github.com/Shougo/unite.vim) is a multi-purpose user-interface plugin platform. If it's part of your workflow, make sure you have a 'quickfix' source, a good one can be found [here](https://github.com/osyo-manga/unite-quickfix).
-When showing all your bookmarks, Unite is detected and the plugin will open `:Unite quickfix` instead of Vim's quickfix window.
+[Unite](https://github.com/Shougo/unite.vim) is a multi-purpose user-interface plugin platform.
+vim-bookmarks provide an Unite source called `vim_bookmarks` so users who use Unite will handle bookmarks with the Unite interface.
+Additionally, when showing all your bookmarks, Unite is detected and the plugin will open `:Unite vim_bookmarks` instead of Vim's quickfix window.
 Note that `g:bookmark_auto_close` is no longer applied, once opened, the window is managed by Unite.
 
-To set a global per-source context setting, that will apply to Unite's quickfix source everytime it's opened, you can add this to your `vimrc`:
+To set a global per-source context setting, that will apply to Unite's vim_bookmarks source everytime it's opened, you can add this to your `vimrc`:
 
 ```viml
-call unite#custom#profile('source/quickfix,source/location_list', 'context', {
+call unite#custom#profile('source/vim_bookmarks', 'context', {
 	\   'winheight': 13,
 	\   'direction': 'botright',
 	\   'start_insert': 0,
@@ -163,6 +165,19 @@ call unite#custom#profile('source/quickfix,source/location_list', 'context', {
 	\   'no_quit': 1,
 	\ })
 ```
+
+With the Unite interface, when you select bookmarks, you can perform the following actions.
+
+- Open the selected bookmarks in various ways (open in right, open in above, open in new tab, etc.)
+- Yank the informations of selected bookmarks (path and line number, the line content, annotation, etc.)
+- Highlight the lines of the selected bookmarks
+- Replace the contents of selected bookmarks with [vim-qfreplace](https://github.com/thinca/vim-qfreplace) interface
+- Delete the selected bookmarks
+- And more!
+
+See the screenshot below to get the image of what you can do with the interface (the size of the picture is not enough, that mean you can select even more actions actually!).
+
+![A screenshot of action list of vim-bookmarks' Unite interface](./screenshot-unite-interface-actions.png)
 
 For more information about Unite, start reading `:help Unite`.
 

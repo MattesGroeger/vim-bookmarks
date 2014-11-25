@@ -149,19 +149,19 @@ function! BookmarkShowAll()
     q
   else
     call s:refresh_line_numbers()
-    let oldformat = &errorformat    " backup original format
-    let &errorformat = "%f:%l:%m"   " custom format for bookmarks
-    cgetexpr bm#location_list()
-    if exists(':Unite') && !empty(unite#get_all_sources('quickfix'))
-      exec ":Unite quickfix"
+    if exists(':Unite')
+      exec ":Unite vim_bookmarks"
     else
+      let oldformat = &errorformat    " backup original format
+      let &errorformat = "%f:%l:%m"   " custom format for bookmarks
+      cgetexpr bm#location_list()
       belowright copen
       augroup BM_AutoCloseCommand
         autocmd!
         autocmd WinLeave * call s:auto_close()
       augroup END
+      let &errorformat = oldformat    " re-apply original format
     endif
-    let &errorformat = oldformat    " re-apply original format
   endif
 endfunction
 command! ShowAllBookmarks call CallDeprecatedCommand('BookmarkShowAll')
