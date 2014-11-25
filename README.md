@@ -149,10 +149,9 @@ Call functions BookmarkSave, BookmarkLoad and BookmarkClearAll with the last arg
 ## Unite Integration
 ![A screenshot of vim-bookmarks' Unite interface](./screenshot-unite-interface.png)
 
-[Unite](https://github.com/Shougo/unite.vim) is a multi-purpose user-interface plugin platform.
-vim-bookmarks provide an Unite source called `vim_bookmarks` so users who use Unite will handle bookmarks with the Unite interface.
-Additionally, when showing all your bookmarks, Unite is detected and the plugin will open `:Unite vim_bookmarks` instead of Vim's quickfix window.
-Note that `g:bookmark_auto_close` is no longer applied, once opened, the window is managed by Unite.
+[Unite](https://github.com/Shougo/unite.vim) is a multi-purpose user-interface plugin platform. Vim-bookmarks provides a Unite source called `vim_bookmarks` so users who use Unite will handle bookmarks with the Unite interface.
+
+Additionally, when showing all your bookmarks, Unite is detected and the plugin will open `:Unite vim_bookmarks` instead of Vim's quickfix window. Note that `g:bookmark_auto_close` is no longer applied. Once opened, the window is managed by Unite.
 
 To set a global per-source context setting, that will apply to Unite's vim_bookmarks source everytime it's opened, you can add this to your `vimrc`:
 
@@ -166,16 +165,16 @@ call unite#custom#profile('source/vim_bookmarks', 'context', {
 	\ })
 ```
 
-With the Unite interface, when you select bookmarks, you can perform the following actions.
+With the Unite interface, when you select bookmarks, you can perform the following actions:
 
-- Open the selected bookmarks in various ways (open in right, open in above, open in new tab, etc.)
-- Yank the informations of selected bookmarks (path and line number, the line content, annotation, etc.)
-- Highlight the lines of the selected bookmarks
-- Replace the contents of selected bookmarks with [vim-qfreplace](https://github.com/thinca/vim-qfreplace) interface
-- Delete the selected bookmarks
-- And more!
+* Open the selected bookmarks in various ways (open to the right, open above, open in new tab, etc.)
+* Yank the informations of selected bookmarks (path and line number, the line content, annotation, etc.)
+* Highlight the lines of the selected bookmarks
+* Replace the contents of selected bookmarks with [vim-qfreplace](https://github.com/thinca/vim-qfreplace) interface
+* Delete the selected bookmarks
+* And more...
 
-See the screenshot below to get the image of what you can do with the interface (the size of the picture is not enough, that mean you can select even more actions actually!).
+See the screenshot below to get an idea of what you can do with the interface (the picture shows only a fraction, that means you can select even more actions):
 
 ![A screenshot of action list of vim-bookmarks' Unite interface](./screenshot-unite-interface-actions.png)
 
