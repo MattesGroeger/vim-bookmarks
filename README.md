@@ -77,6 +77,11 @@ nmap <Leader>k <Plug>BookmarkPrev
 nmap <Leader>c <Plug>BookmarkClear
 nmap <Leader>x <Plug>BookmarkClearAll
 ```
+You can disable all default key bindings by setting the following in your `~/.vimrc`:
+
+```viml
+let g:bookmark_no_default_key_mappings = 1
+```
 
 ### Colors
 
@@ -104,6 +109,7 @@ Put any of the following options into your `~/.vimrc` in order to overwrite the 
 | `let g:bookmark_highlight_lines = 1`           | 0                        | Enables/disables line highlighting                      |
 | `let g:bookmark_show_warning = 0`              | 1                        | Enables/disables warning when clearing all bookmarks    |
 | `let g:bookmark_center = 1`                    | 0                        | Enables/disables line centering when jumping to bookmark|
+| `let g:bookmark_no_default_key_mappings = 1`                    | 0                        | Prevent any default key mapping from being created|
 
 ### Bookmarks per working directory
 
