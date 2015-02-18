@@ -23,13 +23,13 @@ call s:set('g:bookmark_annotation_sign',     '☰')
 call s:set('g:bookmark_show_warning',         1 )
 call s:set('g:bookmark_save_per_working_dir', 0 )
 call s:set('g:bookmark_auto_save',            1 )
-call s:set('g:bookmark_auto_save_per_buffer', 0 )
+call s:set('g:bookmark_manage_per_buffer',    0 )
 call s:set('g:bookmark_auto_save_file',       $HOME .'/.vim-bookmarks')
 call s:set('g:bookmark_auto_close',           0 )
 call s:set('g:bookmark_center',               0 )
 
 function! s:init(file)
-  if g:bookmark_auto_save ==# 1 && g:bookmark_auto_save_per_buffer ==# 1
+  if g:bookmark_auto_save ==# 1 && g:bookmark_manage_per_buffer ==# 1
     augroup bm_vim_enter
       autocmd!
       autocmd BufEnter * call s:set_up_auto_save(expand('<afile>:p'))
@@ -312,7 +312,7 @@ function! s:bookmark_save_file(file)
   " of determining the file to save bookmarks in, they pretty much are due to
   " the different custom handlers used to compute that file name.
   " This is purely a result of keeping the code backward compatible.
-  if (g:bookmark_auto_save_per_buffer ==# 1)
+  if (g:bookmark_manage_per_buffer ==# 1)
     return exists("*g:BMBufferFileLocation") ? g:BMBufferFileLocation(a:file) : s:default_file_location()
   elseif (g:bookmark_save_per_working_dir)
     return exists("*g:BMWorkDirFileLocation") ? g:BMWorkDirFileLocation() : s:default_file_location()
@@ -375,7 +375,7 @@ function! s:set_up_auto_save(file)
        autocmd!
        autocmd BufWinEnter * call s:add_missing_signs(expand('<afile>:p'))
      augroup END
-     if g:bookmark_auto_save_per_buffer ==# 1
+     if g:bookmark_manage_per_buffer ==# 1
        augroup bm_auto_save
          autocmd BufLeave * call s:auto_save()
        augroup END

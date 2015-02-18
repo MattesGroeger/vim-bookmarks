@@ -104,7 +104,7 @@ Put any of the following options into your `~/.vimrc` in order to overwrite the 
 | `let g:bookmark_annotation_sign = '##'`        | ☰                        | Sets bookmark annotation icon for sign column           |
 | `let g:bookmark_save_per_working_dir = 1`      | 0                        | Save bookmarks per working dir, the folder you opened vim from |
 | `let g:bookmark_auto_save = 0`                 | 1                        | Enables/disables automatic saving for bookmarks         |
-| `let g:bookmark_auto_save_per_buffer = 0`      | 0                        | Save bookmarks when leaving a buffer, load when entering one |
+| `let g:bookmark_manage_per_buffer = 0`         | 0                        | Save bookmarks when leaving a buffer, load when entering one |
 | `let g:bookmark_auto_save_file = '/bookmarks'` | $HOME .'/.vim-bookmarks' | Sets file for auto saving (ignored when `bookmark_save_per_working_dir` is enabled) |
 | `let g:bookmark_auto_close = 1`                | 0                        | Automatically close bookmarks split when jumping to a bookmark |
 | `let g:bookmark_highlight_lines = 1`           | 0                        | Enables/disables line highlighting                      |
@@ -149,7 +149,7 @@ function! g:BMWorkDirFileLocation()
 endfunction
 ```
 
-And if you choose to save bookmarks automatically per buffer, use this:
+And if you choose to manage bookmarks per buffer, use this:
 ```viml
 " Finds the Git super-project directory based on the file passed as an argument.
 function! g:BMBufferFileLocation(file)
