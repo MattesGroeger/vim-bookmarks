@@ -10,6 +10,7 @@ let s:kind = {
       \   'delete': {
       \     'description': 'delete the selected bookmarks',
       \     'is_selectable': 1,
+      \     'is_quit': 0,
       \   },
       \   'yank': {
       \     'description': 'yank path and content of the selected bookmarks',
@@ -48,6 +49,7 @@ function! s:kind.action_table.delete.func(candidates) " {{{
           \ candidate.action__line,
           \)
   endfor
+  call unite#force_redraw()
 endfunction " }}}
 function! s:kind.action_table.yank.func(candidates) " {{{
   let text = join(map(copy(a:candidates),
