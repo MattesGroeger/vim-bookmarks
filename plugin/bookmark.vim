@@ -308,8 +308,14 @@ function! s:startup_load_bookmarks(file)
 endfunction
 
 function! s:bookmark_save_file(file)
-  if (g:bookmark_save_per_working_dir)
-    return exists("*g:BMWorkDirFileLocation") ? g:BMWorkDirFileLocation(a:file) : s:default_file_location()
+  " per buffer and per working dir are not mutually exclusive, but for the sake
+  " of determining the file to save bookmarks in, they pretty much are due to
+  " the different custom handlers used to compute that file name.
+  " This is purely a result of keeping the code backward compatible.
+  if (g:bookmark_auto_save_per_buffer ==# 1)
+    return exists("*g:BMBufferFileLocation") ? g:BMBufferFileLocation(a:file) : s:default_file_location()
+  elseif (g:bookmark_save_per_working_dir)
+    return exists("*g:BMWorkDirFileLocation") ? g:BMWorkDirFileLocation() : s:default_file_location()
   else
     return g:bookmark_auto_save_file
   endif
