@@ -34,7 +34,8 @@ function! s:init(file)
       autocmd!
       autocmd BufEnter * call s:set_up_auto_save(expand('<afile>:p'))
     augroup END
-  else
+  endif
+  if a:file !=# ''
     call s:set_up_auto_save(a:file)
   endif
 endfunction
