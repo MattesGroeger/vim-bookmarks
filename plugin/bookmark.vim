@@ -29,7 +29,7 @@ call s:set('g:bookmark_auto_close',           0 )
 call s:set('g:bookmark_center',               0 )
 
 function! s:init(file)
-  if g:bookmark_auto_save ==# 1 && g:bookmark_manage_per_buffer ==# 1
+  if g:bookmark_auto_save ==# 1 || g:bookmark_manage_per_buffer ==# 1
     augroup bm_vim_enter
       autocmd!
       autocmd BufEnter * call s:set_up_auto_save(expand('<afile>:p'))
@@ -179,13 +179,13 @@ command! BookmarkShowAll call BookmarkShowAll()
 
 function! BookmarkSave(target_file, silent)
   call s:refresh_line_numbers()
-  if (bm#total_count() > 0 || !g:bookmark_save_per_working_dir)
+  if (bm#total_count() > 0 || (!g:bookmark_save_per_working_dir && !g:bookmark_manage_per_buffer))
     let serialized_bookmarks = bm#serialize()
     call writefile(serialized_bookmarks, a:target_file)
     if (!a:silent)
       echo "All bookmarks saved"
     endif
-  elseif (g:bookmark_save_per_working_dir)
+  elseif (g:bookmark_save_per_working_dir || g:bookmark_manage_per_buffer)
     call delete(a:target_file) " remove file, if no bookmarks
   endif
 endfunction
@@ -308,10 +308,12 @@ function! s:startup_load_bookmarks(file)
 endfunction
 
 function! s:bookmark_save_file(file)
-  " per buffer and per working dir are not mutually exclusive, but for the sake
-  " of determining the file to save bookmarks in, they pretty much are due to
-  " the different custom handlers used to compute that file name.
-  " This is purely a result of keeping the code backward compatible.
+  " Managing bookmarks per buffer implies saving them to a location based on the
+  " open file (working dir doesn't make much sense unless auto changing the
+  " working directory based on current file location is turned on - but this is
+  " a seious dependency to try and require), so the function used to customize
+  " the bookmarks file location must be based on the current file.
+  " For backwards compatibility reasons, a new function is used.
   if (g:bookmark_manage_per_buffer ==# 1)
     return exists("*g:BMBufferFileLocation") ? g:BMBufferFileLocation(a:file) : s:default_file_location()
   elseif (g:bookmark_save_per_working_dir)
@@ -368,7 +370,7 @@ function! s:auto_save()
 endfunction
 
 function! s:set_up_auto_save(file)
-   if g:bookmark_auto_save ==# 1
+   if g:bookmark_auto_save ==# 1 || g:bookmark_manage_per_buffer ==# 1
      call s:startup_load_bookmarks(a:file)
      let g:bm_current_file = a:file
      augroup bm_auto_save

@@ -149,7 +149,22 @@ function! g:BMWorkDirFileLocation()
 endfunction
 ```
 
-And if you choose to manage bookmarks per buffer, use this:
+### Bookmarks per buffer
+
+This feature implies `bookmark_auto_save`. When configured bookmarks will be
+loaded and saved on each buffer change. This allows working with different
+buffers/tabs and keeping a different bookmark file for each one based on the
+file open in the buffer. I.e., using the following function and having files
+from different Git repositories open in different tabs will use a different
+bookmarks file per Git repository.
+
+This is different from how saving per working directory works because it allows
+for having different bookmarks for different buffers/tabs open in the same
+window without having the working directory change automatically when switching
+between them.
+
+The following function is similar to the one shown above (finds the .git folder
+location, defaults to current file's directory) :
 ```viml
 " Finds the Git super-project directory based on the file passed as an argument.
 function! g:BMBufferFileLocation(file)
@@ -157,10 +172,10 @@ function! g:BMBufferFileLocation(file)
     let location = ''
     if isdirectory(fnamemodify(a:file, ":p:h").'/.git')
         " Current work dir is git's work tree
-        let location = fnamemodify(a:file, ":p:h")
+        let location = fnamemodify(a:file, ":p:h").'/.git'
     else
         " Look upwards (at parents) for a directory named '.git'
-        let location = finddir('.git', fnamemodify(a:file, ":p:h").'/.;').'/..'
+        let location = finddir('.git', fnamemodify(a:file, ":p:h").'/.;')
     endif
     if len(location) > 0
         return simplify(location.'/.'.filename)
