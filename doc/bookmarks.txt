@@ -184,6 +184,16 @@ the current working directory whenever you create bookmarks. You should add this
 file to your (global) `.gitignore` file so it doesn't get checked into version
 control.
 
+Enable bookmark management on a per buffer basis:
+
+>
+  let g:bookmark_manage_per_buffer = 1
+<
+
+This will save and load the bookmarks file whenever the buffer changes (e.g.,
+switching tabs/buffers). It makes most sense when g:bookmark_save_per_working_dir
+is turned on as well, or when a customizing function is used.
+
 Disable auto saving (default 1):
 
 >
