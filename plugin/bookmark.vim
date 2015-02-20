@@ -3,6 +3,7 @@ if exists('g:bm_has_any') || !has('signs') || &cp
 endif
 let g:bm_has_any = 0
 let g:bm_sign_index = 9500
+let g:bm_current_file = ''
 
 " Configuration {{{
 
@@ -22,14 +23,24 @@ call s:set('g:bookmark_annotation_sign',     '☰')
 call s:set('g:bookmark_show_warning',         1 )
 call s:set('g:bookmark_save_per_working_dir', 0 )
 call s:set('g:bookmark_auto_save',            1 )
+call s:set('g:bookmark_manage_per_buffer',    0 )
 call s:set('g:bookmark_auto_save_file',       $HOME .'/.vim-bookmarks')
 call s:set('g:bookmark_auto_close',           0 )
 call s:set('g:bookmark_center',               0 )
 
-augroup bm_vim_enter
-   autocmd!
-   autocmd VimEnter * call s:set_up_auto_save(expand('<afile>:p'))
-augroup END
+function! s:init(file)
+  if g:bookmark_auto_save ==# 1 || g:bookmark_manage_per_buffer ==# 1
+    augroup bm_vim_enter
+      autocmd!
+      autocmd BufEnter * call s:set_up_auto_save(expand('<afile>:p'))
+    augroup END
+  endif
+  if a:file !=# ''
+    call s:set_up_auto_save(a:file)
+  endif
+endfunction
+
+autocmd VimEnter * call s:init(expand('<afile>:p'))
 
 " }}}
 
@@ -169,13 +180,13 @@ command! BookmarkShowAll call BookmarkShowAll()
 
 function! BookmarkSave(target_file, silent)
   call s:refresh_line_numbers()
-  if (bm#total_count() > 0 || !g:bookmark_save_per_working_dir)
+  if (bm#total_count() > 0 || (!g:bookmark_save_per_working_dir && !g:bookmark_manage_per_buffer))
     let serialized_bookmarks = bm#serialize()
     call writefile(serialized_bookmarks, a:target_file)
     if (!a:silent)
       echo "All bookmarks saved"
     endif
-  elseif (g:bookmark_save_per_working_dir)
+  elseif (g:bookmark_save_per_working_dir || g:bookmark_manage_per_buffer)
     call delete(a:target_file) " remove file, if no bookmarks
   endif
 endfunction
@@ -293,12 +304,20 @@ function! s:remove_all_bookmarks()
 endfunction
 
 function! s:startup_load_bookmarks(file)
-  call BookmarkLoad(s:bookmark_save_file(), 1, 1)
+  call BookmarkLoad(s:bookmark_save_file(a:file), 1, 1)
   call s:add_missing_signs(a:file)
 endfunction
 
-function! s:bookmark_save_file()
-  if (g:bookmark_save_per_working_dir)
+function! s:bookmark_save_file(file)
+  " Managing bookmarks per buffer implies saving them to a location based on the
+  " open file (working dir doesn't make much sense unless auto changing the
+  " working directory based on current file location is turned on - but this is
+  " a seious dependency to try and require), so the function used to customize
+  " the bookmarks file location must be based on the current file.
+  " For backwards compatibility reasons, a new function is used.
+  if (g:bookmark_manage_per_buffer ==# 1)
+    return exists("*g:BMBufferFileLocation") ? g:BMBufferFileLocation(a:file) : s:default_file_location()
+  elseif (g:bookmark_save_per_working_dir)
     return exists("*g:BMWorkDirFileLocation") ? g:BMWorkDirFileLocation() : s:default_file_location()
   else
     return g:bookmark_auto_save_file
@@ -342,14 +361,32 @@ function! s:remove_auto_close()
    augroup END
 endfunction
 
+function! s:auto_save()
+  if g:bm_current_file !=# ''
+    call BookmarkSave(s:bookmark_save_file(g:bm_current_file), 1)
+  endif
+  augroup bm_auto_save
+    autocmd!
+  augroup END
+endfunction
+
 function! s:set_up_auto_save(file)
-   if g:bookmark_auto_save ==# 1
+   if g:bookmark_auto_save ==# 1 || g:bookmark_manage_per_buffer ==# 1
      call s:startup_load_bookmarks(a:file)
+     let g:bm_current_file = a:file
      augroup bm_auto_save
        autocmd!
-       autocmd VimLeave * call BookmarkSave(s:bookmark_save_file(), 1)
        autocmd BufWinEnter * call s:add_missing_signs(expand('<afile>:p'))
      augroup END
+     if g:bookmark_manage_per_buffer ==# 1
+       augroup bm_auto_save
+         autocmd BufLeave * call s:auto_save()
+       augroup END
+     else
+       augroup bm_auto_save
+         autocmd VimLeave * call s:auto_save()
+       augroup END
+     endif
    endif
 endfunction
 
