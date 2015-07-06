@@ -1,6 +1,8 @@
 if exists('g:bm_has_any') || !has('signs') || &cp
   finish
 endif
+scriptencoding utf-8
+
 let g:bm_has_any = 0
 let g:bm_sign_index = 9500
 let g:bm_current_file = ''
