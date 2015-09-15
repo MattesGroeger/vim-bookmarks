@@ -231,6 +231,35 @@ function! CallDeprecatedCommand(fun, args)
   return call(Fn, a:args)
 endfunction
 
+function! BookmarkModify(diff)
+  "call Decho("Enter BookmarkModify")
+  call s:refresh_line_numbers()
+  let file = expand("%:p")
+  if file ==# ""
+    "call Decho("Leave by no file")
+    return
+  endif
+
+  let current_line = line('.')
+  if bm#has_bookmark_at_line(file, current_line)
+    let new_line_nr = current_line + a:diff
+    let bookmark = bm#get_bookmark_by_line(file, current_line)
+    call bm_sign#update_at(file, bookmark['sign_idx'], new_line_nr, bookmark['content'] !=# "")
+    call bm#update_bookmark_for_sign(file, bookmark['sign_idx'], new_line_nr, bookmark['content'])
+    "call Decho(file, bookmark['sign_idx'], new_line_nr, bookmark['content'] )
+    "call Decho(bookmark)
+    call cursor(new_line_nr, 1)
+    execute ":redraw!"
+    normal! ^
+  else
+    call Decho("Leave by no Bookmark")
+    return
+  endif
+
+endfunction
+command! BookmarkMoveUp call BookmarkModify(-1)
+command! BookmarkMoveDown call BookmarkModify(1)
+
 " }}}
 
 
@@ -251,8 +280,10 @@ function! s:refresh_line_numbers()
   call s:lazy_init()
   let file = expand("%:p")
   if file ==# "" || !bm#has_bookmarks_in_file(file)
+    "call Decho("file = ", file, "has bookmark = ", bm#has_bookmarks_in_file(file))
     return
   endif
+  "call Decho("file = ", file, "has bookmark = ", bm#has_bookmarks_in_file(file))
   let bufnr = bufnr(file)
   let sign_line_map = bm_sign#lines_for_signs(file)
   for sign_idx in keys(sign_line_map)
@@ -362,6 +393,7 @@ function! s:remove_auto_close()
 endfunction
 
 function! s:auto_save()
+  "call Decho("auto_save()", g:bm_current_file)
   if g:bm_current_file !=# ''
     call BookmarkSave(s:bookmark_save_file(g:bm_current_file), 1)
   endif
@@ -381,6 +413,8 @@ function! s:set_up_auto_save(file)
      if g:bookmark_manage_per_buffer ==# 1
        augroup bm_auto_save
          autocmd BufLeave * call s:auto_save()
+         "autocmd WinLeave * call s:auto_save()
+         autocmd VimLeave * call s:auto_save()
        augroup END
      else
        augroup bm_auto_save
@@ -410,6 +444,8 @@ if !get(g:, 'bookmark_no_default_key_mappings', 0)
   call s:register_mapping('BookmarkPrev',     'mp')
   call s:register_mapping('BookmarkClear',    'mc')
   call s:register_mapping('BookmarkClearAll', 'mx')
+  call s:register_mapping('BookmarkMoveUp', 'mkk')
+  call s:register_mapping('BookmarkMoveDown', 'mjj')
 endif
 
 " }}}

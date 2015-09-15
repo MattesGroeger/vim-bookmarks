@@ -70,14 +70,17 @@ endfunction
 " Returns dict with {'sign_idx': 'line_nr'}
 function! bm_sign#lines_for_signs(file)
   call bm_sign#lazy_init()
+  "call Decho("bm_sign#lines_for_signs()")
   let bufnr = bufnr(a:file)
   let signs_raw = util#redir_execute(":sign place file=". a:file)
+  "call Decho(signs_raw)
   let lines = split(signs_raw, "\n")
   let result = {}
   for line in lines
     let results = matchlist(line, 'line=\(\d\+\)\W\+id=\(\d\+\)\W\+name=bookmark\c')
     if len(results) ># 0
       let result[results[2]] = results[1]
+      "call Decho (results[2], results[1])
     endif
   endfor
   return result
