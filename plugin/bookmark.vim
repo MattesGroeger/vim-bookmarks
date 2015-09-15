@@ -23,6 +23,7 @@ call s:set('g:bookmark_highlight_lines',      0 )
 call s:set('g:bookmark_sign',                '⚑')
 call s:set('g:bookmark_annotation_sign',     '☰')
 call s:set('g:bookmark_show_warning',         1 )
+call s:set('g:bookmark_show_toggle_warning',  1 )
 call s:set('g:bookmark_save_per_working_dir', 0 )
 call s:set('g:bookmark_auto_save',            1 )
 call s:set('g:bookmark_manage_per_buffer',    0 )
@@ -57,6 +58,13 @@ function! BookmarkToggle()
   endif
   let current_line = line('.')
   if bm#has_bookmark_at_line(file, current_line)
+    if g:bookmark_show_toggle_warning ==# 1 && bm#is_bookmark_has_annotation_by_line(file, current_line)
+      let delete = confirm("Delete Annotated bookmarks?", "&Yes\n&No", 2)
+      if (delete !=# 1)
+        echo "Ignore!"
+        return
+      endif
+    endif
     call s:bookmark_remove(file, current_line)
     echo "Bookmark removed"
   else

@@ -23,6 +23,10 @@ function! bm#get_bookmark_by_line(file, line_nr)
   return g:line_map[a:file][a:line_nr]
 endfunction
 
+function! bm#is_bookmark_has_annotation_by_line(file, line_nr)
+  return g:line_map[a:file][a:line_nr]['annotation'] !=# "" 
+endfunction
+
 function! bm#get_bookmark_by_sign(file, sign_idx)
   let line_nr = g:sign_map[a:file][a:sign_idx]
   return bm#get_bookmark_by_line(a:file, line_nr)
