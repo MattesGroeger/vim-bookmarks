@@ -243,9 +243,21 @@ function! BookmarkModify(diff)
   let current_line = line('.')
   if bm#has_bookmark_at_line(file, current_line)
     let new_line_nr = current_line + a:diff
+    if bm#has_bookmark_at_line(file, new_line_nr)
+      echo "Hit another bookmark"
+      return
+    endif
+    
+
+
     let bookmark = bm#get_bookmark_by_line(file, current_line)
-    call bm_sign#update_at(file, bookmark['sign_idx'], new_line_nr, bookmark['content'] !=# "")
-    call bm#update_bookmark_for_sign(file, bookmark['sign_idx'], new_line_nr, bookmark['content'])
+    call bm_sign#update_at(file, bookmark['sign_idx'], new_line_nr, bookmark['annotation'] !=# "")
+
+    let bufnr = bufnr(file)
+    let line_content = getbufline(bufnr, new_line_nr)
+    let content = len(line_content) > 0 ? line_content[0] : ' '
+    call bm#update_bookmark_for_sign(file, bookmark['sign_idx'], new_line_nr, content)
+
     call cursor(new_line_nr, 1)
     execute ":redraw!"
     normal! ^
