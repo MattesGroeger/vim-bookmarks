@@ -82,6 +82,12 @@ Commands for using Bookmarks
   :BookmarkClearAll                                         *:BookmarkClearAll*
       Removes bookmarks for all buffer
 
+  :BookmarkMoveup                                             *:BookmarkMoveup*
+      Move up the bookmark at current line
+
+  :BookmarkMoveDown                                         *:BookmarkMoveDown*
+      Move down the bookmark at current line
+
   :BookmarkSave <FILE_PATH>                                     *:BookmarkSave*
       Saves all bookmarks to a file so you can load them back in later
 
@@ -162,6 +168,8 @@ To change the default keys:
   nmap <Leader>k <Plug>BookmarkPrev
   nmap <Leader>c <Plug>BookmarkClear
   nmap <Leader>x <Plug>BookmarkClearAll
+  nmap <Leader>kk <Plug>BookmarkMoveUp
+  nmap <Leader>jj <Plug>BookmarkMoveDown
 <
 
 To prevent any default mappings from being created (default: 0):
@@ -216,6 +224,12 @@ Turn off the warning when clearing all bookmarks (default 1):
 
 >
   let g:bookmark_show_warning = 0
+<
+
+Turn off the warning when toggling to clear a bookmark with annotation (default 1):
+
+>
+  let g:bookmark_show_toggle_warning = 0
 <
 
 Turn on vertical line centering when jumping to bookmark (default 0):
