@@ -57,6 +57,8 @@ After installation you can directly start using it. You can do this by either us
 | Show all bookmarks (toggle)                     | `ma`        | `:BookmarkShowAll`           |
 | Clear bookmarks in current buffer only          | `mc`        | `:BookmarkClear`             |
 | Clear bookmarks in all buffers                  | `mx`        | `:BookmarkClearAll`          |
+| Move up bookmark at current line                | `mkk`       | `:BookmarkMoveUp`            |
+| Move down bookmark at current line              | `mjj`       | `:BookmarkMoveDown`          |
 | Save all bookmarks to a file                    |             | `:BookmarkSave <FILE_PATH>`  |
 | Load bookmarks from a file                      |             | `:BookmarkLoad <FILE_PATH>`  |
 
@@ -76,6 +78,8 @@ nmap <Leader>j <Plug>BookmarkNext
 nmap <Leader>k <Plug>BookmarkPrev
 nmap <Leader>c <Plug>BookmarkClear
 nmap <Leader>x <Plug>BookmarkClearAll
+nmap <Leader>kk <Plug>BookmarkMoveUp
+nmap <Leader>jj <Plug>BookmarkMoveDown
 ```
 You can disable all default key bindings by setting the following in your `~/.vimrc`:
 
@@ -109,6 +113,7 @@ Put any of the following options into your `~/.vimrc` in order to overwrite the 
 | `let g:bookmark_auto_close = 1`                | 0                        | Automatically close bookmarks split when jumping to a bookmark |
 | `let g:bookmark_highlight_lines = 1`           | 0                        | Enables/disables line highlighting                      |
 | `let g:bookmark_show_warning = 0`              | 1                        | Enables/disables warning when clearing all bookmarks    |
+| `let g:bookmark_show_toggle_warning = 0`       | 1                        | Enables/disables warning when toggling to clear a bookmark with annotation   |
 | `let g:bookmark_center = 1`                    | 0                        | Enables/disables line centering when jumping to bookmark|
 | `let g:bookmark_no_default_key_mappings = 1`                    | 0                        | Prevent any default key mapping from being created|
 
@@ -251,6 +256,8 @@ function! BookmarkMapKeys()
     nmap ma :BookmarkShowAll<CR>
     nmap mc :BookmarkClear<CR>
     nmap mx :BookmarkClearAll<CR>
+    nmap mkk :BookmarkMoveUp
+    nmap mjj :BookmarkMoveDown
 endfunction
 function! BookmarkUnmapKeys()
     unmap mm
@@ -260,6 +267,8 @@ function! BookmarkUnmapKeys()
     unmap ma
     unmap mc
     unmap mx
+    unmap mkk
+    unmap mjj
 endfunction
 autocmd BufEnter * :call BookmarkMapKeys()
 autocmd BufEnter NERD_tree_* :call BookmarkUnmapKeys()
