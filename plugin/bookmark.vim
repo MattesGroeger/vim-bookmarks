@@ -23,6 +23,7 @@ call s:set('g:bookmark_highlight_lines',      0 )
 call s:set('g:bookmark_sign',                '⚑')
 call s:set('g:bookmark_annotation_sign',     '☰')
 call s:set('g:bookmark_show_warning',         1 )
+call s:set('g:bookmark_show_toggle_warning',  1 )
 call s:set('g:bookmark_save_per_working_dir', 0 )
 call s:set('g:bookmark_auto_save',            1 )
 call s:set('g:bookmark_manage_per_buffer',    0 )
@@ -57,6 +58,13 @@ function! BookmarkToggle()
   endif
   let current_line = line('.')
   if bm#has_bookmark_at_line(file, current_line)
+    if g:bookmark_show_toggle_warning ==# 1 && bm#is_bookmark_has_annotation_by_line(file, current_line)
+      let delete = confirm("Delete Annotated bookmarks?", "&Yes\n&No", 2)
+      if (delete !=# 1)
+        echo "Ignore!"
+        return
+      endif
+    endif
     call s:bookmark_remove(file, current_line)
     echo "Bookmark removed"
   else
@@ -233,6 +241,42 @@ function! CallDeprecatedCommand(fun, args)
   return call(Fn, a:args)
 endfunction
 
+function! BookmarkModify(diff)
+  call s:refresh_line_numbers()
+  let file = expand("%:p")
+  if file ==# ""
+    return
+  endif
+
+  let current_line = line('.')
+  if bm#has_bookmark_at_line(file, current_line)
+    let new_line_nr = current_line + a:diff
+    if bm#has_bookmark_at_line(file, new_line_nr)
+      echo "Hit another bookmark"
+      return
+    endif
+    
+
+
+    let bookmark = bm#get_bookmark_by_line(file, current_line)
+    call bm_sign#update_at(file, bookmark['sign_idx'], new_line_nr, bookmark['annotation'] !=# "")
+
+    let bufnr = bufnr(file)
+    let line_content = getbufline(bufnr, new_line_nr)
+    let content = len(line_content) > 0 ? line_content[0] : ' '
+    call bm#update_bookmark_for_sign(file, bookmark['sign_idx'], new_line_nr, content)
+
+    call cursor(new_line_nr, 1)
+    execute ":redraw!"
+    normal! ^
+  else
+    return
+  endif
+
+endfunction
+command! BookmarkMoveUp call BookmarkModify(-1)
+command! BookmarkMoveDown call BookmarkModify(1)
+
 " }}}
 
 
@@ -383,6 +427,7 @@ function! s:set_up_auto_save(file)
      if g:bookmark_manage_per_buffer ==# 1
        augroup bm_auto_save
          autocmd BufLeave * call s:auto_save()
+         autocmd VimLeave * call s:auto_save()
        augroup END
      else
        augroup bm_auto_save
@@ -412,6 +457,8 @@ if !get(g:, 'bookmark_no_default_key_mappings', 0)
   call s:register_mapping('BookmarkPrev',     'mp')
   call s:register_mapping('BookmarkClear',    'mc')
   call s:register_mapping('BookmarkClearAll', 'mx')
+  call s:register_mapping('BookmarkMoveUp', 'mkk')
+  call s:register_mapping('BookmarkMoveDown', 'mjj')
 endif
 
 " }}}
