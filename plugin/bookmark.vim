@@ -206,7 +206,7 @@ command! -nargs=1 BookmarkSave call BookmarkSave(<f-args>, 0)
 function! BookmarkLoad(target_file, startup, silent)
   let supports_confirm = has("dialog_con") || has("dialog_gui")
   let has_bookmarks = bm#total_count() ># 0
-  let confirmed = 0
+  let confirmed = 1
   if (supports_confirm && has_bookmarks && !a:silent)
     let confirmed = confirm("Do you want to override your ". bm#total_count() ." bookmarks?", "&Yes\n&No")
   endif
@@ -431,6 +431,7 @@ function! s:set_up_auto_save(file)
        augroup END
      else
        augroup bm_auto_save
+         autocmd BufLeave * call s:auto_save()
          autocmd VimLeave * call s:auto_save()
        augroup END
      endif
