@@ -30,6 +30,7 @@ call s:set('g:bookmark_manage_per_buffer',    0 )
 call s:set('g:bookmark_auto_save_file',       $HOME .'/.vim-bookmarks')
 call s:set('g:bookmark_auto_close',           0 )
 call s:set('g:bookmark_center',               0 )
+call s:set('g:bookmark_location_list',        0 )
 
 function! s:init(file)
   if g:bookmark_auto_save ==# 1 || g:bookmark_manage_per_buffer ==# 1
@@ -175,8 +176,13 @@ function! BookmarkShowAll()
     else
       let oldformat = &errorformat    " backup original format
       let &errorformat = "%f:%l:%m"   " custom format for bookmarks
-      cgetexpr bm#location_list()
-      belowright copen
+      if g:bookmark_location_list
+        lgetexpr bm#location_list()
+        belowright lopen
+      else
+        cgetexpr bm#location_list()
+        belowright copen
+      endif
       augroup BM_AutoCloseCommand
         autocmd!
         autocmd WinLeave * call s:auto_close()
