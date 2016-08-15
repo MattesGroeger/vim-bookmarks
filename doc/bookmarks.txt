@@ -243,6 +243,12 @@ Automatically close bookmarks split when jumping to a bookmark (default 0):
 >
   let g:bookmark_auto_close = 1
 <
+
+Use the location list to show all bookmarks (default 0):
+
+>
+  let g:bookmark_location_list = 1
+<
 ===============================================================================
 6. EXTENDING                                               *BookmarksExtending*
 
