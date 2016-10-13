@@ -41,6 +41,8 @@ function! s:init(file)
   endif
   if a:file !=# ''
     call s:set_up_auto_save(a:file)
+  elseif g:bookmark_manage_per_buffer ==# 0 && g:bookmark_save_per_working_dir ==# 0
+    call BookmarkLoad(s:bookmark_save_file(''), 1, 1)
   endif
 endfunction
 
@@ -364,7 +366,7 @@ function! s:bookmark_save_file(file)
   " Managing bookmarks per buffer implies saving them to a location based on the
   " open file (working dir doesn't make much sense unless auto changing the
   " working directory based on current file location is turned on - but this is
-  " a seious dependency to try and require), so the function used to customize
+  " a serious dependency to try and require), so the function used to customize
   " the bookmarks file location must be based on the current file.
   " For backwards compatibility reasons, a new function is used.
   if (g:bookmark_manage_per_buffer ==# 1)
