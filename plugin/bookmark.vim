@@ -443,21 +443,21 @@ endfunction
 
 function! s:register_mapping(command, shortcut)
   execute "nnoremap <silent> <Plug>". a:command ." :". a:command ."<CR>"
-  if !hasmapto("<Plug>". a:command) && maparg(a:shortcut, 'n') ==# ''
+  if !hasmapto("<Plug>". a:command)
+        \ && !get(g:, 'bookmark_no_default_key_mappings', 0)
+        \ && maparg(a:shortcut, 'n') ==# ''
     execute "nmap ". a:shortcut ." <Plug>". a:command
   endif
 endfunction
 
-if !get(g:, 'bookmark_no_default_key_mappings', 0)
-  call s:register_mapping('BookmarkShowAll',  'ma')
-  call s:register_mapping('BookmarkToggle',   'mm')
-  call s:register_mapping('BookmarkAnnotate', 'mi')
-  call s:register_mapping('BookmarkNext',     'mn')
-  call s:register_mapping('BookmarkPrev',     'mp')
-  call s:register_mapping('BookmarkClear',    'mc')
-  call s:register_mapping('BookmarkClearAll', 'mx')
-  call s:register_mapping('BookmarkMoveUp', 'mkk')
-  call s:register_mapping('BookmarkMoveDown', 'mjj')
-endif
+call s:register_mapping('BookmarkShowAll',  'ma')
+call s:register_mapping('BookmarkToggle',   'mm')
+call s:register_mapping('BookmarkAnnotate', 'mi')
+call s:register_mapping('BookmarkNext',     'mn')
+call s:register_mapping('BookmarkPrev',     'mp')
+call s:register_mapping('BookmarkClear',    'mc')
+call s:register_mapping('BookmarkClearAll', 'mx')
+call s:register_mapping('BookmarkMoveUp', 'mkk')
+call s:register_mapping('BookmarkMoveDown', 'mjj')
 
 " }}}
