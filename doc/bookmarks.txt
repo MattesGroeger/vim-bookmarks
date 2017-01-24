@@ -17,7 +17,8 @@ CONTENTS                                                    *BookmarksContents*
   5.  Customisation ................ |BookmarksCustomisation|
   6.  Extending .................... |BookmarksExtening|
   7.  Unite Integration ............ |BookmarksUniteIntegration|
-  8.  FAQ .......................... |BookmarksFAQ|
+  8.  CtrlP Integration ............ |BookmarksCtrlPIntegration|
+  9.  FAQ .......................... |BookmarksFAQ|
 
 ===============================================================================
 1. INTRODUCTION                                         *BookmarksIntroduction*
@@ -299,7 +300,28 @@ https://github.com/Shougo/unite.vim
 https://github.com/thinca/vim-qfreplace
 
 ===============================================================================
-8. FAQ                                                           *BookmarksFAQ*
+8. CtrlP Integration                                *BookmarksCtrlPIntegration*
+
+ctrlp.vim is a Full path fuzzy file, buffer, mru, tag, ... finder for Vim.
+
+Additionally, when showing all your bookmarks, CtrlP is detected and the plugin
+will open *:CtrlPBookmark* instead of Vim's quickfix window. Note that
+|g:bookmark_auto_close| is no longer applied. Once opened, the window is managed 
+by CtrlP.
+
+With the CtrlP interface, when you select bookmarks, you can perform the 
+following actions:
+
+* Open the selected bookmarks in various ways (open to the right, open above,
+  open in new tab, etc.)
+* And more...
+ 
+For more information about CtrlP start reading |CtrlP@en|.
+
+https://github.com/ctrlpvim/ctrlp.vim
+
+===============================================================================
+9. FAQ                                                           *BookmarksFAQ*
 
 a. Why are the colours in the sign column weird?
 
@@ -318,3 +340,4 @@ c. Why aren't any signs showing at all?
 >
   :echo has('signs')
 <
+vim:ft=help:et:ts=2:sw=2:sts=2:norl
