@@ -229,6 +229,16 @@ See the screenshot below to get an idea of what you can do with the interface (t
 
 For more information about Unite, start reading `:help Unite`.
 
+## CtrlP Integration
+
+[ctrlp.vim](https://github.com/ctrlpvim/ctrlp.vim) is a Full path fuzzy file, buffer, mru, tag, ... finder for Vim.
+
+Additionally, when showing all your bookmarks, CtrlP is detected and the plugin will open `:CtrlPBookmark` instead of Vim's quickfix window. Note that `g:bookmark_auto_close` is no longer applied. Once opened, the window is managed by CtrlP.
+
+With the CtrlP interface, when you select bookmarks, you can perform the following actions:
+* Open the selected bookmarks in various ways (open to the right, open above, open in new tab, etc.)
+* And more...
+
 ## FAQ
 
 > Why are the colours in the sign column weird?

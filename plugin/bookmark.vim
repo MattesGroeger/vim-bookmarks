@@ -167,6 +167,7 @@ function! BookmarkPrev()
 endfunction
 command! PrevBookmark call CallDeprecatedCommand('BookmarkPrev')
 command! BookmarkPrev call BookmarkPrev()
+command! CtrlPBookmark call ctrlp#init(ctrlp#bookmarks#id()) 
 
 function! BookmarkShowAll()
   if s:is_quickfix_win()
@@ -174,7 +175,9 @@ function! BookmarkShowAll()
   else
     call s:refresh_line_numbers()
     if exists(':Unite')
-      exec ":Unite vim_bookmarks"
+        exec ":Unite vim_bookmarks"
+    elseif exists(':CtrlP')
+        exec ":CtrlPBookmark"
     else
       let oldformat = &errorformat    " backup original format
       let &errorformat = "%f:%l:%m"   " custom format for bookmarks
