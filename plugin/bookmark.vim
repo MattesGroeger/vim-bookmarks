@@ -176,7 +176,7 @@ function! BookmarkShowAll()
     call s:refresh_line_numbers()
     if exists(':Unite')
         exec ":Unite vim_bookmarks"
-    elseif exists(':CtrlP')
+    elseif exists(':CtrlP') == 2
         exec ":CtrlPBookmark"
     else
       let oldformat = &errorformat    " backup original format
