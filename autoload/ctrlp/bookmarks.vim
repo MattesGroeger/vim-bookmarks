@@ -20,7 +20,11 @@ function! ctrlp#bookmarks#init() abort
         let l:line_nrs = sort(bm#all_lines(l:file), "bm#compare_lines")
         for l:line_nr in l:line_nrs
             let l:bookmark = bm#get_bookmark_by_line(l:file, l:line_nr)
-            call add(l:text,l:bookmark.annotation)
+            if l:bookmark.annotation !~ '^\s*$'
+              call add(l:text,l:bookmark.annotation)
+            else
+              call add(l:text,l:bookmark.content)
+            endif
         endfor
     endfor
     return l:text
@@ -43,7 +47,11 @@ function! ctrlp#bookmarks#accept(mode, str) abort
         let l:line_nrs = sort(bm#all_lines(l:file), "bm#compare_lines")
         for l:line_nr in l:line_nrs
             let l:bookmark = bm#get_bookmark_by_line(l:file, l:line_nr)
-            if a:str ==# l:bookmark.annotation
+            if a:str ==# l:bookmark.annotation 
+                execute l:HowToOpen." ".l:file
+                execute ":".l:line_nr
+                break
+            elseif a:str ==# l:bookmark.content
                 execute l:HowToOpen." ".l:file
                 execute ":".l:line_nr
                 break

@@ -24,6 +24,7 @@ let g:bookmark_highlight_lines = 1
 * [Bookmarks per working directory](https://github.com/MattesGroeger/vim-bookmarks#bookmarks-per-working-directory) (optional)
 * Fully customisable (signs, sign column, highlights, mappings)
 * Integrates with [Unite's](https://github.com/Shougo/unite.vim) quickfix source if installed
+* Integrates with [ctrlp.vim](https://github.com/ctrlpvim/ctrlp.vim) if installed
 * Works independently from [vim marks](http://vim.wikia.com/wiki/Using_marks)
 
 ## Installation
@@ -117,6 +118,7 @@ Put any of the following options into your `~/.vimrc` in order to overwrite the 
 | `let g:bookmark_center = 1`                    | 0                        | Enables/disables line centering when jumping to bookmark|
 | `let g:bookmark_no_default_key_mappings = 1`                    | 0                        | Prevent any default key mapping from being created|
 | `let g:bookmark_location_list = 1`             | 0                        | Use the location list to show all bookmarks             |
+| `let g:bookmark_disable_ctrlp = 1`             | 0                        | Disable ctrlp interface when  show all bookmarks             |
 
 ### Bookmarks per working directory
 
