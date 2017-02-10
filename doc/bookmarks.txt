@@ -249,6 +249,11 @@ Use the location list to show all bookmarks (default 0):
 
 >
   let g:bookmark_location_list = 1
+
+
+You can disable Ctrlp by setting (default 0)
+>
+  let g:bookmark_disable_ctrlp = 1
 <
 ===============================================================================
 6. EXTENDING                                               *BookmarksExtending*

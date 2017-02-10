@@ -31,6 +31,7 @@ call s:set('g:bookmark_auto_save_file',       $HOME .'/.vim-bookmarks')
 call s:set('g:bookmark_auto_close',           0 )
 call s:set('g:bookmark_center',               0 )
 call s:set('g:bookmark_location_list',        0 )
+call s:set('g:bookmark_disable_ctrlp',        0 )
 
 function! s:init(file)
   if g:bookmark_auto_save ==# 1 || g:bookmark_manage_per_buffer ==# 1
@@ -176,7 +177,7 @@ function! BookmarkShowAll()
     call s:refresh_line_numbers()
     if exists(':Unite')
         exec ":Unite vim_bookmarks"
-    elseif exists(':CtrlP') == 2
+    elseif exists(':CtrlP') == 2 && g:bookmark_disable_ctrlp == 0
         exec ":CtrlPBookmark"
     else
       let oldformat = &errorformat    " backup original format
