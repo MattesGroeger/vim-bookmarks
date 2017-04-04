@@ -383,7 +383,7 @@ function! s:bookmark_save_file(file)
 endfunction
 
 function! s:default_file_location()
-    return getcwd(). '/.vim-bookmarks'
+    return $PWD . '/.vim-bookmarks'
 endfunction
 
 " should only be called from autocmd!
