@@ -253,7 +253,9 @@ function! CallDeprecatedCommand(fun, args)
   return call(Fn, a:args)
 endfunction
 
-function! BookmarkModify(diff)
+function! BookmarkModify(diff, ...)
+  let is_abs = a:0 ? a:1 : 0
+
   call s:refresh_line_numbers()
   let file = expand("%:p")
   if file ==# ""
@@ -262,13 +264,17 @@ function! BookmarkModify(diff)
 
   let current_line = line('.')
   if bm#has_bookmark_at_line(file, current_line)
-    let new_line_nr = current_line + a:diff
+    let new_line_nr = is_abs ? a:diff : current_line + a:diff
+    let last_line_nr = line('$')
+
+    if new_line_nr <= 0 || new_line_nr > last_line_nr
+      echo "Can't move bookmark beyond file bounds"
+      return
+    endif
     if bm#has_bookmark_at_line(file, new_line_nr)
       echo "Hit another bookmark"
       return
     endif
-    
-
 
     let bookmark = bm#get_bookmark_by_line(file, current_line)
     call bm_sign#update_at(file, bookmark['sign_idx'], new_line_nr, bookmark['annotation'] !=# "")
@@ -277,17 +283,17 @@ function! BookmarkModify(diff)
     let line_content = getbufline(bufnr, new_line_nr)
     let content = len(line_content) > 0 ? line_content[0] : ' '
     call bm#update_bookmark_for_sign(file, bookmark['sign_idx'], new_line_nr, content)
-
     call cursor(new_line_nr, 1)
     execute ":redraw!"
     normal! ^
   else
     return
   endif
-
 endfunction
-command! BookmarkMoveUp call BookmarkModify(-1)
-command! BookmarkMoveDown call BookmarkModify(1)
+
+command! BookmarkMoveUp call BookmarkModify(-(v:count ? v:count : 1))
+command! BookmarkMoveDown call BookmarkModify(v:count ? v:count : 1)
+command! -nargs=1 BookmarkMoveToLine call BookmarkModify(<args>, 1)
 
 " }}}
 
