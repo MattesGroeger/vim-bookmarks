@@ -83,11 +83,15 @@ Commands for using Bookmarks
   :BookmarkClearAll                                         *:BookmarkClearAll*
       Removes bookmarks for all buffer
 
-  :BookmarkMoveup                                             *:BookmarkMoveup*
-      Move up the bookmark at current line
+  :BookmarkMoveUp                                             *:BookmarkMoveUp*
+      Move up the bookmark at current line (when invoked from a key mapping,
+      you may use [count]<your mapping> to move the bookmark [count] lines up)
 
   :BookmarkMoveDown                                         *:BookmarkMoveDown*
-      Move down the bookmark at current line
+      Move down the bookmark at current line (works with [count] as above)
+
+  :BookmarkMoveToLine <LINE>                              *:BookmarkMoveToLine*
+      Move the bookmark at current line to the specified <LINE>
 
   :BookmarkSave <FILE_PATH>                                     *:BookmarkSave*
       Saves all bookmarks to a file so you can load them back in later

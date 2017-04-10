@@ -58,8 +58,9 @@ After installation you can directly start using it. You can do this by either us
 | Show all bookmarks (toggle)                     | `ma`        | `:BookmarkShowAll`           |
 | Clear bookmarks in current buffer only          | `mc`        | `:BookmarkClear`             |
 | Clear bookmarks in all buffers                  | `mx`        | `:BookmarkClearAll`          |
-| Move up bookmark at current line                | `mkk`       | `:BookmarkMoveUp`            |
-| Move down bookmark at current line              | `mjj`       | `:BookmarkMoveDown`          |
+| Move up bookmark at current line                | `[count]mkk`| `:BookmarkMoveUp`            |
+| Move down bookmark at current line              | `[count]mjj`| `:BookmarkMoveDown`          |
+| Move bookmark at current line to another line   |             | `:BookmarkMoveToLine <LINE>` |
 | Save all bookmarks to a file                    |             | `:BookmarkSave <FILE_PATH>`  |
 | Load bookmarks from a file                      |             | `:BookmarkLoad <FILE_PATH>`  |
 
