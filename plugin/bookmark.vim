@@ -176,9 +176,9 @@ function! BookmarkShowAll()
   else
     call s:refresh_line_numbers()
     if exists(':Unite')
-        exec ":Unite vim_bookmarks"
+      exec ":Unite vim_bookmarks"
     elseif exists(':CtrlP') == 2 && g:bookmark_disable_ctrlp == 0
-        exec ":CtrlPBookmark"
+      exec ":CtrlPBookmark"
     else
       let oldformat = &errorformat    " backup original format
       let &errorformat = "%f:%l:%m"   " custom format for bookmarks
@@ -253,52 +253,138 @@ function! CallDeprecatedCommand(fun, args)
   return call(Fn, a:args)
 endfunction
 
-function! BookmarkModify(diff, ...)
-  let is_abs = a:0 ? a:1 : 0
+function! BookmarkModify(diff)
+  let current_line = line('.')
+  let new_line_nr = current_line + a:diff
+  call BookmarkMoveToLine(new_line_nr)
+endfunction
 
+
+
+function! BookmarkMoveToLine(target)
   call s:refresh_line_numbers()
+
   let file = expand("%:p")
   if file ==# ""
     return
   endif
 
   let current_line = line('.')
-  if bm#has_bookmark_at_line(file, current_line)
-    let new_line_nr = is_abs ? a:diff : current_line + a:diff
-    let last_line_nr = line('$')
+  if a:target == current_line
+    return
+  endif
 
-    if new_line_nr <= 0 || new_line_nr > last_line_nr
+  if bm#has_bookmark_at_line(file, current_line)
+    "ensure we're trying to move to a valid line nr
+    let max_line_nr = line('$')
+    if a:target <= 0 || a:target > max_line_nr
       echo "Can't move bookmark beyond file bounds"
       return
     endif
-    if bm#has_bookmark_at_line(file, new_line_nr)
+    if bm#has_bookmark_at_line(file, a:target)
       echo "Hit another bookmark"
       return
     endif
 
     let bookmark = bm#get_bookmark_by_line(file, current_line)
-    call bm_sign#update_at(file, bookmark['sign_idx'], new_line_nr, bookmark['annotation'] !=# "")
+    call bm_sign#update_at(file, bookmark['sign_idx'], a:target, bookmark['annotation'] !=# "")
 
     let bufnr = bufnr(file)
-    let line_content = getbufline(bufnr, new_line_nr)
+    let line_content = getbufline(bufnr, a:target)
     let content = len(line_content) > 0 ? line_content[0] : ' '
-    call bm#update_bookmark_for_sign(file, bookmark['sign_idx'], new_line_nr, content)
-    call cursor(new_line_nr, 1)
-    execute ":redraw!"
+    call bm#update_bookmark_for_sign(file, bookmark['sign_idx'], a:target, content)
+    call cursor(a:target, 1)
+    " redraw!
     normal! ^
   else
     return
   endif
 endfunction
 
-command! BookmarkMoveUp call BookmarkModify(-(v:count ? v:count : 1))
-command! BookmarkMoveDown call BookmarkModify(v:count ? v:count : 1)
-command! -nargs=1 BookmarkMoveToLine call BookmarkModify(<args>, 1)
+command! -nargs=? BookmarkMoveUp call s:move_relative(<q-args>, -1)
+command! -nargs=? BookmarkMoveDown call s:move_relative(<q-args>, 1)
+command! -nargs=? BookmarkMoveToLine call s:move_absolute(<q-args>)
 
 " }}}
 
 
 " Private {{{
+
+" arg is always a string
+" direction is {-1,1}
+function! s:move_relative(arg, direction)
+  if !s:has_bookmark_at_cursor()
+    echo 'No bookmark at current line'
+    return
+  endif
+  " ''        => direction
+  " '0'       => direction
+  " '\d+'     => number * direction
+  " 'v:count' => v:count * direction
+  " negative/abc arg naturally rejected
+  if empty(a:arg)
+    let delta = a:direction
+  elseif a:arg =~# '\v^v:count1?$'
+    let delta = eval(a:arg) * a:direction
+  elseif a:arg =~# '\v^\d+$'
+    let delta = str2nr(a:arg) * a:direction
+  else
+    echo 'Invalid line count'
+    return
+  endif
+  let delta = (delta == 0) ? a:direction : delta
+  " at this point we're guaranteed to have integer target != 0
+  call BookmarkModify(delta)
+endfunction
+
+" arg is always a string
+function! s:move_absolute(arg)
+  if !s:has_bookmark_at_cursor()
+    echo 'No bookmark at current line'
+    return
+  endif
+  " ''              => prompt
+  " 'v:count' == 0  => prompt
+  " 'v:count'       => use
+  " '\d+'           => use
+  " negative/abc arg naturally rejected
+  if empty(a:arg)
+    let target = 0
+  elseif a:arg =~# '\v^v:count1?$'
+    let target = eval(a:arg)
+  elseif a:arg =~# '\v^\d+$'
+    let target = str2nr(a:arg)
+  else
+    echo 'Invalid line number'
+    return
+  endif
+  if target == 0
+      let target = input("Enter target line number: ")
+      " clear the line for subsequent messages
+      echo "\r"
+      " if 'abc<Esc>' or '<empty><Enter>' (indistinguishable), cancel with no error message
+      if empty(target)
+        return
+      endif
+      if target !~# '\v^\d+$'
+        echo "Invalid line number"
+        return
+      endif
+      let target = str2nr(target)
+  endif
+  " at this point we're guaranteed to have integer target > 0
+  call BookmarkMoveToLine(target)
+endfunction
+
+function! s:has_bookmark_at_cursor()
+  let file = expand("%:p")
+  let current_line = line('.')
+  if file ==# ""
+    return
+  endif
+  return bm#has_bookmark_at_line(file, current_line)
+endfunction
+
 
 function! s:lazy_init()
   if g:bm_has_any ==# 0
@@ -389,7 +475,7 @@ function! s:bookmark_save_file(file)
 endfunction
 
 function! s:default_file_location()
-    return getcwd(). '/.vim-bookmarks'
+  return getcwd(). '/.vim-bookmarks'
 endfunction
 
 " should only be called from autocmd!
@@ -420,9 +506,9 @@ function! s:auto_close()
 endfunction
 
 function! s:remove_auto_close()
-   augroup BM_AutoCloseCommand
-      autocmd!
-   augroup END
+  augroup BM_AutoCloseCommand
+    autocmd!
+  augroup END
 endfunction
 
 function! s:auto_save()
@@ -435,15 +521,15 @@ function! s:auto_save()
 endfunction
 
 function! s:set_up_auto_save(file)
-   if g:bookmark_auto_save ==# 1 || g:bookmark_manage_per_buffer ==# 1
-     call s:startup_load_bookmarks(a:file)
-     let g:bm_current_file = a:file
-     augroup bm_auto_save
-       autocmd!
-       autocmd BufWinEnter * call s:add_missing_signs(expand('<afile>:p'))
-       autocmd BufLeave,VimLeave * call s:auto_save()
-     augroup END
-   endif
+  if g:bookmark_auto_save ==# 1 || g:bookmark_manage_per_buffer ==# 1
+    call s:startup_load_bookmarks(a:file)
+    let g:bm_current_file = a:file
+    augroup bm_auto_save
+      autocmd!
+      autocmd BufWinEnter * call s:add_missing_signs(expand('<afile>:p'))
+      autocmd BufLeave,VimLeave * call s:auto_save()
+    augroup END
+  endif
 endfunction
 
 " }}}
@@ -451,8 +537,12 @@ endfunction
 
 " Maps {{{
 
-function! s:register_mapping(command, shortcut)
-  execute "nnoremap <silent> <Plug>". a:command ." :". a:command ."<CR>"
+function! s:register_mapping(command, shortcut, has_count)
+  if a:has_count
+    execute "nnoremap <silent> <Plug>". a:command ." :<C-u>". a:command ." v:count<CR>"
+  else
+    execute "nnoremap <silent> <Plug>". a:command ." :". a:command ."<CR>"
+  endif
   if !hasmapto("<Plug>". a:command)
         \ && !get(g:, 'bookmark_no_default_key_mappings', 0)
         \ && maparg(a:shortcut, 'n') ==# ''
@@ -460,14 +550,15 @@ function! s:register_mapping(command, shortcut)
   endif
 endfunction
 
-call s:register_mapping('BookmarkShowAll',  'ma')
-call s:register_mapping('BookmarkToggle',   'mm')
-call s:register_mapping('BookmarkAnnotate', 'mi')
-call s:register_mapping('BookmarkNext',     'mn')
-call s:register_mapping('BookmarkPrev',     'mp')
-call s:register_mapping('BookmarkClear',    'mc')
-call s:register_mapping('BookmarkClearAll', 'mx')
-call s:register_mapping('BookmarkMoveUp', 'mkk')
-call s:register_mapping('BookmarkMoveDown', 'mjj')
+call s:register_mapping('BookmarkShowAll',    'ma',  0)
+call s:register_mapping('BookmarkToggle',     'mm',  0)
+call s:register_mapping('BookmarkAnnotate',   'mi',  0)
+call s:register_mapping('BookmarkNext',       'mn',  0)
+call s:register_mapping('BookmarkPrev',       'mp',  0)
+call s:register_mapping('BookmarkClear',      'mc',  0)
+call s:register_mapping('BookmarkClearAll',   'mx',  0)
+call s:register_mapping('BookmarkMoveUp',     'mkk', 1)
+call s:register_mapping('BookmarkMoveDown',   'mjj', 1)
+call s:register_mapping('BookmarkMoveToLine', 'mg',  1)
 
 " }}}

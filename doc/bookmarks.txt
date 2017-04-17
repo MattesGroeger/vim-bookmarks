@@ -83,12 +83,13 @@ Commands for using Bookmarks
   :BookmarkClearAll                                         *:BookmarkClearAll*
       Removes bookmarks for all buffer
 
-  :BookmarkMoveUp                                             *:BookmarkMoveUp*
-      Move up the bookmark at current line (when invoked from a key mapping,
-      you may use [count]<your mapping> to move the bookmark [count] lines up)
+  :BookmarkMoveUp [<COUNT>]                                   *:BookmarkMoveUp*
+      Move up the bookmark at current line by the specified amount of lines
+      (default: 1)
 
-  :BookmarkMoveDown                                         *:BookmarkMoveDown*
-      Move down the bookmark at current line (works with [count] as above)
+  :BookmarkMoveDown [<COUNT>]                               *:BookmarkMoveDown*
+      Move down the bookmark at current line by the specified amount of lines
+      (default: 1)
 
   :BookmarkMoveToLine <LINE>                              *:BookmarkMoveToLine*
       Move the bookmark at current line to the specified <LINE>
@@ -173,8 +174,11 @@ To change the default keys:
   nmap <Leader>k <Plug>BookmarkPrev
   nmap <Leader>c <Plug>BookmarkClear
   nmap <Leader>x <Plug>BookmarkClearAll
+
+  " these will also work with a [count] prefix
   nmap <Leader>kk <Plug>BookmarkMoveUp
   nmap <Leader>jj <Plug>BookmarkMoveDown
+  nmap <Leader>g <Plug>BookmarkMoveToLine
 <
 
 To prevent any default mappings from being created (default: 0):
