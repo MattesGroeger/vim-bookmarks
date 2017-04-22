@@ -83,11 +83,16 @@ Commands for using Bookmarks
   :BookmarkClearAll                                         *:BookmarkClearAll*
       Removes bookmarks for all buffer
 
-  :BookmarkMoveup                                             *:BookmarkMoveup*
-      Move up the bookmark at current line
+  :BookmarkMoveUp [<COUNT>]                                   *:BookmarkMoveUp*
+      Move up the bookmark at current line by the specified amount of lines
+      (default: 1)
 
-  :BookmarkMoveDown                                         *:BookmarkMoveDown*
-      Move down the bookmark at current line
+  :BookmarkMoveDown [<COUNT>]                               *:BookmarkMoveDown*
+      Move down the bookmark at current line by the specified amount of lines
+      (default: 1)
+
+  :BookmarkMoveToLine <LINE>                              *:BookmarkMoveToLine*
+      Move the bookmark at current line to the specified <LINE>
 
   :BookmarkSave <FILE_PATH>                                     *:BookmarkSave*
       Saves all bookmarks to a file so you can load them back in later
@@ -169,8 +174,11 @@ To change the default keys:
   nmap <Leader>k <Plug>BookmarkPrev
   nmap <Leader>c <Plug>BookmarkClear
   nmap <Leader>x <Plug>BookmarkClearAll
+
+  " these will also work with a [count] prefix
   nmap <Leader>kk <Plug>BookmarkMoveUp
   nmap <Leader>jj <Plug>BookmarkMoveDown
+  nmap <Leader>g <Plug>BookmarkMoveToLine
 <
 
 To prevent any default mappings from being created (default: 0):
