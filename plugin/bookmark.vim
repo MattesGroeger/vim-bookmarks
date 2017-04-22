@@ -294,7 +294,6 @@ function! BookmarkMoveToLine(target)
     let content = len(line_content) > 0 ? line_content[0] : ' '
     call bm#update_bookmark_for_sign(file, bookmark['sign_idx'], a:target, content)
     call cursor(a:target, 1)
-    " redraw!
     normal! ^
   else
     return

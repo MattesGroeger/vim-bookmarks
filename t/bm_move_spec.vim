@@ -97,7 +97,7 @@ describe 'BookmarkMove* commands'
 
 end
 
-describe 'BookmarkMove mappings'
+describe 'BookmarkMove* mappings'
 
   before
     edit! LICENSE
