@@ -20,16 +20,18 @@ function! ctrlp#bookmarks#init() abort
         let l:line_nrs = sort(bm#all_lines(l:file), "bm#compare_lines")
         for l:line_nr in l:line_nrs
             let l:bookmark = bm#get_bookmark_by_line(l:file, l:line_nr)
-            if l:bookmark.annotation !~ '^\s*$'
-              call add(l:text,l:bookmark.annotation)
-            else
-              call add(l:text,l:bookmark.content)
-            endif
+            let l:detail=printf("%s:%d | %s", pathshorten(l:file), l:line_nr,
+                  \   l:bookmark.annotation !~ '^\s*$'
+                  \     ? "Annotation: " . l:bookmark.annotation
+                  \     : (l:bookmark.content !~ '^\s*$' ? l:bookmark.content
+                  \                                : "empty line")
+                  \ )
+            call add(l:text,l:detail)
         endfor
     endfor
     return l:text
 endfunction
-
+   
 function! ctrlp#bookmarks#accept(mode, str) abort
   if a:mode ==# 'e'
       let l:HowToOpen='e'
@@ -47,14 +49,17 @@ function! ctrlp#bookmarks#accept(mode, str) abort
         let l:line_nrs = sort(bm#all_lines(l:file), "bm#compare_lines")
         for l:line_nr in l:line_nrs
             let l:bookmark = bm#get_bookmark_by_line(l:file, l:line_nr)
-            if a:str ==# l:bookmark.annotation 
+            let l:content_str=matchstr(a:str,'[^|]\+ | \(Annotation: \|empty line\)\zs.*\ze')
+            let l:line_str=matchstr(a:str,'[^|]\+:\zs\d\+\ze | \(Annotation: \|empty line\)')
+            if  l:content_str==# l:bookmark.annotation 
+                  \ && l:line_str == l:line_nr
                 execute l:HowToOpen." ".l:file
                 execute ":".l:line_nr
-                break
-            elseif a:str ==# l:bookmark.content
+                return
+            elseif l:content_str ==# l:bookmark.content && l:line_str == l:line_nr
                 execute l:HowToOpen." ".l:file
                 execute ":".l:line_nr
-                break
+                return
             endif
         endfor
     endfor
