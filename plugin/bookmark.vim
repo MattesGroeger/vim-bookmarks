@@ -526,7 +526,7 @@ function! s:set_up_auto_save(file)
     augroup bm_auto_save
       autocmd!
       autocmd BufWinEnter * call s:add_missing_signs(expand('<afile>:p'))
-      autocmd BufLeave,VimLeave * call s:auto_save()
+      autocmd BufLeave,VimLeave,BufReadPre * call s:auto_save()
     augroup END
   endif
 endfunction
