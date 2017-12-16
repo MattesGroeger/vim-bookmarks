@@ -47,7 +47,11 @@ function! s:init(file)
   endif
 endfunction
 
-autocmd VimEnter * call s:init(expand('<afile>:p'))
+if has('vim_starting')
+  autocmd VimEnter * call s:init(expand('<afile>:p'))
+else
+  call s:init(expand('%:p'))
+endif
 
 " }}}
 
