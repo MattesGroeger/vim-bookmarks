@@ -17,8 +17,10 @@ endfunction
 
 if &t_Co == 256
     let s:ansi = {'black': 234, 'red': 196, 'green': 46, 'yellow': 226, 'blue': 63, 'magenta': 201, 'cyan': 51}
+elseif &t_Co == 16
+    let s:ansi = {'black': 0, 'red': 9, 'green': 10, 'yellow': 11, 'blue': 12, 'magenta': 13, 'cyan': 14}
 else
-    let s:ansi = {'black': 30, 'red': 31, 'green': 32, 'yellow': 33, 'blue': 34, 'magenta': 35, 'cyan': 36}
+    let s:ansi = {'black': 0, 'red': 1, 'green': 2, 'yellow': 3, 'blue': 4, 'magenta': 5, 'cyan': 6}
 endif
 
 function! s:csi(color, fg)
@@ -65,7 +67,7 @@ endfunction
 function! s:format_text(t, f)
     """Format second column with text and filename."""
     let text = a:t | let fname = a:f
-    
+
     " strip leading spaces and tabs
     let text = substitute(text, "^ *", "", "")
     let text = substitute(text, "^\t*", "", "")
