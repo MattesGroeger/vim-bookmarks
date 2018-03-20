@@ -32,6 +32,7 @@ call s:set('g:bookmark_auto_close',           0 )
 call s:set('g:bookmark_center',               0 )
 call s:set('g:bookmark_location_list',        0 )
 call s:set('g:bookmark_disable_ctrlp',        0 )
+call s:set('g:bookmark_prefer_fzf',           1 )
 
 function! s:init(file)
   if g:bookmark_auto_save ==# 1 || g:bookmark_manage_per_buffer ==# 1
@@ -166,17 +167,21 @@ function! BookmarkPrev()
 endfunction
 command! PrevBookmark call CallDeprecatedCommand('BookmarkPrev')
 command! BookmarkPrev call BookmarkPrev()
-command! CtrlPBookmark call ctrlp#init(ctrlp#bookmarks#id()) 
+command! CtrlPBookmark call ctrlp#init(ctrlp#bookmarks#id())
 
 function! BookmarkShowAll()
   if s:is_quickfix_win()
     q
   else
     call s:refresh_line_numbers()
-    if exists(':Unite')
+    if exists(':FZF') && g:bookmark_prefer_fzf
+      exec ":FzfBookmarks"
+    elseif exists(':Unite')
       exec ":Unite vim_bookmarks"
     elseif exists(':CtrlP') == 2 && g:bookmark_disable_ctrlp == 0
       exec ":CtrlPBookmark"
+    elseif exists(':FZF')
+      exec ":FzfBookmarks"
     else
       let oldformat = &errorformat    " backup original format
       let &errorformat = "%f:%l:%m"   " custom format for bookmarks
@@ -301,6 +306,11 @@ endfunction
 command! -nargs=? BookmarkMoveUp call s:move_relative(<q-args>, -1)
 command! -nargs=? BookmarkMoveDown call s:move_relative(<q-args>, 1)
 command! -nargs=? BookmarkMoveToLine call s:move_absolute(<q-args>)
+
+command! -bang -nargs=? -complete=buffer FzfBookmarks call fzf#vim#ag(<q-args>, {
+            \ 'source': fzf#bookmarks#list(),
+            \ 'sink': function('fzf#bookmarks#open'), 'down': '30%',
+            \ 'options': '--prompt "Bookmarks  >>>  "'})
 
 " }}}
 

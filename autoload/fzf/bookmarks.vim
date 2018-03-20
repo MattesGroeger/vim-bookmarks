@@ -119,8 +119,3 @@ function! fzf#bookmarks#list()
     return list
 endfunction
 
-com! -bang -nargs=? -complete=buffer Bookmarks call fzf#vim#ag(<q-args>, {
-            \ 'source': fzf#bookmarks#list(),
-            \ 'sink': function('fzf#bookmarks#open'), 'down': '30%',
-            \ 'options': '--prompt "Bookmarks  >>>  "'})
-
