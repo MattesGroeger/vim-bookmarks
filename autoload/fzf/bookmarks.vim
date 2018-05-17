@@ -64,9 +64,9 @@ function! s:is_annotation(t)
     if a:t =~ "^Annotation: " | return s:green("§ ".a:t[12:]) | endif
 endfunction
 
-function! s:format_text(t, f)
+function! s:format_text(t)
     """Format second column with text and filename."""
-    let text = a:t | let fname = a:f
+    let text = a:t
 
     " strip leading spaces and tabs
     let text = substitute(text, "^ *", "", "")
@@ -81,7 +81,7 @@ function! s:format_text(t, f)
     let annotation = s:is_annotation(text) | let slen = len(text)
     if !empty(annotation) | let text = annotation | let diff = len(text) - slen + 10 | endif
 
-    return s:pad(text, 60+diff)."\t".fname
+    return s:pad(text, 60+diff)
 endfunction
 
 function! s:format_line(b)
@@ -94,8 +94,8 @@ function! s:format_line(b)
     " colon in fname? it would mess up the line, skip it
     if !filereadable(fname) | return '' | endif
 
-    let text = s:format_text(text, fname)
-    return s:yellow(lnr)."\t".text
+    let text = s:format_text(text)
+    return s:yellow(fname).":".lnr."\t".text
 endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -104,7 +104,8 @@ endfunction
 
 function! fzf#bookmarks#open(line)
     let line = split(a:line, "\t")
-    let fname = line[2] | let lnr = line[0]
+    let fnameAndLnr = split(line[0], ":")
+    let fname = fnameAndLnr[0] | let lnr = fnameAndLnr[1]
 
     if bufname(bufnr("%")) !=# fname | execute "e ".fname | endif
     execute "normal! ".lnr."gg"
