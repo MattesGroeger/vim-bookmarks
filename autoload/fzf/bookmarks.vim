@@ -16,7 +16,7 @@ function! s:get_color(attr, ...)
 endfunction
 
 if &t_Co == 256
-    let s:ansi = {'black': 234, 'red': 196, 'green': 46, 'yellow': 226, 'blue': 63, 'magenta': 201, 'cyan': 51}
+    let s:ansi = {'black': 234, 'red': 196, 'green': 46, 'yellow': 226, 'blue': 63, 'magenta': 201, 'cyan': 117}
 elseif &t_Co == 16
     let s:ansi = {'black': 0, 'red': 9, 'green': 10, 'yellow': 11, 'blue': 12, 'magenta': 13, 'cyan': 14}
 else
@@ -64,9 +64,9 @@ function! s:is_annotation(t)
     if a:t =~ "^Annotation: " | return s:green("§ ".a:t[12:]) | endif
 endfunction
 
-function! s:format_text(t)
+function! s:format_text(t, f)
     """Format second column with text and filename."""
-    let text = a:t
+    let text = a:t | let fname = a:f
 
     " strip leading spaces and tabs
     let text = substitute(text, "^ *", "", "")
@@ -81,7 +81,7 @@ function! s:format_text(t)
     let annotation = s:is_annotation(text) | let slen = len(text)
     if !empty(annotation) | let text = annotation | let diff = len(text) - slen + 10 | endif
 
-    return s:pad(text, 60+diff)
+    return s:preview? [s:pad(text, 60), !empty(annotation)] : s:pad(text, 60+diff)."\t".s:cyan(fname)
 endfunction
 
 function! s:format_line(b)
@@ -93,9 +93,14 @@ function! s:format_line(b)
 
     " colon in fname? it would mess up the line, skip it
     if !filereadable(fname) | return '' | endif
+    let text = s:format_text(text, fname)
 
-    let text = s:format_text(text)
-    return s:yellow(fname).":".lnr."\t".text
+    if s:preview
+        let text = text[1]? "\t".text[0] : ''
+        return s:yellow(fname).":".lnr.text
+    else
+        return s:yellow(lnr)."\t".text
+    endif
 endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -104,20 +109,26 @@ endfunction
 
 function! fzf#bookmarks#open(line)
     let line = split(a:line, "\t")
-    let fnameAndLnr = split(line[0], ":")
-    let fname = fnameAndLnr[0] | let lnr = fnameAndLnr[1]
+
+    if s:preview
+        let fnameAndLnr = split(line[0], ":")
+        let fname = fnameAndLnr[0] | let lnr = fnameAndLnr[1]
+    else
+        let fname = line[2] | let lnr = line[0]
+    endif
 
     if bufname(bufnr("%")) !=# fname | execute "e ".fname | endif
     execute "normal! ".lnr."gg"
 endfunction
 
-function! fzf#bookmarks#list()
+function! fzf#bookmarks#list(preview)
     """Show a list of current bookmarks."""
 
-    let list = []
+    let list = [] | let s:preview = a:preview
+
     for b in bm#location_list()
         let line = s:format_line(b)
-        if line != '' | call add(list, s:format_line(b)) | endif
+        if line != '' | call add(list, line) | endif
     endfor
     return list
 endfunction
