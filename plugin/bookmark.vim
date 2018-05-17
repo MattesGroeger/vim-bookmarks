@@ -33,6 +33,7 @@ call s:set('g:bookmark_center',               0 )
 call s:set('g:bookmark_location_list',        0 )
 call s:set('g:bookmark_disable_ctrlp',        0 )
 call s:set('g:bookmark_prefer_fzf',           0 )
+call s:set('g:bookmark_fzf_preview',          0 )
 call s:set('g:bookmark_fzf_preview_layout',   ['up', '60%'] )
 
 function! s:init(file)
@@ -176,13 +177,13 @@ function! BookmarkShowAll()
   else
     call s:refresh_line_numbers()
     if exists(':FZF') && g:bookmark_prefer_fzf
-      exec ":FzfBookmarks"
+      exec ":FzfBookmarks".(g:bookmark_fzf_preview? '!' : '')
     elseif exists(':Unite')
       exec ":Unite vim_bookmarks"
     elseif exists(':CtrlP') == 2 && g:bookmark_disable_ctrlp == 0
       exec ":CtrlPBookmark"
     elseif exists(':FZF')
-      exec ":FzfBookmarks"
+      exec ":FzfBookmarks".(g:bookmark_fzf_preview? '!' : '')
     else
       let oldformat = &errorformat    " backup original format
       let &errorformat = "%f:%l:%m"   " custom format for bookmarks

@@ -264,14 +264,10 @@ You can disable Ctrlp by setting (default 0)
 >
   let g:bookmark_disable_ctrlp = 1
 
+
 To use FZF to show all bookmarks (default 0):
 >
   let g:bookmark_prefer_fzf = 1
-<
-
-To use use FZF's preview feature (default 0):
->
-  let g:bookmark_fzf_preview = 1
 <
 ===============================================================================
 6. EXTENDING                                               *BookmarksExtending*
@@ -348,11 +344,22 @@ https://github.com/ctrlpvim/ctrlp.vim
 
 FZF is a multi purpose fuzzy finder.
 
-To force bookmarks to be listed in FZF rather than CtrlP or Unite, set
-|g:bookmark_prefer_fzf|to 1.
+To force bookmarks to be listed in FZF rather than CtrlP or Unite, set:
+>
+  let g:bookmark_prefer_fzf = 1
+<
 
-Additionally if you want to use FZF's preview functionality, set
-|g:bookmark_fzf_preview|to 1.
+You can use use FZF's preview feature either by setting
+>
+  let g:bookmark_fzf_preview = 1
+<
+or by calling the command with a bang:
+>
+  FzfBookmarks!
+
+You can change the layout in preview mode by setting (needs restart):
+>
+  let g:bookmark_fzf_preview_layout = ['up', '60%']
 
 https://github.com/junegunn/fzf.vim
 
