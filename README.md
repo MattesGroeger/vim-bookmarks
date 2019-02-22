@@ -121,6 +121,7 @@ Put any of the following options into your `~/.vimrc` in order to overwrite the 
 | `let g:bookmark_no_default_key_mappings = 1`                    | 0                        | Prevent any default key mapping from being created|
 | `let g:bookmark_location_list = 1`             | 0                        | Use the location list to show all bookmarks             |
 | `let g:bookmark_disable_ctrlp = 1`             | 0                        | Disable ctrlp interface when  show all bookmarks             |
+| `let g:bookmark_display_annotation = 1`        | 0                        | Display annotation text on the status line              |
 
 ### Bookmarks per working directory
 
