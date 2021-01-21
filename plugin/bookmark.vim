@@ -92,12 +92,16 @@ function! BookmarkAnnotate(...)
   " Get annotation from user input if not passed in
   if new_annotation ==# ""
     let input_msg = old_annotation !=# "" ? "Edit" : "Enter"
-    let new_annotation = input(input_msg ." annotation: ", old_annotation)
+    let cancelled_input = '@I@DINT@RITE@NUTHIN@MATE@'
+    let new_annotation = inputdialog(input_msg ." annotation: ", old_annotation, cancelled_input)
+    if new_annotation ==# cancelled_input
+      let new_annotation = old_annotation
+    endif
     execute ":redraw!"
   endif
 
   " Nothing changed, bail out
-  if new_annotation ==# "" && old_annotation ==# new_annotation
+  if old_annotation ==# new_annotation
     return
 
   " Update annotation
