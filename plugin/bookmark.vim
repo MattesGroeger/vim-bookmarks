@@ -32,6 +32,7 @@ call s:set('g:bookmark_auto_close',           0 )
 call s:set('g:bookmark_center',               0 )
 call s:set('g:bookmark_location_list',        0 )
 call s:set('g:bookmark_disable_ctrlp',        0 )
+call s:set('g:bookmark_display_annotation',   0 )
 call s:set('g:bm_stack_mode',                 0 ) 
 
 function! s:init(file)
@@ -40,6 +41,9 @@ function! s:init(file)
       autocmd!
       autocmd BufEnter * call s:set_up_auto_save(expand('<afile>:p'))
     augroup END
+  endif
+  if g:bookmark_display_annotation ==# 1
+      autocmd CursorMoved * call s:display_annotation()
   endif
   if a:file !=# ''
     call s:set_up_auto_save(a:file)
@@ -541,6 +545,23 @@ function! s:set_up_auto_save(file)
       autocmd BufWinEnter * call s:add_missing_signs(expand('<afile>:p'))
       autocmd BufLeave,VimLeave,BufReadPre * call s:auto_save()
     augroup END
+  endif
+endfunction
+
+function! s:display_annotation()
+  let file = expand("%:p")
+  if file ==# ""
+    return
+  endif
+
+  let current_line = line('.')
+  let has_bm = bm#has_bookmark_at_line(file, current_line)
+  let bm = has_bm ? bm#get_bookmark_by_line(file, current_line) : 0
+  let annotation = has_bm ? bm['annotation'] : ""
+  if annotation !=# ""
+      echo "Bookmark annotation: ". annotation
+  else
+      echo
   endif
 endfunction
 
