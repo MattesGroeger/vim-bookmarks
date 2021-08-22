@@ -33,6 +33,7 @@ call s:set('g:bookmark_center',               0 )
 call s:set('g:bookmark_location_list',        0 )
 call s:set('g:bookmark_disable_ctrlp',        0 )
 call s:set('g:bookmark_display_annotation',   0 )
+call s:set('g:bm_stack_mode',                 0 ) 
 
 function! s:init(file)
   if g:bookmark_auto_save ==# 1 || g:bookmark_manage_per_buffer ==# 1
@@ -188,13 +189,7 @@ function! BookmarkShowAll()
     else
       let oldformat = &errorformat    " backup original format
       let &errorformat = "%f:%l:%m"   " custom format for bookmarks
-      if g:bookmark_location_list
-        lgetexpr bm#location_list()
-        belowright lopen
-      else
-        cgetexpr bm#location_list()
-        belowright copen
-      endif
+      call s:show_location()
       augroup BM_AutoCloseCommand
         autocmd!
         autocmd WinLeave * call s:auto_close()
@@ -493,6 +488,26 @@ endfunction
 
 function! s:is_quickfix_win()
   return getbufvar(winbufnr('.'), '&buftype') == 'quickfix'
+endfunction
+
+function! s:show_location()
+  if g:bm_stack_mode
+    if g:bookmark_location_list
+      lgetexpr bm#location_list_stack_mode()
+      belowright lopen
+    else
+      cgetexpr bm#location_list_stack_mode()
+      belowright copen
+    endif
+  else
+    if g:bookmark_location_list
+      lgetexpr bm#location_list()
+      belowright lopen
+    else
+      cgetexpr bm#location_list()
+      belowright copen
+    endif
+  endif
 endfunction
 
 function! s:auto_close()

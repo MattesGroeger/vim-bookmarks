@@ -130,6 +130,30 @@ function! bm#all_lines(file)
   return keys(g:line_map[a:file])
 endfunction
 
+function! bm#location_list_stack_mode()
+  let files = bm#all_files()
+  let locations = []
+  let bms = []
+  for file in files
+    let line_nrs = bm#all_lines(file)
+    for line_nr in line_nrs
+      let bookmark = bm#get_bookmark_by_line(file, line_nr)
+      let bookmark['file'] = file
+      let bookmark['line_nr'] = line_nr
+      call add(bms, bookmark)
+    endfor
+  endfor
+  for bookmark in sort(bms, 'bm#compare_bm')
+    let content = bookmark['annotation'] !=# ''
+          \ ? "Annotation: ". bookmark['annotation']
+          \ : (bookmark['content'] !=# ""
+          \   ? bookmark['content']
+          \   : "empty line")
+    call add(locations, bookmark['file'] .":". bookmark['line_nr'].":". content)
+  endfor
+  return locations
+endfunction
+
 function! bm#location_list()
   let files = sort(bm#all_files())
   let locations = []
@@ -201,6 +225,12 @@ endfunction
 
 
 " Private {{{
+
+function! bm#compare_bm(bm1, bm2)
+  let bm1 = str2nr(a:bm1['sign_idx'])
+  let bm2 = str2nr(a:bm2['sign_idx'])
+  return bm1 ==# bm2 ? 0 : bm1 > bm2 ? -1 : 1
+endfunc
 
 function! bm#compare_lines(line_str1, line_str2)
   let line1 = str2nr(a:line_str1)
