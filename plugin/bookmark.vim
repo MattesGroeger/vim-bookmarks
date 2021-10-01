@@ -35,7 +35,7 @@ call s:set('g:bookmark_disable_ctrlp',        0 )
 call s:set('g:bookmark_display_annotation',   0 )
 
 function! s:init(file)
-  if g:bookmark_auto_save ==# 1 || g:bookmark_manage_per_buffer ==# 1
+  if g:bookmark_auto_save ==# 1 && g:bookmark_manage_per_buffer ==# 1
     augroup bm_vim_enter
       autocmd!
       autocmd BufEnter * call s:set_up_auto_save(expand('<afile>:p'))
