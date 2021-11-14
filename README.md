@@ -73,16 +73,16 @@ You can change the shortcuts as you like, just read on...
 You can overwrite any of the default mappings. Just put the following into your `~/.vimrc` and adjust as you like:
 
 ```viml
-nmap <Leader><Leader> <Plug>BookmarkToggle
-nmap <Leader>i <Plug>BookmarkAnnotate
-nmap <Leader>a <Plug>BookmarkShowAll
-nmap <Leader>j <Plug>BookmarkNext
-nmap <Leader>k <Plug>BookmarkPrev
-nmap <Leader>c <Plug>BookmarkClear
-nmap <Leader>x <Plug>BookmarkClearAll
-nmap <Leader>kk <Plug>BookmarkMoveUp
-nmap <Leader>jj <Plug>BookmarkMoveDown
-nmap <Leader>g <Plug>BookmarkMoveToLine
+nmap <Leader><Leader> <Plug>(BookmarkToggle)
+nmap <Leader>i <Plug>(BookmarkAnnotate)
+nmap <Leader>a <Plug>(BookmarkShowAll)
+nmap <Leader>j <Plug>(BookmarkNext)
+nmap <Leader>k <Plug>(BookmarkPrev)
+nmap <Leader>c <Plug>(BookmarkClear)
+nmap <Leader>x <Plug>(BookmarkClearAll)
+nmap <Leader>kk <Plug>(BookmarkMoveUp)
+nmap <Leader>jj <Plug>(BookmarkMoveDown)
+nmap <Leader>g <Plug>(BookmarkMoveToLine)
 ```
 You can disable all default key bindings by setting the following in your `~/.vimrc`:
 
