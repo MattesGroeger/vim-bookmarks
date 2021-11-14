@@ -167,18 +167,18 @@ KEY MAPPINGS
 
 To change the default keys:
 >
-  nmap <Leader><Leader> <Plug>BookmarkToggle
-  nmap <Leader>i <Plug>BookmarkAnnotate
-  nmap <Leader>a <Plug>BookmarkShowAll
-  nmap <Leader>j <Plug>BookmarkNext
-  nmap <Leader>k <Plug>BookmarkPrev
-  nmap <Leader>c <Plug>BookmarkClear
-  nmap <Leader>x <Plug>BookmarkClearAll
+  nmap <Leader><Leader> <Plug>(BookmarkToggle)
+  nmap <Leader>i <Plug>(BookmarkAnnotate)
+  nmap <Leader>a <Plug>(BookmarkShowAll)
+  nmap <Leader>j <Plug>(BookmarkNext)
+  nmap <Leader>k <Plug>(BookmarkPrev)
+  nmap <Leader>c <Plug>(BookmarkClear)
+  nmap <Leader>x <Plug>(BookmarkClearAll)
 
   " these will also work with a [count] prefix
-  nmap <Leader>kk <Plug>BookmarkMoveUp
-  nmap <Leader>jj <Plug>BookmarkMoveDown
-  nmap <Leader>g <Plug>BookmarkMoveToLine
+  nmap <Leader>kk <Plug>(BookmarkMoveUp)
+  nmap <Leader>jj <Plug>(BookmarkMoveDown)
+  nmap <Leader>g <Plug>(BookmarkMoveToLine)
 <
 
 To prevent any default mappings from being created (default: 0):
@@ -319,16 +319,16 @@ ctrlp.vim is a Full path fuzzy file, buffer, mru, tag, ... finder for Vim.
 
 Additionally, when showing all your bookmarks, CtrlP is detected and the plugin
 will open *:CtrlPBookmark* instead of Vim's quickfix window. Note that
-|g:bookmark_auto_close| is no longer applied. Once opened, the window is managed 
+|g:bookmark_auto_close| is no longer applied. Once opened, the window is managed
 by CtrlP.
 
-With the CtrlP interface, when you select bookmarks, you can perform the 
+With the CtrlP interface, when you select bookmarks, you can perform the
 following actions:
 
 * Open the selected bookmarks in various ways (open to the right, open above,
   open in new tab, etc.)
 * And more...
- 
+
 For more information about CtrlP start reading |CtrlP@en|.
 
 https://github.com/ctrlpvim/ctrlp.vim
