@@ -39,6 +39,7 @@ function! s:init(file)
     augroup bm_vim_enter
       autocmd!
       autocmd BufEnter * call s:set_up_auto_save(expand('<afile>:p'))
+      autocmd BufEnter * call BookmarkLoad(s:bookmark_save_file(g:bm_current_file), 0, 1)
     augroup END
   endif
   if g:bookmark_display_annotation ==# 1
