@@ -161,6 +161,7 @@ function! bm#del_all()
 endfunction
 
 function! bm#serialize()
+  let sign_index = "let l:bm_sign_index = ". g:bm_sign_index
   let file_version = "let l:bm_file_version = 1"
   let sessions  = "let l:bm_sessions = {'default': {"
   for file in bm#all_files()
@@ -175,11 +176,12 @@ function! bm#serialize()
   endfor
   let sessions .= "}}"
   let current_session = "let l:bm_current_session = 'default'"
-  return [file_version, sessions, current_session]
+  return [sign_index, file_version, sessions, current_session]
 endfunction
 
 function! bm#deserialize(data)
     exec join(a:data, " | ")
+    let g:bm_sign_index = l:bm_sign_index
     let ses = l:bm_sessions["default"]
     let result = []
     for file in keys(ses)
