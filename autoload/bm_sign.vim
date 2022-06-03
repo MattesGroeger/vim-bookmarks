@@ -38,7 +38,7 @@ function! bm_sign#define_highlights()
 endfunction
 
 function! bm_sign#add(file, line_nr, is_annotation)
-  call bm_sign#lazy_init()
+  " call bm_sign#lazy_init()
   let sign_idx = g:bm_sign_index
   call bm_sign#add_at(a:file, sign_idx, a:line_nr, a:is_annotation)
   return sign_idx
@@ -49,6 +49,31 @@ function! bm_sign#add_at(file, sign_idx, line_nr, is_annotation)
   call bm_sign#lazy_init()
   let name = a:is_annotation ==# 1 ? "BookmarkAnnotation" : "Bookmark"
   execute "sign place ". a:sign_idx ." line=" . a:line_nr ." name=". name ." file=". a:file
+  if (a:sign_idx >=# g:bm_sign_index)
+    let g:bm_sign_index = a:sign_idx + 1
+  endif
+endfunction
+
+function! s:startsWith(longer, shorter)
+  return a:longer[0:len(a:shorter)-1] ==# a:shorter
+endfunction
+let g:icondict = {'@t': "☑️", '@f': "⛏", '@w': "⚠️", '@n': ""} 
+function! bm_sign#add_atannotation(file, sign_idx, line_nr, annotation)
+  call bm_sign#lazy_init()
+  let is_annotation = a:annotation !=# ""
+  let name = is_annotation ==# 1 ? "BookmarkAnnotation" : "Bookmark"
+  let pref = ""
+  if is_annotation ==# 1 
+    let prefix = "sign define BookmarkAnnotation"
+    let pref = a:annotation[0:1]
+    let text = get(g:icondict,pref,"♠")
+    if pref[0] ==# "@"
+      execute prefix . pref. " text=" .text
+    else
+      let pref = ""
+    endif
+  endif
+  execute "sign place ". a:sign_idx  . " line=" . a:line_nr ." name=". name . pref ." file=". a:file
   if (a:sign_idx >=# g:bm_sign_index)
     let g:bm_sign_index = a:sign_idx + 1
   endif
