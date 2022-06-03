@@ -460,7 +460,7 @@ endfunction
 
 function! s:startup_load_bookmarks(file)
   call BookmarkLoad(s:bookmark_save_file(a:file), 1, 1)
-  call s:add_missing_signs(a:file)
+  " call s:add_missing_signs(a:file)
 endfunction
 
 function! s:bookmark_save_file(file)
@@ -487,7 +487,7 @@ endfunction
 function! s:add_missing_signs(file)
   let bookmarks = values(bm#all_bookmarks_by_line(a:file))
   for bookmark in bookmarks
-    call bm_sign#add_at(a:file, bookmark['sign_idx'], bookmark['line_nr'], bookmark['annotation'] !=# "")
+    call bm_sign#add_atannotation(a:file, bookmark['sign_idx'], bookmark['line_nr'], bookmark['annotation'] )
   endfor
 endfunction
 
