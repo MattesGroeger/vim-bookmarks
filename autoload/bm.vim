@@ -179,10 +179,15 @@ function! bm#serialize()
   return [sign_index, file_version, sessions, current_session]
 endfunction
 
+function! bm#checkKey(file)
+    return has_key(g:bm_sessions,a:file)
+endfunction
+
 function! bm#deserialize(data)
     exec join(a:data, " | ")
     let g:bm_sign_index = l:bm_sign_index
     let ses = l:bm_sessions["default"]
+    let g:bm_sessions = ses 
     let result = []
     for file in keys(ses)
       for bm in ses[file]
