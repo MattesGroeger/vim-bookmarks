@@ -35,7 +35,7 @@ call s:set('g:bookmark_disable_ctrlp',        0 )
 call s:set('g:bookmark_display_annotation',   0 )
 
 function! s:init(file)
-  if g:bookmark_auto_save ==# 1 || g:bookmark_manage_per_buffer ==# 1
+  if g:bookmark_auto_save ==# 1 && g:bookmark_manage_per_buffer ==# 1
     augroup bm_vim_enter
       autocmd!
       autocmd BufEnter * call s:set_up_auto_save(expand('<afile>:p'))
@@ -211,7 +211,10 @@ function! BookmarkSave(target_file, silent)
   call s:refresh_line_numbers()
   if (bm#total_count() > 0 || (!g:bookmark_save_per_working_dir && !g:bookmark_manage_per_buffer))
     let serialized_bookmarks = bm#serialize()
-    call writefile(serialized_bookmarks, a:target_file)
+    let file_version = "let l:bm_file_version = 0"
+    if file_version ==# serialized_bookmarks[1]
+      call writefile(serialized_bookmarks, a:target_file)
+    endif
     if (!a:silent)
       echo "All bookmarks saved"
     endif
