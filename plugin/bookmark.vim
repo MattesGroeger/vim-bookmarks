@@ -45,6 +45,7 @@ function! s:init(file)
       autocmd CursorMoved * call s:display_annotation()
   endif
   if a:file !=# ''
+    call s:startup_load_bookmarks(a:file)
     call s:set_up_auto_save(a:file)
   elseif g:bookmark_manage_per_buffer ==# 0 && g:bookmark_save_per_working_dir ==# 0
     call BookmarkLoad(s:bookmark_save_file(''), 1, 1)
@@ -162,14 +163,14 @@ command! ClearAllBookmarks call CallDeprecatedCommand('BookmarkClearAll', [0])
 command! BookmarkClearAll call BookmarkClearAll(0)
 
 function! BookmarkNext()
-  call s:refresh_line_numbers()
+  " call s:refresh_line_numbers()
   call s:jump_to_bookmark('next')
 endfunction
 command! NextBookmark call CallDeprecatedCommand('BookmarkNext')
 command! BookmarkNext call BookmarkNext()
 
 function! BookmarkPrev()
-  call s:refresh_line_numbers()
+  " call s:refresh_line_numbers()
   call s:jump_to_bookmark('prev')
 endfunction
 command! PrevBookmark call CallDeprecatedCommand('BookmarkPrev')
@@ -210,7 +211,10 @@ function! BookmarkSave(target_file, silent)
   call s:refresh_line_numbers()
   if (bm#total_count() > 0 || (!g:bookmark_save_per_working_dir && !g:bookmark_manage_per_buffer))
     let serialized_bookmarks = bm#serialize()
-    call writefile(serialized_bookmarks, a:target_file)
+    let file_version = "let l:bm_file_version = 0"
+    if file_version ==# serialized_bookmarks[1]
+      call writefile(serialized_bookmarks, a:target_file)
+    endif
     if (!a:silent)
       echo "All bookmarks saved"
     endif
@@ -406,8 +410,8 @@ function! s:refresh_line_numbers()
   call s:lazy_init()
   let file = expand("%:p")
   if file ==# "" || !bm#has_bookmarks_in_file(file)
-    return
   endif
+  return
   let bufnr = bufnr(file)
   let sign_line_map = bm_sign#lines_for_signs(file)
   for sign_idx in keys(sign_line_map)
@@ -459,7 +463,7 @@ function! s:remove_all_bookmarks()
 endfunction
 
 function! s:startup_load_bookmarks(file)
-  call BookmarkLoad(s:bookmark_save_file(a:file), 1, 1)
+  call BookmarkLoad(s:bookmark_save_file(""), 1, 1)
   call s:add_missing_signs(a:file)
 endfunction
 
@@ -487,7 +491,7 @@ endfunction
 function! s:add_missing_signs(file)
   let bookmarks = values(bm#all_bookmarks_by_line(a:file))
   for bookmark in bookmarks
-    call bm_sign#add_at(a:file, bookmark['sign_idx'], bookmark['line_nr'], bookmark['annotation'] !=# "")
+    call bm_sign#add_atannotation(a:file, bookmark['sign_idx'], bookmark['line_nr'], bookmark['annotation'] )
   endfor
 endfunction
 
@@ -517,9 +521,9 @@ function! s:remove_auto_close()
 endfunction
 
 function! s:auto_save()
-  if g:bm_current_file !=# ''
-    call BookmarkSave(s:bookmark_save_file(g:bm_current_file), 1)
-  endif
+  " if g:bm_current_file !=# '' && !bm#checkKey(g:bm_current_file)
+    call BookmarkSave(s:bookmark_save_file(""), 1)
+  " endif
   augroup bm_auto_save
     autocmd!
   augroup END
@@ -527,12 +531,11 @@ endfunction
 
 function! s:set_up_auto_save(file)
   if g:bookmark_auto_save ==# 1 || g:bookmark_manage_per_buffer ==# 1
-    call s:startup_load_bookmarks(a:file)
     let g:bm_current_file = a:file
     augroup bm_auto_save
       autocmd!
       autocmd BufWinEnter * call s:add_missing_signs(expand('<afile>:p'))
-      autocmd BufLeave,VimLeave,BufReadPre * call s:auto_save()
+      autocmd VimLeave * call s:auto_save()
     augroup END
   endif
 endfunction

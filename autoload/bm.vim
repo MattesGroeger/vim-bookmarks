@@ -103,6 +103,7 @@ function! bm#prev(file, current_line_nr)
 endfunction
 
 function! bm#del_bookmark_at_line(file, line_nr)
+  let g:bm_file_version = g:bm_file_version - 1
   let bookmark = bm#get_bookmark_by_line(a:file, a:line_nr)
   unlet g:line_map[a:file][a:line_nr]
   unlet g:sign_map[a:file][bookmark['sign_idx']]
@@ -161,7 +162,8 @@ function! bm#del_all()
 endfunction
 
 function! bm#serialize()
-  let file_version = "let l:bm_file_version = 1"
+  let sign_index = "let l:bm_sign_index = ". g:bm_sign_index
+  let file_version = "let l:bm_file_version = " . (g:bm_file_version == g:bm_sign_index ? 1 : 0)
   let sessions  = "let l:bm_sessions = {'default': {"
   for file in bm#all_files()
     let sessions .= "'". file ."': ["
@@ -175,12 +177,19 @@ function! bm#serialize()
   endfor
   let sessions .= "}}"
   let current_session = "let l:bm_current_session = 'default'"
-  return [file_version, sessions, current_session]
+  return [sign_index, file_version, sessions, current_session]
+endfunction
+
+function! bm#checkKey(file)
+    return has_key(g:bm_sessions,a:file)
 endfunction
 
 function! bm#deserialize(data)
     exec join(a:data, " | ")
+    let g:bm_sign_index = l:bm_sign_index
+    let g:bm_file_version = l:bm_sign_index
     let ses = l:bm_sessions["default"]
+    " let g:bm_sessions = ses 
     let result = []
     for file in keys(ses)
       for bm in ses[file]
