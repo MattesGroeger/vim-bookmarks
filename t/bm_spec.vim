@@ -48,6 +48,9 @@ end
 describe 'model with bookmark'
 
   before
+    let g:bookmark_save_per_working_dir = 1
+    let g:bookmark_save_relative_dir = 1
+    call bm#setup()
     call bm#add_bookmark('foo', 1, 3, 'bar', 'note')
   end
 

@@ -3,11 +3,20 @@ if !exists("g:line_map")
   let g:sign_map = {}  "  'sign_idx' => 'line_nr'
 endif
 
+let s:bookmark_save_per_working_dir = 0
+let s:bookmark_save_relative_dir =  0
+
 function s:bookmark_key(file)
+    if !s:bookmark_save_per_working_dir || !s:bookmark_save_relative_dir
+        return a:file
+    endif
     return substitute(a:file,getcwd() . '/','','')
 endfunction
 
 function s:file_from_key(key)
+    if !s:bookmark_save_per_working_dir || !s:bookmark_save_relative_dir
+        return a:key
+    endif
     let cwd = getcwd()
     " compatiable with absolute path key
     if match(a:key,'^' . cwd)
@@ -54,10 +63,6 @@ function s:line_entry_exists(file)
       return has_key(g:line_map, s:bookmark_key(a:file))
 endfunction
 
-function s:sign_entry_exists(file)
-      return has_key(g:sign_map, s:bookmark_key(a:file))
-endfunction
-
 function s:sign_entry(file)
     let key = s:bookmark_key(a:file)
     if !s:sign_entry_exists(a:file)
@@ -66,7 +71,21 @@ function s:sign_entry(file)
     return g:sign_map[key]
 endfunction
 
+function s:sign_entry_exists(file)
+      return has_key(g:sign_map, s:bookmark_key(a:file))
+endfunction
+
+
 " Bookmark Model {{{
+
+function! bm#setup()
+    if exists('g:bookmark_save_relative_dir')
+        let s:bookmark_save_relative_dir = g:bookmark_save_relative_dir
+    endif
+    if exists('g:bookmark_save_per_working_dir')
+        let s:bookmark_save_per_working_dir = g:bookmark_save_per_working_dir
+    endif
+endfunction
 
 function! bm#has_bookmarks_in_file(file)
   if !s:line_entry_exists(a:file)
