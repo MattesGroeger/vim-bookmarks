@@ -201,6 +201,16 @@ the current working directory whenever you create bookmarks. You should add this
 file to your (global) `.gitignore` file so it doesn't get checked into version
 control.
 
+Save bookmarks with relative path (default 0):
+
+>
+  let g:bookmark_save_relative_dir = 1
+<
+
+This option works with |g:bookmark_save_per_working_dir| option. When these two 
+options are both enabled, bookmarks will be stored with relative path in
+.vim-bookmarks so that you can share the same bookmarks on different matchines.
+
 Enable bookmark management on a per buffer basis:
 
 >
