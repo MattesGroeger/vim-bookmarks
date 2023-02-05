@@ -3,44 +3,128 @@ if !exists("g:line_map")
   let g:sign_map = {}  "  'sign_idx' => 'line_nr'
 endif
 
+let s:bookmark_save_per_working_dir = 0
+let s:bookmark_save_relative_dir =  0
+
+function s:bookmark_key(file)
+    if !s:bookmark_save_per_working_dir || !s:bookmark_save_relative_dir
+        return a:file
+    endif
+    return substitute(a:file,getcwd() . '/','','')
+endfunction
+
+function s:file_from_key(key)
+    if !s:bookmark_save_per_working_dir || !s:bookmark_save_relative_dir
+        return a:key
+    endif
+    let cwd = getcwd()
+    " compatiable with absolute path key
+    if match(a:key,'^' . cwd)
+        return a:key
+    endif
+    return cwd . '/' .  a:key
+endfunction
+
+function s:line_entry_init(file)
+        let g:line_map[s:bookmark_key(a:file)] = {}
+endfunction
+
+function s:line_entry_del(file)
+        unlet g:line_map[s:bookmark_key(a:file)]
+endfunction
+
+function s:sign_entry_init(file)
+        let g:sign_map[s:bookmark_key(a:file)] = {}
+endfunction
+
+function s:sign_entry_del(file)
+        unlet g:sign_map[s:bookmark_key(a:file)]
+endfunction
+
+function s:all_line_entry()
+    let keys = keys(g:line_map)
+    let i = 0
+    while i < len(keys)
+        let keys[i] = s:file_from_key(keys[i])
+        let i = i + 1
+    endwhile
+    return keys
+endfunction
+
+function s:line_entry(file)
+    let key = s:bookmark_key(a:file)
+    if !s:line_entry_exists(a:file)
+        let g:line_map[key] = {}
+    endif
+    return g:line_map[key]
+endfunction
+
+function s:line_entry_exists(file)
+      return has_key(g:line_map, s:bookmark_key(a:file))
+endfunction
+
+function s:sign_entry(file)
+    let key = s:bookmark_key(a:file)
+    if !s:sign_entry_exists(a:file)
+        let g:sign_map[key] = {}
+    endif
+    return g:sign_map[key]
+endfunction
+
+function s:sign_entry_exists(file)
+      return has_key(g:sign_map, s:bookmark_key(a:file))
+endfunction
+
+
 " Bookmark Model {{{
 
+function! bm#setup()
+    if exists('g:bookmark_save_relative_dir')
+        let s:bookmark_save_relative_dir = g:bookmark_save_relative_dir
+    endif
+    if exists('g:bookmark_save_per_working_dir')
+        let s:bookmark_save_per_working_dir = g:bookmark_save_per_working_dir
+    endif
+endfunction
+
 function! bm#has_bookmarks_in_file(file)
-  if !has_key(g:line_map, a:file)
+  if !s:line_entry_exists(a:file)
     return 0
   endif
-  return len(keys(g:line_map[a:file])) > 0
+  return len(keys(s:line_entry(a:file))) > 0
 endfunction
 
 function! bm#has_bookmark_at_line(file, line_nr)
-  if !has_key(g:line_map, a:file)
+  if !s:line_entry_exists(a:file)
     return 0
   endif
-  return has_key(g:line_map[a:file], a:line_nr)
+  return has_key(s:line_entry(a:file), a:line_nr)
 endfunction
 
 function! bm#get_bookmark_by_line(file, line_nr)
-  return g:line_map[a:file][a:line_nr]
+  return s:line_entry(a:file)[a:line_nr]
 endfunction
 
 function! bm#is_bookmark_has_annotation_by_line(file, line_nr)
-  return g:line_map[a:file][a:line_nr]['annotation'] !=# "" 
+  return s:line_entry(a:file)[a:line_nr]['annotation'] !=# "" 
 endfunction
 
 function! bm#get_bookmark_by_sign(file, sign_idx)
-  let line_nr = g:sign_map[a:file][a:sign_idx]
+  let line_nr = s:sign_entry(a:file)[a:sign_idx]
   return bm#get_bookmark_by_line(a:file, line_nr)
 endfunction
 
 function! bm#add_bookmark(file, sign_idx, line_nr, content, ...)
-  if !has_key(g:line_map, a:file)
-    let g:line_map[a:file] = {}
-    let g:sign_map[a:file] = {}
+  if !s:line_entry_exists(a:file)
+    call s:line_entry_init(a:file)
+    call s:sign_entry_init(a:file)
   endif
   let annotation = a:0 ==# 1 ? a:1 : ""
   let entry = {'sign_idx': a:sign_idx, 'line_nr': a:line_nr, 'content': a:content, 'annotation': annotation}
-  let g:line_map[a:file][a:line_nr]  = entry
-  let g:sign_map[a:file][a:sign_idx] = a:line_nr
+  let line_entry = s:line_entry(a:file)
+  let sign_entry = s:sign_entry(a:file)
+  let line_entry[a:line_nr]  = entry
+  let sign_entry[a:sign_idx] = a:line_nr
   return entry
 endfunction
 
@@ -49,7 +133,8 @@ function! bm#update_bookmark_for_sign(file, sign_idx, new_line_nr, new_content)
   let old_line_nr = bookmark['line_nr']
   call bm#add_bookmark(a:file, a:sign_idx, a:new_line_nr, a:new_content, bookmark['annotation'])
   if old_line_nr !=# a:new_line_nr
-    unlet g:line_map[a:file][old_line_nr]
+    let line_entry = s:line_entry(a:file)
+    unlet line_entry[old_line_nr]
   endif
 endfunction
 
@@ -104,11 +189,13 @@ endfunction
 
 function! bm#del_bookmark_at_line(file, line_nr)
   let bookmark = bm#get_bookmark_by_line(a:file, a:line_nr)
-  unlet g:line_map[a:file][a:line_nr]
-  unlet g:sign_map[a:file][bookmark['sign_idx']]
-  if empty(g:line_map[a:file])
-    unlet g:line_map[a:file]
-    unlet g:sign_map[a:file]
+  let line_entry = s:line_entry(a:file)
+  let sign_entry = s:sign_entry(a:file)
+  unlet line_entry[a:line_nr]
+  unlet sign_entry[bookmark['sign_idx']]
+  if empty(s:line_entry(a:file))
+    call s:line_entry_del(a:file)
+    call s:sign_entry_del(a:file)
   endif
 endfunction
 
@@ -117,17 +204,17 @@ function! bm#total_count()
 endfunction
 
 function! bm#all_bookmarks_by_line(file)
-  if !has_key(g:line_map, a:file)
+  if !s:line_entry_exists(a:file)
     return {}
   endif
-  return g:line_map[a:file]
+  return s:line_entry(a:file)
 endfunction
 
 function! bm#all_lines(file)
-  if !has_key(g:line_map, a:file)
+  if !s:line_entry_exists(a:file)
     return []
   endif
-  return keys(g:line_map[a:file])
+  return keys(s:line_entry(a:file))
 endfunction
 
 function! bm#location_list()
@@ -149,7 +236,7 @@ function! bm#location_list()
 endfunction
 
 function! bm#all_files()
-  return keys(g:line_map)
+  return s:all_line_entry()
 endfunction
 
 function! bm#del_all()
