@@ -177,31 +177,8 @@ command! BookmarkPrev call BookmarkPrev()
 command! CtrlPBookmark call ctrlp#init(ctrlp#bookmarks#id()) 
 
 function! BookmarkShowAll()
-  if s:is_quickfix_win()
-    q
-  else
-    call s:refresh_line_numbers()
-    if exists(':Unite')
-      exec ":Unite vim_bookmarks"
-    elseif exists(':CtrlP') == 2 && g:bookmark_disable_ctrlp == 0
-      exec ":CtrlPBookmark"
-    else
-      let oldformat = &errorformat    " backup original format
-      let &errorformat = "%f:%l:%m"   " custom format for bookmarks
-      if g:bookmark_location_list
-        lgetexpr bm#location_list()
-        belowright lopen
-      else
-        cgetexpr bm#location_list()
-        belowright copen
-      endif
-      augroup BM_AutoCloseCommand
-        autocmd!
-        autocmd WinLeave * call s:auto_close()
-      augroup END
-      let &errorformat = oldformat    " re-apply original format
-    endif
-  endif
+  let g:coc_jump_locations=bm#coc_location_list()
+  CocList --normal --auto-preview location
 endfunction
 command! ShowAllBookmarks call CallDeprecatedCommand('BookmarkShowAll')
 command! BookmarkShowAll call BookmarkShowAll()

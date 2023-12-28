@@ -130,6 +130,30 @@ function! bm#all_lines(file)
   return keys(g:line_map[a:file])
 endfunction
 
+function! bm#coc_location_list()
+  let files = sort(bm#all_files())
+  let locations = []
+  for file in files
+    let line_nrs = sort(bm#all_lines(file), "bm#compare_lines")
+    for line_nr in line_nrs
+      let bookmark = bm#get_bookmark_by_line(file, line_nr)
+      let content = bookmark['annotation'] !=# ''
+            \ ? "Annotation: ". bookmark['annotation']
+            \ : (bookmark['content'] !=# ""
+            \   ? bookmark['content']
+            \   : "empty line")
+      let item = {
+            \ 'lnum': line_nr,
+            \ 'filename': file,
+            \ 'col': 1,
+            \ 'text': content
+        \ }
+      call add(locations, item)
+    endfor
+  endfor
+  return locations
+endfunction
+
 function! bm#location_list()
   let files = sort(bm#all_files())
   let locations = []
