@@ -33,6 +33,7 @@ call s:set('g:bookmark_center',               0 )
 call s:set('g:bookmark_location_list',        0 )
 call s:set('g:bookmark_disable_ctrlp',        0 )
 call s:set('g:bookmark_display_annotation',   0 )
+call s:set('g:bookmark_show_all_by_coclist',   0 )
 
 function! s:init(file)
   if g:bookmark_auto_save ==# 1 || g:bookmark_manage_per_buffer ==# 1
@@ -177,8 +178,36 @@ command! BookmarkPrev call BookmarkPrev()
 command! CtrlPBookmark call ctrlp#init(ctrlp#bookmarks#id()) 
 
 function! BookmarkShowAll()
-  let g:coc_jump_locations=bm#coc_location_list()
-  CocList --normal --auto-preview location
+  if g:bookmark_show_all_by_coclist ==# 1
+      let g:coc_jump_locations=bm#coc_location_list()
+      CocList --normal --auto-preview location
+  else
+      if s:is_quickfix_win()
+        q
+      else
+        call s:refresh_line_numbers()
+        if exists(':Unite')
+          exec ":Unite vim_bookmarks"
+        elseif exists(':CtrlP') == 2 && g:bookmark_disable_ctrlp == 0
+          exec ":CtrlPBookmark"
+        else
+          let oldformat = &errorformat    " backup original format
+          let &errorformat = "%f:%l:%m"   " custom format for bookmarks
+          if g:bookmark_location_list
+            lgetexpr bm#location_list()
+            belowright lopen
+          else
+            cgetexpr bm#location_list()
+            belowright copen
+          endif
+          augroup BM_AutoCloseCommand
+            autocmd!
+            autocmd WinLeave * call s:auto_close()
+          augroup END
+          let &errorformat = oldformat    " re-apply original format
+        endif
+      endif
+  endif
 endfunction
 command! ShowAllBookmarks call CallDeprecatedCommand('BookmarkShowAll')
 command! BookmarkShowAll call BookmarkShowAll()
