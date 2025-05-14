@@ -194,6 +194,10 @@ function! BookmarkShowAll()
       else
         cgetexpr bm#location_list()
         belowright copen
+        " allow `dd` to delete the bookmark from quickfix window itself
+        nnoremap <buffer> dd :call <SID>DeleteDD()<CR>
+        " allow to quit the quickfix menu with Esc
+        nnoremap <buffer> <Esc> :q<CR>
       endif
       augroup BM_AutoCloseCommand
         autocmd!
@@ -205,6 +209,50 @@ function! BookmarkShowAll()
 endfunction
 command! ShowAllBookmarks call CallDeprecatedCommand('BookmarkShowAll')
 command! BookmarkShowAll call BookmarkShowAll()
+
+
+"───────────────────────────────────────────────────────────────────
+" Delete via dd: switch buffer, toggle, return, refresh in-place
+"───────────────────────────────────────────────────────────────────
+function! s:DeleteDD() abort
+  " 1) get the quickfix/loclist entry under cursor
+  let qf = getqflist({'idx':0})
+  if qf.idx <= 0
+    return
+  endif
+  let entry = getqflist()[qf.idx - 1]
+
+  " 2) resolve absolute file path
+  if has_key(entry, 'bufnr') && entry.bufnr > 0
+    let file = bufname(entry.bufnr)
+  else
+    let file = entry.filename
+  endif
+  let file = fnamemodify(file, ':p')
+
+  " 3) resolve line number
+  let lnum = has_key(entry, 'lnum') && entry.lnum > 0
+        \ ? entry.lnum
+        \ : str2nr(matchstr(entry.text, ':\zs\d\+'))
+
+  " 4) remember current buffer# and window#
+  let curbuf = bufnr('%')
+  let curwin = win_getid()
+
+  " 5) switch this window to the bookmark's buffer, go to line, toggle it
+  exec 'buffer ' . fnameescape(file)
+  call cursor(lnum, 1)
+  call BookmarkToggle()
+
+  " 6) switch back to the original window + buffer (marks menu)
+  call win_gotoid(curwin)
+  exec 'buffer ' . curbuf
+
+  " 7) refresh the menu
+  call BookmarkShowAll()
+  call BookmarkShowAll()
+endfunction
+
 
 function! BookmarkSave(target_file, silent)
   call s:refresh_line_numbers()
