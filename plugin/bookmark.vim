@@ -459,7 +459,19 @@ function! s:remove_all_bookmarks()
 endfunction
 
 function! s:startup_load_bookmarks(file)
-  call BookmarkLoad(s:bookmark_save_file(a:file), 1, 1)
+  " fork: 全局文件模式下 startup 加载只做一次. 上游每次 BufEnter 都经
+  " bm_vim_enter 重进这里, BookmarkLoad(startup=1) 会 remove_all_bookmarks
+  " 清光全部 sign 而不重画, 只给当前文件 add_missing_signs, session 渐进
+  " 恢复 buffer 时最后进入的文件赢, 其它文件 sign 全灭. per-buffer 模式
+  " 仍按上游每次加载 (每个 buffer 各有自己的书签文件).
+  " 注意 bm_auto_save 组会被 s:auto_save 自拆, 依赖这里的 set_up_auto_save
+  " 每次 BufEnter 重新武装, 所以不能动 bm_vim_enter, 只能拦住重载本身.
+  if g:bookmark_manage_per_buffer ==# 0 && exists('s:startup_load_done')
+    " skip reload
+  else
+    call BookmarkLoad(s:bookmark_save_file(a:file), 1, 1)
+    let s:startup_load_done = 1
+  endif
   call s:add_missing_signs(a:file)
 endfunction
 
